@@ -1,0 +1,20 @@
+# Materials shown on the dashboard.
+# One per line:  Name, MintecCode
+# Add or remove a line to change what appears. Nothing else needed.
+
+Name, Code
+Corn, CRNC
+Soya, SBNC
+Orange, ORJU
+SMP, NFD2
+WMP, WMPN
+Palm Oil, CPO1
+Sugar, SGWL
+Cocoa, COCL
+PET, 2O52
+LDPE, 2O50
+PS, 2O56
+Butter, SDBN
+Wood, FBX2
+Aluminium, LN02
+Copper, LN06

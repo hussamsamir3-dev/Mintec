@@ -12,6 +12,10 @@ Built against Mintec API technical documentation v2.4.
   Forecast  POST /v2/export/series/forecast/points   same shape, seriesType=forecast
   Dates     DD/MM/YYYY, in and out
 
+The material list can be either Book1.xlsx or a plain materials.csv holding
+one "Name, MintecCode" per line. With --from-api the CSV is enough: currency,
+unit, frequency, category and description all come back from Mintec.
+
 Commands
 ────────
   python mintec_refresh.py --probe
@@ -240,6 +244,36 @@ def merge(actual_pts, forecast_pts, today=None):
 
 
 # ═══════════════════════ workbook ═══════════════════════════
+def read_list(path, quiet=False):
+    """
+    A plain-text material list: one line per material, "Name, MintecCode".
+    Blank lines and lines starting with # are ignored. Everything else about
+    each series — currency, unit, frequency, category — comes from the API.
+    """
+    out = {}
+    for raw in open(path, encoding="utf-8-sig"):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = [p.strip() for p in line.split(",")]
+        if len(parts) < 2 or not parts[0] or not parts[1]:
+            continue
+        if parts[0].lower() in ("name", "material"):      # header row
+            continue
+        name, code = parts[0], parts[1]
+        out[name] = {"name": name, "code": code, "category": "Other", "series": []}
+        if not quiet:
+            print(f"  · {name:<11} {code}")
+    return out
+
+
+def read_source(path, quiet=False):
+    """Accept either the Excel workbook or the plain material list."""
+    if path.lower().endswith((".csv", ".txt", ".list")):
+        return read_list(path, quiet)
+    return read_workbook(path, quiet)
+
+
 def read_workbook(path, quiet=False):
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     out = {}
@@ -462,7 +496,8 @@ def main():
     g.add_argument("--from-workbook", metavar="XLSX", nargs="?", const=DEFAULT_WB,
                    help="rebuild from a workbook you already refreshed")
     g.add_argument("--catalogue", metavar="TERM", help="search your subscription for a series code")
-    ap.add_argument("--workbook", default=DEFAULT_WB)
+    ap.add_argument("--workbook", default=DEFAULT_WB,
+                    help="material list: Book1.xlsx, or a materials.csv of 'Name, Code' lines")
     ap.add_argument("--html", default=DEFAULT_HTML)
     ap.add_argument("--out-workbook")
     ap.add_argument("--every", type=int, metavar="MINUTES",
@@ -474,7 +509,7 @@ def main():
         return
 
     wb_path = args.from_workbook if args.from_workbook else args.workbook
-    materials = read_workbook(wb_path, quiet=args.probe)
+    materials = read_source(wb_path, quiet=args.probe)
     if not materials:
         sys.exit("No material tabs found in the workbook.")
 
@@ -483,10 +518,13 @@ def main():
         return
 
     def once():
-        mats = read_workbook(wb_path, quiet=True) if args.every else materials
+        mats = read_source(wb_path, quiet=True) if args.every else materials
         if args.from_api:
             mats = refresh_from_api(mats)
-            write_workbook(mats, args.out_workbook or wb_path)
+            if not wb_path.lower().endswith((".csv", ".txt", ".list")):
+                write_workbook(mats, args.out_workbook or wb_path)
+            elif args.out_workbook:
+                write_workbook(mats, args.out_workbook)
         rebuild_html(mats, args.html,
                      "Mintec API" if args.from_api else f"workbook {os.path.basename(wb_path)}")
 
