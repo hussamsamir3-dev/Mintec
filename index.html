@@ -539,14 +539,12 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 
 /* cast: products panel */
 .cast-prods{display:grid;grid-template-columns:repeat(5,1fr);gap:.9vw}
-.cprod{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;padding:1.6vh 1.1vw;
-  text-align:center}
+
 .cprod > svg{flex:0 0 auto;filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))}
-.cprod .n{font-size:1.15vw;font-weight:600;margin-top:1vh}
-.cprod .v{font-size:2.6vw;font-weight:600;letter-spacing:-.03em;margin-top:.5vh;line-height:1}
-.cprod .l{color:var(--muted);font-size:.78vw;margin-top:.5vh}
-.cprod .top{color:var(--text2);font-size:.82vw;margin-top:1vh;padding-top:.9vh;
-  border-top:1px solid var(--rule)}
+
+
+
+
 
 /* bigger charts on the "Every material" panel */
 .cast-tiles{grid-template-columns:repeat(5,1fr);gap:1vw}
@@ -696,6 +694,67 @@ html[data-theme="light"] .prod.meal{background:linear-gradient(160deg,rgba(176,1
 .mnote{margin-top:9px;padding-top:9px;border-top:1px solid var(--rule);
   color:var(--muted);font-size:11.5px;line-height:1.5}
 .mnote b{color:var(--text)}
+
+/* ══════════════════════════════════════════════════════════
+   Cast: finished products in full, and the build-up panel.
+   Everything is flex with min-height:0 so a short screen
+   shrinks the content instead of letting it collide.
+   ══════════════════════════════════════════════════════════ */
+.cast-prods{display:grid;grid-template-columns:repeat(5,1fr);gap:.8vw;
+  flex:1 1 auto;min-height:0}
+.cprod{background:var(--ink2);border:1px solid var(--rule);border-radius:12px;
+  padding:1.2vh .85vw;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.cph{display:flex;align-items:center;gap:.55vw;flex:0 0 auto;min-width:0}
+.cph > svg{flex:0 0 auto;width:2.6vw;height:2.6vw;min-width:30px;min-height:30px}
+.cpn{font-size:1.02vw;font-weight:600;line-height:1.15;min-width:0}
+.cpn span{display:block;color:var(--muted);font-size:.66vw;font-weight:400;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cprod .v{font-size:2.1vw;font-weight:600;letter-spacing:-.03em;line-height:1;
+  margin:.9vh 0 .2vh;flex:0 0 auto}
+.cmix{display:flex;height:.55vh;min-height:5px;border-radius:3px;overflow:hidden;
+  background:var(--ink);gap:1px;margin:.6vh 0 .8vh;flex:0 0 auto}
+.cmix i{display:block}
+.cbom{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+  justify-content:flex-start;gap:.15vh;overflow:hidden}
+.cbr{display:grid;grid-template-columns:.55vw 1fr auto auto;align-items:center;
+  gap:.4vw;font-size:.78vw;line-height:1.35}
+.cd{width:.5vw;height:.5vw;min-width:5px;min-height:5px;border-radius:2px}
+.cbn{color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbw{color:var(--muted)}
+.cbc{font-weight:700;min-width:2.4vw;text-align:right}
+.cpf{flex:0 0 auto;margin-top:.8vh;padding-top:.7vh;border-top:1px solid var(--rule);
+  color:var(--muted);font-size:.7vw;line-height:1.35}
+.cpf b{color:var(--text)}
+
+.cast-build{display:grid;grid-template-columns:1fr 1fr;gap:1.4vw;flex:1 1 auto;min-height:0}
+.cbcard{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;
+  padding:1.6vh 1.2vw;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.cbh{display:flex;align-items:center;gap:.8vw;flex:0 0 auto;
+  padding-bottom:1vh;margin-bottom:.6vh;border-bottom:1px solid var(--rule)}
+.cbh > svg{flex:0 0 auto}
+.cbh .ic.lg{width:2.6vw;height:2.6vw;min-width:32px;min-height:32px}
+.cbt{font-size:1.3vw;font-weight:600;line-height:1.1;flex:1 1 auto;min-width:0}
+.cbt span{display:block;color:var(--muted);font-size:.76vw;font-weight:400;margin-top:.3vh}
+.cbv{font-size:2vw;font-weight:600;letter-spacing:-.025em;text-align:right;line-height:1}
+.cbv span{display:block;font-size:.86vw;margin-top:.3vh}
+.cbrow{display:grid;grid-template-columns:1fr 1.15fr auto;align-items:baseline;gap:.8vw;
+  padding:.55vh 0;border-bottom:1px dashed var(--rule);font-size:.95vw;flex:0 0 auto}
+.cbrow span{color:var(--text2)}
+.cbrow em{font-style:normal;color:var(--muted);font-size:.78vw}
+.cbrow b{font-variant-numeric:tabular-nums;min-width:3.4vw;text-align:right}
+.cbrow.tot{border-bottom:none;border-top:2px solid var(--rule2);margin-top:auto;
+  padding-top:1vh;font-size:1.1vw}
+.cbrow.tot span,.cbrow.tot b{color:var(--text);font-weight:600}
+
+/* every panel is height-bounded, so nothing can spill */
+#sc0.on,#sc4.on,#sc6.on{display:flex;flex-direction:column;height:100%;min-height:0}
+#sc0 #castFan,#sc4 .cast-news{flex:1 1 auto;min-height:0}
+#sc0 .cast-kpi,#sc0 .cast-key{flex:0 0 auto}
+#sc4 .cnews{min-height:0;overflow:hidden}
+.scene h2{flex:0 0 auto}
+@media (max-width:1500px){
+  .cast-prods{grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(0,1fr)}
+}
 
 </style>
 </head>
@@ -958,6 +1017,7 @@ html[data-theme="light"] .prod.meal{background:linear-gradient(160deg,rgba(176,1
     <div class="scene" id="sc3"></div>
     <div class="scene" id="sc4"></div>
     <div class="scene" id="sc5"></div>
+    <div class="scene" id="sc6"></div>
   </div>
 
   <div class="tipband">
@@ -1813,7 +1873,7 @@ function renderTips() {
 /* ===================================================================
    CAST — the big screen
    =================================================================== */
-var cast = { on: false, scene: 0, paused: false, t: null, tick: 0, DUR: 20000, n: 6,
+var cast = { on: false, scene: 0, paused: false, t: null, tick: 0, DUR: 20000, n: 7,
              band: null, bandI: 0, newsT: null };
 var NEWS = [];
 
@@ -1945,17 +2005,73 @@ function buildScenes() {
         "<span>range <b>" + Math.round(m.pos * 100) + "%</b></span></div></div>";
     }).join("") + "</div>";
 
-  // 3 — finished products
-  $("#sc5").innerHTML = '<h2>What it does to finished product cost <span>recipe-weighted, next twelve months</span></h2>' +
+  // 3 — finished products, in full
+  $("#sc5").innerHTML = '<h2>What it does to finished product cost <span>recipe weighted · next twelve months</span></h2>' +
     '<div class="cast-prods">' + PRODUCTS.map(function (p) {
-      var c = productCost(p);
-      if (!c.ranked.length) return "";
-      return '<div class="cprod">' + prodIcon(p.icon, 84) +
-        '<div class="n">' + p.name + "</div>" +
-        '<div class="v ' + dirCls(c.tot.f12, .1) + '">' + (c.tot.f12 >= 0 ? "+" : "") + c.tot.f12.toFixed(1) + "%</div>" +
-        '<div class="l">materials ' + p.materialShare + "% of cost</div>" +
-        '<div class="top">led by <b style="color:' + c.ranked[0].inp.hex + '">' + c.ranked[0].inp.name + "</b></div></div>";
+      var cc = productCost(p);
+      if (!cc.ranked.length) return "";
+      var mixTotal = cc.ranked.reduce(function (a, x) { return a + x.share; }, 0) || 1;
+      return '<div class="cprod">' +
+        '<div class="cph">' + prodIcon(p.icon, 46) +
+          '<div class="cpn">' + p.name + '<span>' + p.spec.split(" · ")[0] + "</span></div></div>" +
+        '<div class="v ' + dirCls(cc.tot.f12, .1) + '">' +
+          (cc.tot.f12 >= 0 ? "+" : "") + cc.tot.f12.toFixed(1) + "%</div>" +
+        '<div class="cmix">' + cc.ranked.map(function (x) {
+          return '<i style="width:' + (x.share / mixTotal * 100).toFixed(1) + "%;background:" + x.inp.hex + '"></i>';
+        }).join("") + "</div>" +
+        '<div class="cbom">' + cc.ranked.map(function (x) {
+          return '<div class="cbr"><span class="cd" style="background:' + x.inp.hex + '"></span>' +
+            '<span class="cbn">' + x.inp.name + "</span>" +
+            '<span class="cbw">' + x.share + "%</span>" +
+            '<span class="cbc ' + dirCls(x.f12, .05) + '">' + (x.f12 >= 0 ? "+" : "") + x.f12.toFixed(1) + "</span></div>";
+        }).join("") + "</div>" +
+        '<div class="cpf">materials <b>' + p.materialShare + "%</b> of cost · led by <b style=\"color:" +
+          cc.ranked[0].inp.hex + '">' + cc.ranked[0].inp.name + "</b></div></div>";
     }).join("") + "</div>";
+
+  // 4 — how raw milk and meal are built
+  var rm = rawMilkPrice("spot"), rmF = rawMilkPrice("f12"), ml = mealPrice("spot"), mlF = mealPrice("f12");
+  var rmChg = rm.egp ? (rmF.egp / rm.egp - 1) * 100 : 0;
+  var mlChg = ml && mlF && ml.perMT ? (mlF.perMT / ml.perMT - 1) * 100 : 0;
+  var Md = prefs.model;
+  var rmRows = [
+    ["Corn", (Md.cornShare / 100).toFixed(2) + " kg @ " + (rm.fp.corn ? rm.fp.corn.egpKg.toFixed(2) : "—"), rm.corn],
+    ["Soybean meal", (Md.soyaShare / 100).toFixed(2) + " kg @ " + (rm.fp.meal ? rm.fp.meal.egpKg.toFixed(2) : "—"), rm.soya],
+    ["Alfalfa", (Md.alfalfaShare / 100).toFixed(2) + " kg @ " + Md.alfalfaPrice.toFixed(2) + " set", rm.alfalfa],
+    ["Fixed farm cost", "does not move", rm.fixed],
+    ["Transportation", "collection and haulage", rm.transport]
+  ];
+  if (rm.summer > 0) rmRows.push(["Summer premium " + Md.summerPct + "%", "on the gate price", rm.summer]);
+  var mlRows = ml ? [
+    ["Soybeans, board", "USD per bushel", ml.bean],
+    ["less oil credit", Md.oilLb + " lb at " + num(ml.oilMT, 0) + " USD/t", -ml.oilCredit],
+    ["less hull credit", "recovered on hulls", -ml.hull],
+    ["plus crush and margin", "crusher cost and return", ml.crush]
+  ] : [];
+
+  $("#sc6").innerHTML = '<h2>How the indexed inputs are built <span>everything below is editable in settings</span></h2>' +
+    '<div class="cast-build">' +
+      '<div class="cbcard"><div class="cbh">' + prodIcon("milk", 42) +
+        '<div class="cbt">Raw milk<span>EGP per kg, delivered</span></div>' +
+        '<div class="cbv ' + dirCls(rmChg, .1) + '">' + rm.egp.toFixed(2) +
+          '<span>' + (rmChg >= 0 ? "+" : "") + rmChg.toFixed(1) + "%</span></div></div>" +
+        rmRows.map(function (r) {
+          return '<div class="cbrow"><span>' + r[0] + '</span><em>' + r[1] + '</em><b>' + r[2].toFixed(2) + "</b></div>";
+        }).join("") +
+        '<div class="cbrow tot"><span>Delivered</span><em>ration ' + rm.ration.toFixed(2) +
+          " · gate " + rm.gate.toFixed(2) + '</em><b>' + rm.egp.toFixed(2) + "</b></div></div>" +
+
+      '<div class="cbcard"><div class="cbh">' + lineIcon("Soya", "#D9A441", "lg") +
+        '<div class="cbt">Soybean meal<span>USD per tonne, crushed</span></div>' +
+        '<div class="cbv ' + dirCls(mlChg, .1) + '">' + (ml ? num(ml.perMT, 0) : "—") +
+          '<span>' + (mlChg >= 0 ? "+" : "") + mlChg.toFixed(1) + "%</span></div></div>" +
+        mlRows.map(function (r) {
+          return '<div class="cbrow"><span>' + r[0] + '</span><em>' + r[1] + '</em><b>' +
+            (r[2] >= 0 ? "+" : "\u2212") + Math.abs(r[2]).toFixed(2) + "</b></div>";
+        }).join("") +
+        (ml ? '<div class="cbrow tot"><span>Meal cost</span><em>' + ml.perBu.toFixed(2) + " USD/bu × " +
+          Md.buPerMT + '</em><b>' + num(ml.perMT, 0) + "</b></div>" : "") + "</div>" +
+    "</div>";
 
   // 4 — the board of prices
   $("#sc3").innerHTML = '<h2>Every material <span>latest settled price and where the curve takes it</span></h2>' +
