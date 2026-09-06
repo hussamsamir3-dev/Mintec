@@ -103,7 +103,7 @@ svg{display:block;overflow:visible}
 .stat .n{color:var(--text2);font-size:12px;margin-top:5px}
 .up{color:var(--heat)} .dn{color:var(--cool)} .fl{color:var(--flat)}
 
-/* ── movers ───────────────────────────────────────────── */
+/* ── movers (replaced further down) ───────────────────── */
 .movers{display:grid;gap:2px}
 .mv{display:grid;grid-template-columns:132px 1fr 92px;align-items:center;gap:14px;
   padding:6px 8px;border-radius:7px;transition:background .13s}
@@ -541,7 +541,7 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 .cast-prods{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1vw}
 .cprod{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;padding:1.6vh 1.1vw;
   text-align:center}
-.cprod svg{filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))}
+.cprod > svg{flex:0 0 auto;filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))}
 .cprod .n{font-size:1.15vw;font-weight:600;margin-top:1vh}
 .cprod .v{font-size:2.6vw;font-weight:600;letter-spacing:-.03em;margin-top:.5vh;line-height:1}
 .cprod .l{color:var(--muted);font-size:.78vw;margin-top:.5vh}
@@ -551,15 +551,12 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 /* bigger charts on the "Every material" panel */
 .cast-tiles{grid-template-columns:repeat(5,1fr);gap:1vw}
 .ctile{padding:1.5vh 1.1vw 1.1vh}
-.ctile svg{margin-top:1vh;height:9.5vh;width:100%;display:block}
+
 .ctile .n{font-size:1.12vw}
 .ctile .p{font-size:2.05vw;margin:.6vh 0 .25vh}
 .ctile .u{font-size:.78vw}
 .ctile .row2{font-size:.9vw;margin-top:.9vh}
-@media (max-width:1500px){
-  .cast-tiles{grid-template-columns:repeat(4,1fr)}
-  .ctile svg{height:8vh}
-}
+
 
 /* colour key under the fan */
 .key-lead{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
@@ -581,6 +578,80 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 .ck{display:inline-flex;align-items:center;gap:.4vw;font-size:.88vw;color:var(--text2)}
 .ck .ic{width:1.5vw;height:1.5vw;min-width:18px;min-height:18px}
 .ck i{width:.5vw;height:.5vw;min-width:6px;min-height:6px;border-radius:50%}
+
+/* ══════════════════════════════════════════════════════════
+   Forward pressure — two columns, one shared scale
+   ══════════════════════════════════════════════════════════ */
+.mvgrid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.mvcol{min-width:0}
+.mvhead{display:flex;align-items:baseline;gap:9px;padding:0 0 10px;margin-bottom:6px;
+  border-bottom:2px solid currentColor}
+.mvhead b{font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+.mvhead span{color:var(--muted);font-size:11.5px;font-weight:400}
+.mvhead.up{color:var(--heat)} .mvhead.dn{color:var(--cool)}
+.mvrow{display:grid;grid-template-columns:26px 108px 1fr 58px;align-items:center;gap:10px;
+  padding:5px 6px;border-radius:8px;cursor:pointer;transition:background .12s}
+.mvrow:hover{background:var(--ink3)}
+.mvi .ic{width:22px;height:22px}
+.mvn{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mvt{position:relative;height:16px;background:var(--ink);border-radius:4px;overflow:hidden}
+.mvb{position:absolute;left:0;top:0;bottom:0;border-radius:4px;
+  transition:width .7s cubic-bezier(.22,.61,.36,1)}
+.mvb.up{background:linear-gradient(90deg,var(--heat-d),var(--heat))}
+.mvb.dn{background:linear-gradient(90deg,var(--cool-d),var(--cool))}
+.mvv{text-align:right;font-size:13.5px;font-weight:700}
+.mvaxis{position:relative;height:16px;margin:8px 0 0 154px;border-top:1px solid var(--rule)}
+.mvaxis span{position:absolute;top:4px;transform:translateX(-50%);color:var(--muted);font-size:10.5px}
+.mvaxis span:first-child{transform:none}
+.mvaxis span:last-child{transform:translateX(-100%)}
+.mvflat{margin-top:16px;padding-top:13px;border-top:1px solid var(--rule);
+  color:var(--muted);font-size:12.5px}
+@media (max-width:820px){ .mvgrid{grid-template-columns:1fr;gap:22px}
+  .mvrow{grid-template-columns:24px 92px 1fr 52px} .mvaxis{margin-left:136px} }
+.icard h4{gap:9px}
+.icard h4 .ic{width:22px;height:22px}
+.icard p + p{margin-top:6px;color:var(--muted)}
+
+/* materials used in a product */
+.usedin{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.usedin .ul{width:100%;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);font-weight:700;margin-bottom:2px}
+.uchip{display:inline-flex;align-items:center;gap:6px;padding:4px 9px 4px 5px;
+  border:1px solid var(--rule);border-radius:999px;background:var(--ink);font-size:12px}
+.uchip .ic{width:19px;height:19px}
+.uchip .un{font-weight:500}
+.uchip .uw{color:var(--muted);font-size:11px}
+.setrow span br + span{font-weight:400}
+
+/* ══════════════════════════════════════════════════════════
+   Every-material panel: tiles share the height that is
+   actually available, so charts never run into the text
+   ══════════════════════════════════════════════════════════ */
+.cast-body{overflow:hidden;min-height:0}
+.scene.on{min-height:0}
+#sc3.on{display:flex;flex-direction:column;height:100%;min-height:0}
+#sc3 h2{flex:0 0 auto}
+#sc3 .cast-tiles{flex:1 1 auto;min-height:0;
+  grid-template-rows:repeat(3,minmax(0,1fr));gap:.8vw}
+.ctile{display:flex;flex-direction:column;min-height:0;overflow:hidden;
+  padding:1.1vh 1vw .9vh}
+.ctile .n{flex:0 0 auto;font-size:1.02vw}
+.ctile .n .ic{flex:0 0 auto;width:1.8vw;height:1.8vw;min-width:19px;min-height:19px}
+.ctile .p{flex:0 0 auto;font-size:1.75vw;margin:.35vh 0 .1vh}
+.ctile .u{flex:0 0 auto;font-size:.72vw}
+.ctile > svg{flex:1 1 auto;min-height:0;height:auto;width:100%;display:block;margin:.5vh 0 0}
+.ctile .row2{flex:0 0 auto;font-size:.82vw;margin-top:.5vh}
+
+/* the same discipline on the other dense panels */
+#sc1.on,#sc2.on,#sc5.on{display:flex;flex-direction:column;height:100%;min-height:0}
+#sc1 .cast-mv,#sc2 .cast-recs,#sc5 .cast-prods{flex:1 1 auto;min-height:0}
+#sc1 .cast-mv{align-content:center}
+.cast-recs .crec,.cast-prods .cprod{min-height:0;overflow:hidden}
+
+@media (max-width:1500px){
+  .cast-tiles{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,minmax(0,1fr))}
+}
 
 </style>
 </head>
@@ -758,6 +829,13 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
       <button data-s="170" aria-pressed="false">Slow</button>
       <button data-s="110" aria-pressed="true">Normal</button>
       <button data-s="60" aria-pressed="false">Fast</button>
+    </div></div>
+  <div class="setrow"><span>Auto scroll<br><span style="color:var(--muted);font-size:11.5px">walks the page, then back up</span></span>
+    <div class="mini" id="scrollSpeed">
+      <button data-s="0" aria-pressed="true">Off</button>
+      <button data-s="20" aria-pressed="false">20s</button>
+      <button data-s="40" aria-pressed="false">40s</button>
+      <button data-s="70" aria-pressed="false">70s</button>
     </div></div>
   <div class="setrow"><span>Chart size</span>
     <div class="mini" id="chartsize">
@@ -1174,20 +1252,50 @@ function renderStrip() {
    MOVERS
    =================================================================== */
 function renderMovers() {
-  var rows = shown().filter(function (m) { return m.f12 !== null; }).sort(function (a, b) { return b.f12 - a.f12; });
-  if (!rows.length) { $("#movers").innerHTML = '<div class="empty">No forward curve in this dataset.</div>'; return; }
+  var host = $("#movers");
+  var rows = shown().filter(function (m) { return m.f12 !== null; });
+  if (!rows.length) { host.innerHTML = '<div class="empty">No forward curve in this dataset.</div>'; return; }
+
+  var up = rows.filter(function (m) { return m.f12 > 0.25; }).sort(function (a, b) { return b.f12 - a.f12; });
+  var dn = rows.filter(function (m) { return m.f12 < -0.25; }).sort(function (a, b) { return a.f12 - b.f12; });
+  var flat = rows.filter(function (m) { return Math.abs(m.f12) <= 0.25; });
   var mx = Math.max.apply(null, rows.map(function (m) { return Math.abs(m.f12); })) || 1;
-  $("#movers").innerHTML = rows.map(function (m) {
-    var v = m.f12, half = 50, wdt = Math.abs(v) / mx * 48;
-    var left = v >= 0 ? half : half - wdt;
-    var col = v > 0.5 ? "var(--heat)" : v < -0.5 ? "var(--cool)" : "var(--flat)";
-    return '<button class="mv" data-k="' + m.key + '">' +
-      '<span class="nm" style="color:' + cat(m).hex + '">' + m.name + "</span>" +
-      '<span class="track"><span class="axis0" style="left:' + half + '%"></span>' +
-      '<span class="bar" style="left:' + left + "%;width:" + wdt + "%;background:" + col + '"></span></span>' +
-      '<span class="val ' + dirCls(v) + '">' + pct(v) + "</span></button>";
-  }).join("");
-  $$("#movers .mv").forEach(function (b) { b.onclick = function () { openDrawer(b.dataset.k); }; });
+  var top = Math.ceil(mx / 10) * 10;                       // round the scale to a tidy number
+
+  function col(list, cls, title, sub) {
+    if (!list.length) {
+      return '<div class="mvcol"><div class="mvhead ' + cls + '"><b>' + title + "</b></div>" +
+             '<div class="empty" style="padding:14px;font-size:12.5px">Nothing in this direction.</div></div>';
+    }
+    var bars = list.map(function (m) {
+      var w = Math.abs(m.f12) / top * 100;
+      return '<div class="mvrow" data-k="' + m.key + '" role="button" tabindex="0">' +
+        '<span class="mvi">' + matIcon(m, "sm") + "</span>" +
+        '<span class="mvn">' + m.name + "</span>" +
+        '<span class="mvt"><span class="mvb ' + cls + '" style="width:' + w.toFixed(1) + '%"></span></span>' +
+        '<span class="mvv ' + cls + '">' + (m.f12 > 0 ? "+" : "") + m.f12.toFixed(1) + "%</span></div>";
+    }).join("");
+    var ticks = [0, .25, .5, .75, 1].map(function (t) {
+      return '<span style="left:' + (t * 100) + '%">' + Math.round(top * t) + "%</span>";
+    }).join("");
+    return '<div class="mvcol"><div class="mvhead ' + cls + '"><b>' + title + "</b><span>" + sub + "</span></div>" +
+      bars + '<div class="mvaxis">' + ticks + "</div></div>";
+  }
+
+  var flatNote = flat.length
+    ? '<div class="mvflat">Flat within a quarter of a percent: ' +
+      flat.map(function (m) { return m.name; }).join(", ") + "</div>"
+    : "";
+
+  host.innerHTML = '<div class="mvgrid">' +
+      col(up, "up", "Adding to cost", up.length + " material" + (up.length === 1 ? "" : "s")) +
+      col(dn, "dn", "Taking cost out", dn.length + " material" + (dn.length === 1 ? "" : "s")) +
+    "</div>" + flatNote;
+
+  $$("#movers .mvrow").forEach(function (b) {
+    b.onclick = function () { openDrawer(b.dataset.k); };
+    b.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDrawer(b.dataset.k); } };
+  });
 }
 
 /* ===================================================================
@@ -1259,46 +1367,47 @@ function esc(s) { return String(s || "").replace(/[&<>"]/g, function (c) { retur
    INSIGHTS — written from the series, never stored
    =================================================================== */
 function insightFor(m) {
-  var s = [], tag, tagc, f = factor(m), u = unitLabel(m);
-  var per = m.freq === "Weekly" ? "week" : "month";
+  var f = factor(m), u = unitLabel(m), per = m.freq === "Weekly" ? "week" : "month";
+  var lines = [], tag, tagc;
 
-  // headline movement
-  if (m.f12 !== null && Math.abs(m.f12) >= 1) {
-    var dirw = m.f12 > 0 ? "adds" : "takes off";
-    s.push("The forward curve " + dirw + " " + Math.abs(m.f12).toFixed(1) + "% by " + fmtD(m.f12d) +
-      ", to about " + num(m.f12v * f) + " " + u + ".");
-  } else if (m.f12 !== null) {
-    s.push("The forward curve is flat through " + fmtD(m.f12d) + " — budget at roughly today's level.");
+  // 1. where it is now, and what the curve says it becomes
+  if (m.f12 !== null) {
+    var dirn = m.f12 > 1 ? "rises to" : m.f12 < -1 ? "falls to" : "holds near";
+    lines.push("Now " + num(m.spot * f) + " " + u + "; the curve " + dirn + " " +
+      num(m.f12v * f) + " by " + fmtD(m.f12d) + ", " + pct(m.f12) + ".");
+  } else {
+    lines.push("Now " + num(m.spot * f) + " " + u + ". No forward curve in this series.");
   }
 
-  // where spot sits in its range
-  if (m.pos >= 0.85) s.push("Spot is sitting at the top of its 12-month range, so there is little cushion if the curve is wrong.");
-  else if (m.pos <= 0.15) s.push("Spot is near a 12-month low, which is the part of the range worth covering forward in.");
+  // 2. is that expensive or cheap against its own year?
+  var band = m.pos >= 0.8 ? "the top" : m.pos >= 0.55 ? "the upper half"
+           : m.pos >= 0.2 ? "the lower half" : "the bottom";
+  lines.push("That sits in " + band + " of a 12-month range of " +
+    num(m.lo * f) + " to " + num(m.hi * f) +
+    (m.yoy !== null ? ", and it is " + (m.yoy > 0 ? "up " : "down ") + Math.abs(m.yoy).toFixed(0) +
+      "% on the year." : "."));
 
-  // year-on-year context
-  if (m.yoy !== null && Math.abs(m.yoy) >= 8) {
-    s.push("It is already " + (m.yoy > 0 ? "up " : "down ") + Math.abs(m.yoy).toFixed(1) +
-      "% on the year, so the base you are comparing against has moved.");
+  // 3. how much confidence the swing allows
+  if (m.vol !== null) {
+    var reliability = m.vol >= 30 ? "Swing is wide at " + num(m.vol, 0) +
+        "% a year, so treat the level as a direction, not a number."
+      : m.vol >= 15 ? "Swing of " + num(m.vol, 0) + "% a year is normal for this input."
+      : "Swing is low at " + num(m.vol, 0) + "% a year, so the curve is worth more here than usual.";
+    lines.push(reliability);
   }
 
-  // volatility caveat
-  if (m.vol !== null && m.vol >= 22) {
-    s.push("Swing has been wide at " + num(m.vol, 0) + "% annualised — a single " + per + " can undo the whole forecast.");
-  }
-
-  // where the curve tops out relative to the 12-month reading
-  if (m.fcPeak && m.f12v && m.fcPeak > m.f12v * 1.04 && m.fcPeakD) {
-    var beforeMark = m.f12d && m.fcPeakD < m.f12d;
-    s.push(beforeMark
-      ? "It tops out sooner, around " + fmtD(m.fcPeakD) + " at " + num(m.fcPeak * f) + ", then eases back."
-      : "The climb keeps going past that point, peaking around " + fmtD(m.fcPeakD) + " at " + num(m.fcPeak * f) + ".");
+  // 4. the shape of the path, when it is not a straight line
+  if (m.fcPeakD && m.fcPeak && m.f12v && m.fcPeak > m.f12v * 1.05) {
+    lines.push("It peaks first at " + num(m.fcPeak * f) + " around " + fmtD(m.fcPeakD) + ", then eases.");
+  } else if (m.fcTrough && m.f12v && m.fcTrough < m.f12v * 0.95 && m.fcEnd) {
+    lines.push("It dips to " + num(m.fcTrough * f) + " before recovering into " + fmtD(m.fcEnd[0]) + ".");
   }
 
   if (m.f12 !== null && m.f12 >= 5) { tag = "Cost risk"; tagc = "a"; }
   else if (m.f12 !== null && m.f12 <= -5) { tag = "Saving"; tagc = "b"; }
   else { tag = "Steady"; tagc = "c"; }
 
-  return { text: s.join(" ") || "Not enough history in this series to read a trend.", tag: tag, tagc: tagc };
+  return { text: lines.join(" "), lines: lines, tag: tag, tagc: tagc };
 }
 
 function renderInsights() {
@@ -1307,8 +1416,8 @@ function renderInsights() {
   $("#insights").innerHTML = list.map(function (m) {
     var i = insightFor(m), c = cat(m);
     return '<div class="icard" style="--cc:' + c.hex + '">' +
-      "<h4>" + m.name + ' <span class="tagb ' + i.tagc + '">' + i.tag + "</span></h4>" +
-      "<p>" + i.text + "</p></div>";
+      '<h4>' + matIcon(m, "sm") + "<span>" + m.name + '</span> <span class="tagb ' + i.tagc + '">' + i.tag + "</span></h4>" +
+      i.lines.map(function (t) { return "<p>" + t + "</p>"; }).join("") + "</div>";
   }).join("");
 }
 
@@ -1874,87 +1983,64 @@ var GLYPH = {
 var ICON_GRAD = { grain:"g-grain", dairy:"g-dairy", soft:"g-soft", metal:"g-metal",
                   poly:"g-poly", wood:"g-wood" };
 
-function icon3d(kind, cls) {
-  var grad = ICON_GRAD[kind] || "g-gold";
-  var g = GLYPH[kind] || GLYPH.materials;
-  return '<svg class="ic ' + (cls || "") + '" viewBox="0 0 34 34" aria-hidden="true">' +
-    '<g filter="url(#f-drop)">' +
-    '<rect x="1.5" y="1.5" width="31" height="31" rx="9.5" fill="url(#' + grad + ')"/>' +
-    '<rect x="1.5" y="1.5" width="31" height="31" rx="9.5" fill="url(#g-gloss)"/>' +
-    '<rect x="2.6" y="2.6" width="28.8" height="28.8" rx="8.6" fill="none" stroke="#fff" stroke-opacity=".28"/>' +
-    '</g>' + g + "</svg>";
-}
+var SEC_HEX = { movers:"#DFA93A", materials:"#4FB3C4", insights:"#C77BB0",
+                actions:"#E4674B", news:"#8E86D6", tips:"#7FA96A", products:"#31AE9D" };
+function icon3d(kind, cls) { return lineIcon(kind, SEC_HEX[kind] || "#DFA93A", cls); }
 var CAT_ICON = { "Grains & Oilseeds":"grain", "Dairy":"dairy", "Softs":"soft",
                  "Metals":"metal", "Plastics & Textiles":"poly", "Paper & Wood":"wood" };
-function matIcon(m, cls) { return icon3d(CAT_ICON[m.category] || "materials", cls); }
-
-function paintSectionIcons() {
-  $$("[data-icon]").forEach(function (el) {
-    if (!el.dataset.done) { el.innerHTML = icon3d(el.dataset.icon); el.dataset.done = "1"; }
-  });
+function matIcon(m, cls) {
+  var hex = CAT_HEX[m.category] || "#7E93AC";
+  return lineIcon(LINE[m.key] ? m.key : (CAT_ICON[m.category] || "materials"), hex, cls);
 }
 
 
 /* ===================================================================
    MATERIAL ICONS — one drawn glyph per input, on its category chip
    =================================================================== */
-var MAT_GLYPH = {
-  Corn:      '<path d="M17 7.6c2.9 2 4.3 5 4.3 8.4 0 3.9-1.9 7-4.3 9.4-2.4-2.4-4.3-5.5-4.3-9.4 0-3.4 1.4-6.4 4.3-8.4z" fill="#fff" opacity=".95"/>' +
-             '<path d="M17 9.6v14M14.4 12.2h5.2M14.1 15.4h5.8M14.4 18.6h5.2M15.2 21.6h3.6" stroke="#7A5A0E" stroke-width="1.05" opacity=".55" stroke-linecap="round"/>',
-  Soya:      '<path d="M10.6 19.4c3-5.2 8.4-8 13.4-8.2-1.4 5.6-5.6 9.6-11 10.4z" fill="#fff" opacity=".95"/>' +
-             '<circle cx="14.6" cy="18.4" r="1.5" fill="#3E5B31" opacity=".5"/><circle cx="18" cy="16" r="1.5" fill="#3E5B31" opacity=".5"/><circle cx="21.2" cy="13.8" r="1.5" fill="#3E5B31" opacity=".5"/>' +
-             '<path d="M9.4 22.6c3.4-1 6.2-2.8 8.6-5.2" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".75"/>',
-  Orange:    '<circle cx="17" cy="18" r="7" fill="#fff" opacity=".95"/>' +
-             '<path d="M17 11v14M10 18h14M12.1 13.1l9.8 9.8M21.9 13.1l-9.8 9.8" stroke="#B4530A" stroke-width=".95" opacity=".42"/>' +
-             '<path d="M17.4 10.6c1.5-2 3.4-2.6 5.4-2.2-.5 2.2-2 3.5-4.2 3.6z" fill="#fff" opacity=".8"/>',
-  SMP:       '<path d="M11.5 13.4h11l1.4 10.2a1.6 1.6 0 0 1-1.6 1.8H11.7a1.6 1.6 0 0 1-1.6-1.8z" fill="#fff" opacity=".95"/>' +
-             '<path d="M12.6 9.4h8.8l1 4H11.6z" fill="#fff" opacity=".72"/>' +
-             '<path d="M14.4 17.6h5.2M14.8 20.4h4.4" stroke="#1B6270" stroke-width="1.3" opacity=".45" stroke-linecap="round"/>',
-  WMP:       '<path d="M11.5 13.4h11l1.4 10.2a1.6 1.6 0 0 1-1.6 1.8H11.7a1.6 1.6 0 0 1-1.6-1.8z" fill="#fff" opacity=".95"/>' +
-             '<path d="M12.6 9.4h8.8l1 4H11.6z" fill="#fff" opacity=".72"/>' +
-             '<circle cx="17" cy="19.4" r="3" fill="#1B6270" opacity=".38"/>',
-  "Palm Oil":'<path d="M17 24.6a4.8 4.8 0 0 1-4.8-4.8c0-2.7 3-6.2 4.8-8.4 1.8 2.2 4.8 5.7 4.8 8.4a4.8 4.8 0 0 1-4.8 4.8z" fill="#fff" opacity=".95"/>' +
-             '<path d="M17 10.4c2.6-2.4 5.4-2.6 7.6-1.6-2.4.6-4.4 1.8-6 3.6M17 10.4c-2.6-2.4-5.4-2.6-7.6-1.6 2.4.6 4.4 1.8 6 3.6" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".78"/>',
-  Sugar:     '<path d="M9.6 14.6l5-2.8 5 2.8-5 2.8z" fill="#fff" opacity=".95"/><path d="M9.6 14.6v5.2l5 2.8v-5.2z" fill="#fff" opacity=".72"/><path d="M19.6 14.6v5.2l-5 2.8v-5.2z" fill="#fff" opacity=".55"/>' +
-             '<path d="M17.4 10.4l3.6-2 3.6 2-3.6 2z" fill="#fff" opacity=".85"/><path d="M17.4 10.4v3.8l3.6 2v-3.8z" fill="#fff" opacity=".62"/><path d="M24.6 10.4v3.8l-3.6 2v-3.8z" fill="#fff" opacity=".48"/>',
-  Cocoa:     '<path d="M17 7.8c3.4 1.6 5.4 5 5.4 9.2 0 4.4-2.2 7.8-5.4 9.2-3.2-1.4-5.4-4.8-5.4-9.2 0-4.2 2-7.6 5.4-9.2z" fill="#fff" opacity=".95"/>' +
-             '<path d="M17 9.4v15.2" stroke="#5A3210" stroke-width="1.15" opacity=".5"/>' +
-             '<path d="M14.4 12.4c1.4 3 1.4 6.4 0 9.4M19.6 12.4c-1.4 3-1.4 6.4 0 9.4" stroke="#5A3210" stroke-width=".95" fill="none" opacity=".35"/>',
-  PET:       '<path d="M15.2 7.6h3.6v2.2c0 .9.3 1.3 1 2l.9.9c.7.7 1 1.4 1 2.4v8.6a2 2 0 0 1-2 2h-5.4a2 2 0 0 1-2-2v-8.6c0-1 .3-1.7 1-2.4l.9-.9c.7-.7 1-1.1 1-2z" fill="#fff" opacity=".95"/>' +
-             '<rect x="14.4" y="6.2" width="5.2" height="2" rx=".7" fill="#fff" opacity=".72"/>' +
-             '<rect x="13.6" y="16.4" width="6.8" height="4" rx=".8" fill="#494284" opacity=".3"/>',
-  LDPE:      '<rect x="9.4" y="12" width="15.2" height="10.6" rx="1.6" fill="#fff" opacity=".95"/>' +
-             '<ellipse cx="9.4" cy="17.3" rx="2.3" ry="5.3" fill="#fff" opacity=".7"/>' +
-             '<ellipse cx="9.4" cy="17.3" rx="1.1" ry="2.6" fill="#494284" opacity=".35"/>' +
-             '<path d="M24.6 12v10.6" stroke="#494284" stroke-width="1" opacity=".28"/>',
-  PS:        '<path d="M11.6 11.6h10.8l-1.5 12.2a1.8 1.8 0 0 1-1.8 1.6h-4.2a1.8 1.8 0 0 1-1.8-1.6z" fill="#fff" opacity=".95"/>' +
-             '<rect x="10.4" y="9.2" width="13.2" height="2.6" rx="1.1" fill="#fff" opacity=".72"/>' +
-             '<path d="M14 15.2h6M14.3 18.4h5.4" stroke="#494284" stroke-width="1.2" opacity=".32" stroke-linecap="round"/>',
-  Butter:    '<path d="M8.8 17.4l7.4-4.3 9 5.2-7.4 4.3z" fill="#fff" opacity=".95"/>' +
-             '<path d="M8.8 17.4v3.4l9.4 5.4v-3.4z" fill="#fff" opacity=".7"/>' +
-             '<path d="M25.2 18.3v3.4l-7 4.1v-3.4z" fill="#fff" opacity=".52"/>' +
-             '<path d="M12.4 15.3l9 5.2" stroke="#8A6212" stroke-width=".9" opacity=".4"/>',
-  Wood:      '<ellipse cx="17" cy="12.4" rx="7.4" ry="3" fill="#fff" opacity=".95"/>' +
-             '<path d="M9.6 12.4v8.4c0 1.7 3.3 3 7.4 3s7.4-1.3 7.4-3v-8.4" fill="#fff" opacity=".72"/>' +
-             '<ellipse cx="17" cy="12.4" rx="4.3" ry="1.7" fill="none" stroke="#3E5B31" stroke-width=".9" opacity=".45"/>' +
-             '<ellipse cx="17" cy="12.4" rx="1.8" ry=".8" fill="#3E5B31" opacity=".35"/>',
-  Aluminium: '<path d="M12 10.6h10v13a1.8 1.8 0 0 1-1.8 1.8h-6.4a1.8 1.8 0 0 1-1.8-1.8z" fill="#fff" opacity=".95"/>' +
-             '<ellipse cx="17" cy="10.6" rx="5" ry="1.9" fill="#fff" opacity=".72"/>' +
-             '<ellipse cx="17" cy="10.6" rx="2.4" ry=".9" fill="#7C3A17" opacity=".35"/>' +
-             '<rect x="13.6" y="15.4" width="6.8" height="4.6" rx=".8" fill="#7C3A17" opacity=".24"/>',
-  Copper:    '<path d="M10 12.4h9.6a4 4 0 0 1 0 8H13a3 3 0 0 0 0 6h11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>' +
-             '<circle cx="10" cy="12.4" r="2" fill="#fff"/><circle cx="24" cy="26.4" r="2" fill="#fff"/>'
+var LINE = {
+  Corn:       '<ellipse cx="12" cy="12" rx="4.2" ry="7"/><path d="M12 5.6v12.8M8.5 9h7M8.2 12h7.6M8.5 15h7"/>',
+  Soya:       '<path d="M5.5 16.5C8.5 11 13 8 18.5 7.5"/><circle cx="9" cy="14.6" r="1.5"/><circle cx="12.6" cy="11.9" r="1.5"/><circle cx="16.2" cy="9.8" r="1.5"/>',
+  Orange:     '<circle cx="12" cy="13" r="6.4"/><path d="M12 6.6v12.8M5.6 13h12.8"/><path d="M12.6 6.2c1-1.6 2.4-2.2 4-2"/>',
+  SMP:        '<path d="M7 9h10l1 9.5a1.4 1.4 0 0 1-1.4 1.5H7.4A1.4 1.4 0 0 1 6 18.5z"/><path d="M8.4 5.5h7.2L17 9H7z"/>',
+  WMP:        '<path d="M7 9h10l1 9.5a1.4 1.4 0 0 1-1.4 1.5H7.4A1.4 1.4 0 0 1 6 18.5z"/><path d="M8.4 5.5h7.2L17 9H7z"/><circle cx="12" cy="14.4" r="2.2"/>',
+  "Palm Oil": '<path d="M12 19.6a4 4 0 0 1-4-4c0-2.3 2.6-5.4 4-7.2 1.4 1.8 4 4.9 4 7.2a4 4 0 0 1-4 4z"/><path d="M12 7.4c1.9-1.9 4-2.1 5.8-1.3M12 7.4C10.1 5.5 8 5.3 6.2 6.1"/>',
+  Sugar:      '<path d="M5.5 10.4L9.6 8l4.1 2.4-4.1 2.4z"/><path d="M5.5 10.4v4.2l4.1 2.4v-4.2M13.7 10.4v4.2l-4.1 2.4"/><path d="M12.6 7.2L16 5.2l3.4 2-3.4 2z"/><path d="M12.6 7.2v3.4l3.4 2v-3.4M19.4 7.2v3.4l-3.4 2"/>',
+  Cocoa:      '<path d="M12 4.8c2.6 1.4 4.2 4.2 4.2 7.4s-1.6 6-4.2 7.4c-2.6-1.4-4.2-4.2-4.2-7.4s1.6-6 4.2-7.4z"/><path d="M12 5.6v12.8M9.6 8.6c1.1 2.3 1.1 4.6 0 6.9M14.4 8.6c-1.1 2.3-1.1 4.6 0 6.9"/>',
+  PET:        '<path d="M10.4 5h3.2v1.9c0 .8.3 1.1.9 1.7l.8.8c.6.6.9 1.2.9 2v7.4a1.7 1.7 0 0 1-1.7 1.7H9.5a1.7 1.7 0 0 1-1.7-1.7v-7.4c0-.8.3-1.4.9-2l.8-.8c.6-.6.9-.9.9-1.7z"/><path d="M9.8 3.6h4.4v1.4H9.8z"/><path d="M8.6 13.4h6.8"/>',
+  LDPE:       '<rect x="6" y="7.6" width="12" height="8.8" rx="1.3"/><ellipse cx="6" cy="12" rx="1.9" ry="4.4"/><path d="M18 7.6v8.8"/>',
+  PS:         '<path d="M7.4 8h9.2l-1.3 10.4a1.5 1.5 0 0 1-1.5 1.3h-3.6a1.5 1.5 0 0 1-1.5-1.3z"/><rect x="6.4" y="5.8" width="11.2" height="2.2" rx=".9"/>',
+  Butter:     '<path d="M4.6 12.2l6.3-3.7 7.7 4.5-6.3 3.7z"/><path d="M4.6 12.2v2.9l8 4.7v-2.9M18.6 13v2.9l-6 3.5"/>',
+  Wood:       '<ellipse cx="12" cy="8" rx="6.2" ry="2.5"/><path d="M5.8 8v7c0 1.4 2.8 2.5 6.2 2.5s6.2-1.1 6.2-2.5V8"/><ellipse cx="12" cy="8" rx="3.4" ry="1.3"/>',
+  Aluminium:  '<path d="M8 6.6h8v11.2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 8 17.8z"/><ellipse cx="12" cy="6.6" rx="4" ry="1.6"/><path d="M9.6 11h4.8"/>',
+  Copper:     '<path d="M5.5 8h7.8a3.2 3.2 0 0 1 0 6.4H7.6a2.4 2.4 0 0 0 0 4.8h9"/><circle cx="5.5" cy="8" r="1.5"/><circle cx="18.5" cy="19.2" r="1.5"/>',
+  grain:      '<ellipse cx="12" cy="12" rx="4.2" ry="7"/><path d="M12 5.6v12.8M8.5 9h7M8.2 12h7.6M8.5 15h7"/>',
+  dairy:      '<path d="M12 19.6a4 4 0 0 1-4-4c0-2.3 2.6-5.4 4-7.2 1.4 1.8 4 4.9 4 7.2a4 4 0 0 1-4 4z"/>',
+  soft:       '<path d="M18.6 6.6c1 4.6-1.6 8.6-5.8 9-2.1.2-3.8-.9-4.2-2.6 3.8.4 6.7-2.1 10-6.4z"/><path d="M6.4 18.4c2.6-4 5.6-6.6 9.6-8.4"/>',
+  metal:      '<path d="M8 6.6h8v11.2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 8 17.8z"/><ellipse cx="12" cy="6.6" rx="4" ry="1.6"/>',
+  poly:       '<rect x="6" y="7.6" width="12" height="8.8" rx="1.3"/><ellipse cx="6" cy="12" rx="1.9" ry="4.4"/>',
+  wood:       '<ellipse cx="12" cy="8" rx="6.2" ry="2.5"/><path d="M5.8 8v7c0 1.4 2.8 2.5 6.2 2.5s6.2-1.1 6.2-2.5V8"/>',
+  movers:     '<path d="M5 17.5l4.4-4.8 3.3 2.9 6.3-7"/><path d="M15.4 8.6h4v4"/>',
+  materials:  '<rect x="5" y="5" width="6" height="6" rx="1.4"/><rect x="13" y="5" width="6" height="6" rx="1.4"/><rect x="5" y="13" width="6" height="6" rx="1.4"/><rect x="13" y="13" width="6" height="6" rx="1.4"/>',
+  insights:   '<circle cx="12" cy="10.4" r="4.6"/><path d="M9.8 16.6h4.4M10.4 19h3.2"/>',
+  actions:    '<path d="M13.2 4.4L6.6 13h4l-1 6.6L16.2 11h-4z"/>',
+  news:       '<rect x="4.6" y="6.4" width="14.8" height="12" rx="1.8"/><path d="M7.4 9.6h5.2v4H7.4zM15 9.6h1.8M15 12.4h1.8M7.4 16h9.4"/>',
+  tips:       '<circle cx="12" cy="12" r="7.2"/><path d="M12 8.4v4.6"/><circle cx="12" cy="16" r=".9" fill="currentColor" stroke="none"/>',
+  products:   '<path d="M7.4 8h9.2l-1.3 10.4a1.5 1.5 0 0 1-1.5 1.3h-3.6a1.5 1.5 0 0 1-1.5-1.3z"/><rect x="6.4" y="5.8" width="11.2" height="2.2" rx=".9"/>'
 };
-function matIcon(m, cls) {
-  var kind = CAT_ICON[m.category] || "materials";
-  var grad = ICON_GRAD[kind] || "g-gold";
-  var g = MAT_GLYPH[m.key] || GLYPH[kind] || GLYPH.materials;
-  return '<svg class="ic ' + (cls || "") + '" viewBox="0 0 34 34" aria-hidden="true">' +
-    '<g filter="url(#f-drop)">' +
-    '<rect x="1.5" y="1.5" width="31" height="31" rx="9.5" fill="url(#' + grad + ')"/>' +
-    '<rect x="1.5" y="1.5" width="31" height="31" rx="9.5" fill="url(#g-gloss)"/>' +
-    '<rect x="2.6" y="2.6" width="28.8" height="28.8" rx="8.6" fill="none" stroke="#fff" stroke-opacity=".28"/>' +
-    "</g>" + g + "</svg>";
+var CAT_HEX = { "Grains & Oilseeds":"#D9A441", Dairy:"#4FB3C4", Softs:"#C77BB0",
+                Metals:"#D2703F", "Plastics & Textiles":"#8E86D6", "Paper & Wood":"#7FA96A" };
+
+function lineIcon(glyphKey, hex, cls) {
+  var g = LINE[glyphKey] || LINE.materials;
+  return '<svg class="ic ' + (cls || "") + '" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<rect x="0" y="0" width="24" height="24" rx="7" fill="' + hex + '" opacity=".13"/>' +
+    '<g fill="none" stroke="' + hex + '" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" ' +
+    'style="color:' + hex + '">' + g + "</g></svg>";
+}
+function paintSectionIcons() {
+  $$("[data-icon]").forEach(function (el) {
+    el.innerHTML = icon3d(el.dataset.icon);
+  });
 }
 
 /* ===================================================================
@@ -2149,6 +2235,13 @@ function renderProducts() {
       "</div>" +
       '<div class="mixbar">' + mix + "</div>" +
       '<div class="bom">' + rows + "</div>" +
+      '<div class="usedin"><span class="ul">Materials in this product</span>' +
+        c.ranked.map(function (x) {
+          var ic = x.inp.m ? matIcon(x.inp.m, "sm") : lineIcon(x.inp.icon || "materials", x.inp.hex, "sm");
+          return '<span class="uchip"' + (x.inp.note ? ' title="' + esc(x.inp.note) + '"' : "") + ">" +
+            ic + '<span class="un">' + x.inp.name + "</span>" +
+            '<span class="uw">' + x.share + "%</span></span>";
+        }).join("") + "</div>" +
       '<div class="foot">' +
         "<span>materials are <b>" + p.materialShare + "%</b> of ex-works cost</span>" +
         '<span>last 12 months <b class="' + dirCls(c.tot.yoy, .1) + '">' + (c.tot.yoy >= 0 ? "+" : "") + c.tot.yoy.toFixed(1) + "%</b></span>" +
@@ -2161,7 +2254,7 @@ function renderProducts() {
    SETTINGS
    =================================================================== */
 var prefs = {
-  theme: "dark", tspeed: 110, chart: 1,
+  theme: "dark", tspeed: 110, chart: 1, scroll: 0,
   hidden: {},        // material key -> true
   sections: {}       // export label -> false when hidden
 };
@@ -2176,6 +2269,7 @@ function loadPrefs() {
   } catch (e) { /* first run, or storage blocked */ }
   applyTheme();
   applyTicker();
+  applyScroll();
 }
 function savePrefs() {
   try { store.set("desk_prefs", JSON.stringify(prefs)); } catch (e) {}
@@ -2234,6 +2328,33 @@ function buildSettings() {
     };
   });
   $("#matCount").textContent = "· " + shown().length + " of " + MAT.length + " shown";
+}
+
+/* ===================================================================
+   AUTO SCROLL — walk the page for an unattended screen
+   =================================================================== */
+var roll = { t: null, dir: 1 };
+function stopRoll() { clearInterval(roll.t); roll.t = null; }
+function startRoll() {
+  stopRoll();
+  if (!prefs.scroll) return;
+  roll.t = setInterval(function () {
+    if (cast.on || document.hidden || $("#setPanel").classList.contains("on")) return;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    if (max < 40) return;
+    var step = window.innerHeight * 0.82;
+    var next = window.scrollY + step * roll.dir;
+    if (next >= max - 4) { next = max; roll.dir = -1; }
+    else if (next <= 0)  { next = 0;   roll.dir = 1; }
+    window.scrollTo({ top: next, behavior: "smooth" });
+  }, prefs.scroll * 1000);
+}
+function applyScroll() {
+  $$("#scrollSpeed button").forEach(function (b) {
+    b.setAttribute("aria-pressed", +b.dataset.s === prefs.scroll);
+  });
+  startRoll();
 }
 
 /* ===================================================================
@@ -2405,6 +2526,18 @@ function boot() {
   });
   $$("#chartsize button").forEach(function (b) {
     b.onclick = function () { prefs.chart = +b.dataset.s; applyTicker(); savePrefs(); renderAll(); };
+  });
+  $$("#scrollSpeed button").forEach(function (b) {
+    b.onclick = function () { prefs.scroll = +b.dataset.s; applyScroll(); savePrefs(); };
+  });
+  // any manual scroll or key pauses the walk for a minute
+  ["wheel", "touchstart", "keydown"].forEach(function (ev) {
+    window.addEventListener(ev, function () {
+      if (!prefs.scroll || !roll.t) return;
+      stopRoll();
+      clearTimeout(roll.resume);
+      roll.resume = setTimeout(startRoll, 60000);
+    }, { passive: true });
   });
   $("#matAll").onclick = function () { prefs.hidden = {}; savePrefs(); renderAll(); };
   $("#matNone").onclick = function () {
