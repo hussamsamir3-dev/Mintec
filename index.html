@@ -538,7 +538,7 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 .prod .indirect b{color:var(--text2)}
 
 /* cast: products panel */
-.cast-prods{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1vw}
+.cast-prods{display:grid;grid-template-columns:repeat(5,1fr);gap:.9vw}
 .cprod{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;padding:1.6vh 1.1vw;
   text-align:center}
 .cprod > svg{flex:0 0 auto;filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))}
@@ -652,6 +652,50 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 @media (max-width:1500px){
   .cast-tiles{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,minmax(0,1fr))}
 }
+
+/* raw milk index card */
+.prod.rawmilk{border-color:var(--rule2);
+  background:linear-gradient(160deg,rgba(79,179,196,.10),var(--ink2) 55%)}
+html[data-theme="light"] .prod.rawmilk{background:linear-gradient(160deg,rgba(31,127,146,.09),#fff 55%)}
+.rmprice{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:14px 0 2px}
+.rmprice .big{font-size:26px;font-weight:600;letter-spacing:-.025em}
+.rmprice .big2{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.rmprice .cur{color:var(--muted);font-size:11.5px}
+.rmprice .arrow{color:var(--muted);font-size:16px;margin:0 2px}
+.alt{color:var(--muted);font-size:11px;margin:-2px 0 2px;letter-spacing:.01em}
+
+/* crush build-up */
+.prod.meal{background:linear-gradient(160deg,rgba(217,164,65,.10),var(--ink2) 55%)}
+html[data-theme="light"] .prod.meal{background:linear-gradient(160deg,rgba(176,124,18,.09),#fff 55%)}
+.crush{margin-top:14px;display:grid;gap:2px}
+.cr{display:grid;grid-template-columns:1fr 66px 1.15fr;align-items:baseline;gap:10px;
+  padding:5px 0;font-size:12.5px;border-bottom:1px dashed var(--rule)}
+.cr .cn{color:var(--text2)}
+.cr .cv{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.cr .cq{color:var(--muted);font-size:11px}
+.cr.minus .cv{color:var(--cool)}
+.cr.plus .cv,.cr.start .cv{color:var(--text)}
+.cr.total{border-bottom:none;border-top:2px solid var(--rule2);margin-top:4px;padding-top:8px}
+.cr.total .cn{color:var(--text);font-weight:600}
+.cr.total .cv{font-size:15px}
+.ic.lg{width:46px;height:46px}
+
+/* cost model inputs */
+.mgroup{border:1px solid var(--rule);border-radius:10px;padding:12px 13px;margin-bottom:11px;
+  background:var(--ink)}
+.mtitle{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+  font-weight:700;margin-bottom:8px}
+.mrow{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:13px}
+.mrow + .mrow{border-top:1px solid var(--rule)}
+.mrow > span:first-child{flex:1 1 auto;color:var(--text2)}
+.mrow input{width:78px;flex:0 0 auto;background:var(--ink2);border:1px solid var(--rule2);
+  border-radius:7px;padding:6px 9px;color:var(--text);font:inherit;font-size:13px;
+  text-align:right;font-variant-numeric:tabular-nums}
+.mrow input:focus{border-color:var(--gold);outline:none}
+.mrow em{font-style:normal;color:var(--muted);font-size:11.5px;width:34px}
+.mnote{margin-top:9px;padding-top:9px;border-top:1px solid var(--rule);
+  color:var(--muted);font-size:11.5px;line-height:1.5}
+.mnote b{color:var(--text)}
 
 </style>
 </head>
@@ -824,7 +868,12 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
     <button data-t="light" aria-pressed="false">Light</button>
   </div>
 
-  <div class="setrow" style="margin-top:14px"><span>Ticker speed</span>
+  <div class="setrow" style="margin-top:14px"><span>Corn &amp; soya units<br><span style="color:var(--muted);font-size:11.5px">quoted in bushels</span></span>
+    <div class="mini" id="grainUnit">
+      <button data-u="bu" aria-pressed="true">&cent;/bu</button>
+      <button data-u="mt" aria-pressed="false">USD/t</button>
+    </div></div>
+  <div class="setrow"><span>Ticker speed</span>
     <div class="mini" id="tspeed">
       <button data-s="170" aria-pressed="false">Slow</button>
       <button data-s="110" aria-pressed="true">Normal</button>
@@ -852,6 +901,38 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
     <button id="matAll">Select all</button><button id="matNone">Clear all</button>
   </div>
   <div class="swrap" id="matToggles"></div>
+
+  <h4>Cost model</h4>
+  <p style="color:var(--text2);font-size:12.5px;margin:0 0 12px;line-height:1.55">Every assumption behind the raw milk and soybean meal indices. Change one and the products recalculate.</p>
+
+  <div class="mgroup"><div class="mtitle">Ration, kg of feed per kg of milk</div>
+    <label class="mrow"><span>Corn</span><input type="number" step="1" data-m="cornShare"><em>%</em></label>
+    <label class="mrow"><span>Soybean meal</span><input type="number" step="1" data-m="soyaShare"><em>%</em></label>
+    <label class="mrow"><span>Alfalfa</span><input type="number" step="1" data-m="alfalfaShare"><em>%</em></label>
+    <label class="mrow"><span>Alfalfa price</span><input type="number" step="0.25" data-m="alfalfaPrice"><em>EGP</em></label>
+    <div class="mnote" id="rationNote"></div>
+  </div>
+
+  <div class="mgroup"><div class="mtitle">Raw milk, EGP per kg</div>
+    <label class="mrow"><span>Fixed farm cost</span><input type="number" step="0.1" data-m="fixed"></label>
+    <label class="mrow"><span>Transportation</span><input type="number" step="0.1" data-m="transport"></label>
+    <label class="mrow"><span>Summer premium</span><input type="number" step="0.5" data-m="summerPct"><em>%</em></label>
+    <label class="mrow"><span>Exchange rate</span><input type="number" step="0.1" data-m="fx"><em>EGP/$</em></label>
+    <div class="mrow"><span>Apply premium</span>
+      <div class="mini" id="summerMode">
+        <button data-v="auto" aria-pressed="true">Auto</button>
+        <button data-v="on" aria-pressed="false">Always</button>
+        <button data-v="off" aria-pressed="false">Never</button>
+      </div></div>
+  </div>
+
+  <div class="mgroup"><div class="mtitle">Soybean crush, USD per bushel</div>
+    <label class="mrow"><span>Bushels per tonne of meal</span><input type="number" step="0.1" data-m="buPerMT"></label>
+    <label class="mrow"><span>Oil yield</span><input type="number" step="0.5" data-m="oilLb"><em>lb/bu</em></label>
+    <label class="mrow"><span>Hull credit</span><input type="number" step="0.05" data-m="hullCredit"></label>
+    <label class="mrow"><span>Crush cost and margin</span><input type="number" step="0.05" data-m="crushCost"></label>
+  </div>
+  <div class="mini" style="margin-bottom:6px"><button id="modelReset">Reset to defaults</button></div>
 
   <h4>Export</h4>
   <p style="color:var(--text2);font-size:12.5px;margin:0 0 10px;line-height:1.55">One PNG per section, sized for email. Charts and colours come out exactly as you see them, in whichever theme is on.</p>
@@ -1349,6 +1430,7 @@ function renderCards() {
       '<div class="px"><span class="big">' + num(m.spot * f) + "</span>" +
         '<span class="un">' + unitLabel(m) + "</span>" +
         '<span class="chg ' + dirCls(m.mom) + '">' + arrow(m.mom) + pct(m.mom) + "</span></div>" +
+      altUnit(m) +
       '<div class="spark">' + sparkline(m, 300, Math.round(64 * prefs.chart)) + "</div>" +
       '<div class="rangebar"><div class="fillr"></div><div class="pin" style="left:calc(' + (m.pos * 100).toFixed(1) + '% - 1px)"></div></div>' +
       '<div class="rlab"><span>' + num(m.lo * f) + "</span><span>12-month range</span><span>" + num(m.hi * f) + "</span></div>" +
@@ -1359,6 +1441,19 @@ function renderCards() {
       "</div></button>";
   }).join("");
   $$("#cards .card").forEach(function (b) { b.onclick = function () { openDrawer(b.dataset.k); }; });
+}
+
+/* Bushel contracts carry both readings, so nobody has to convert in their head.
+   Corn is a 56 lb bushel, soya a 60 lb bushel — that is where the factors come from. */
+function altUnit(m) {
+  if (!BUSHEL[m.unit]) return "";
+  var cur = state.egp ? state.fx : 1;
+  var perTonne = m.spot * BUSHEL[m.unit] / 100 * cur;
+  var perBu = m.spot * cur;
+  var txt = state.mt
+    ? num(perBu) + " " + (state.egp ? "EGP¢" : "US¢") + " / bushel as quoted"
+    : num(perTonne) + " " + (state.egp ? "EGP" : "USD") + " / tonne equivalent";
+  return '<div class="alt">' + txt + "</div>";
 }
 
 function esc(s) { return String(s || "").replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
@@ -1469,7 +1564,10 @@ function openDrawer(key) {
   }).join("");
 
   var kv = [
-    ["Latest price", num(m.spot * f) + " <span style='color:var(--muted);font-size:12px'>" + u + "</span>"],
+    ["Latest price", num(m.spot * f) + " <span style='color:var(--muted);font-size:12px'>" + u + "</span>" +
+      (BUSHEL[m.unit] ? "<div style='color:var(--muted);font-size:11.5px;font-weight:400;margin-top:3px'>" +
+        (state.mt ? num(m.spot * (state.egp ? state.fx : 1)) + " ¢/bu as quoted"
+                  : num(m.spot * BUSHEL[m.unit] / 100 * (state.egp ? state.fx : 1)) + " per tonne") + "</div>" : "")],
     ["vs last " + (m.freq === "Weekly" ? "week" : "month"), "<span class='" + dirCls(m.mom) + "'>" + pct(m.mom) + "</span>"],
     ["vs last year", "<span class='" + dirCls(m.yoy) + "'>" + pct(m.yoy) + "</span>"],
     ["Next 12 months", "<span class='" + dirCls(m.f12) + "'>" + pct(m.f12) + "</span>"],
@@ -1490,6 +1588,9 @@ function openDrawer(key) {
     '<div class="icard" style="--cc:' + c.hex + ';margin-top:16px"><h4>Read <span class="tagb ' + ins.tagc + '">' + ins.tag + '</span></h4><p>' + ins.text + "</p></div>" +
     '<h3 style="font-family:var(--f-dsp);font-size:17px;margin:22px 0 8px;font-weight:600">Contract</h3>' +
     '<p style="color:var(--text2);font-size:13px;line-height:1.6;margin:0">' + esc(m.spec || "No specification supplied.") + "</p>" +
+    (BUSHEL[m.spec !== undefined ? m.unit : m.unit] ? '<p style="color:var(--muted);font-size:12.5px;margin-top:8px">' +
+      "Quoted per " + esc(m.unit) + ". A tonne is " + BUSHEL[m.unit].toFixed(3) +
+      " bushels at that contract weight, which is the factor used for the USD/tonne view.</p>" : "") +
     '<p style="color:var(--muted);font-size:12.5px;margin-top:8px">Mintec code ' + esc(m.code || "—") +
       " · quoted in " + esc(m.currency) + " per " + esc(m.unit) +
       (m.origin && m.origin !== "None" ? " · origin " + esc(m.origin) : "") +
@@ -2078,6 +2179,16 @@ function prodIcon(kind, size) {
       '<path d="M8 30.5L26 20l30 8.8-18 10.5z" fill="url(#p-shine)" opacity=".45"/>' +
       '<path d="M20 24.5l29.5 8.7" stroke="#fff" stroke-width="1.4" opacity=".45"/>' +
       '<path d="M23 34.5c3.5-2 7-2 10.5 0" stroke="#8A6212" stroke-width="1.6" fill="none" opacity=".4" stroke-linecap="round"/>',
+    milk:
+      '<ellipse cx="32" cy="56" rx="15" ry="3.2" fill="#000" opacity=".22"/>' +
+      '<path d="M18 22h28v29a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4z" fill="#F2F7FA"/>' +
+      '<path d="M18 22l14-13 14 13z" fill="#D9E7EF"/>' +
+      '<path d="M18 22l14-13 14 13z" fill="url(#p-shine)" opacity=".5"/>' +
+      '<path d="M18 22h28v29a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4z" fill="url(#p-shine)" opacity=".35"/>' +
+      '<rect x="22.5" y="30" width="19" height="16" rx="2.2" fill="#1F7F92" opacity=".14"/>' +
+      '<path d="M32 33.5c2.6 3.3 4 5.3 4 7a4 4 0 1 1-8 0c0-1.7 1.4-3.7 4-7z" fill="#1F7F92" opacity=".65"/>' +
+      '<rect x="27" y="8" width="10" height="4" rx="1.4" fill="#1F7F92"/>' +
+      '<ellipse cx="23" cy="34" rx="1.9" ry="6" fill="#fff" opacity=".55"/>',
     cheese:
       '<ellipse cx="32" cy="55.5" rx="18" ry="3.4" fill="#000" opacity=".22"/>' +
       '<path d="M13 24h38v25a5 5 0 0 1-5 5H18a5 5 0 0 1-5-5z" fill="url(#p-brine)"/>' +
@@ -2099,13 +2210,91 @@ function prodIcon(kind, size) {
    directly. Each one is indexed off tracked series, and every card
    says which, so nobody mistakes a proxy for a quoted price.
    =================================================================== */
+var LB_PER_MT = 2204.6226;
+
+/* Soybean meal is not quoted, so it is crushed out of the bean:
+     meal $/bu = bean $/bu − oil credit − hull credit + crush cost and margin
+     meal $/MT = meal $/bu × bushels of beans behind a tonne of meal
+   The oil credit uses palm oil as the vegetable-oil reference, because that is
+   the oil this subscription quotes. Every figure is editable in settings. */
+function mealPrice(horizon) {
+  var soya = MAT.filter(function (m) { return m.key === "Soya"; })[0];
+  var oil  = MAT.filter(function (m) { return m.key === "Palm Oil"; })[0];
+  if (!soya) return null;
+  var M = prefs.model;
+  var mv = function (m, h) {
+    if (!m) return 0;
+    if (h === "spot") return m.spot;
+    return m[h] === null || m[h] === undefined ? m.spot : m.spot * (1 + m[h] / 100);
+  };
+  var beanBu = mv(soya, horizon) / 100;                    // US cents/bu -> USD/bu
+  var oilMT  = oil ? mv(oil, horizon) : 0;
+  var oilCredit = oilMT * (M.oilLb / LB_PER_MT);           // USD/bu returned by the oil
+  var mealBu = beanBu - oilCredit - M.hullCredit + M.crushCost;
+  return { bean: beanBu, oilCredit: oilCredit, hull: M.hullCredit, crush: M.crushCost,
+           perBu: mealBu, perMT: mealBu * M.buPerMT, oilMT: oilMT };
+}
+
+function isSummer() {
+  var m = prefs.model;
+  if (m.summerMode === "on") return true;
+  if (m.summerMode === "off") return false;
+  var mo = new Date().getMonth();                          // Jun–Sep in Egypt
+  return mo >= 5 && mo <= 8;
+}
+
+var RAWMILK = { of: { Corn: 50, Soya: 10 } };
+// The variable half is 60% of the gate price, so the fixed 7.6 EGP implies
+// a base of 7.6 / 0.40. Everything downstream is derived from that, which
+// keeps the arithmetic honest instead of assuming a price.
+/* Raw milk is built as a ration: so many kg of each feed behind 1 kg of milk,
+   each priced in EGP, then fixed farm cost, the summer premium and haulage.
+   Corn and meal come from the market; alfalfa is a price you set, because
+   Mintec does not quote it. */
+function feedPrices() {
+  var M = prefs.model, out = {};
+  var corn = MAT.filter(function (m) { return m.key === "Corn"; })[0];
+  if (corn) {
+    var perMT = corn.spot * (BUSHEL[corn.unit] || 39.3683) / 100;   // US cents/bu -> USD/tonne
+    out.corn = { egpKg: perMT / 1000 * M.fx, usdMT: perMT, m: corn };
+  }
+  var meal = mealPrice("spot");
+  if (meal) out.meal = { egpKg: meal.perMT / 1000 * M.fx, usdMT: meal.perMT };
+  out.alfalfa = { egpKg: M.alfalfaPrice, usdMT: M.alfalfaPrice / M.fx * 1000 };
+  return out;
+}
+
+function rawMilkPrice(horizon) {
+  var M = prefs.model;
+  var fp = feedPrices();
+  var move = function (m, h) {
+    if (h === "spot" || !m || m[h] === null || m[h] === undefined) return 1;
+    return 1 + m[h] / 100;
+  };
+  var corn = MAT.filter(function (m) { return m.key === "Corn"; })[0];
+
+  var mealMove = 1;
+  if (horizon !== "spot") {
+    var a = mealPrice("spot"), b = mealPrice(horizon);
+    if (a && b && a.perMT) mealMove = b.perMT / a.perMT;
+  }
+
+  var cKg = (fp.corn ? fp.corn.egpKg : 0) * move(corn, horizon) * M.cornShare / 100;
+  var sKg = (fp.meal ? fp.meal.egpKg : 0) * mealMove * M.soyaShare / 100;
+  var aKg = M.alfalfaPrice * M.alfalfaShare / 100;          // set by hand, so it holds
+  var ration = cKg + sKg + aKg;
+  var gate = ration + M.fixed;
+  var summer = isSummer() ? gate * M.summerPct / 100 : 0;
+  return { egp: gate + summer + M.transport, gate: gate, ration: ration,
+           corn: cKg, soya: sKg, alfalfa: aKg, fixed: M.fixed,
+           transport: M.transport, summer: summer, summerOn: isSummer(), fp: fp };
+}
+
 var DERIVED = {
-  "Raw milk": { hex: "#4FB3C4", icon: "dairy",
-    of: { Corn: 50, Soya: 10 },
-    note: "indexed off feed — 50% corn, 10% soya meal; the balance is farm cost that Mintec does not quote" },
-  "Milk":     { hex: "#4FB3C4", icon: "dairy", sameAs: "Raw milk",
-    of: { Corn: 50, Soya: 10 },
-    note: "same feed index as raw milk" },
+  "Raw milk": { hex: "#4FB3C4", icon: "dairy", priced: true, rawmilk: true,
+    note: "delivered price built from feed, fixed farm cost, haulage and the summer premium" },
+  "Soybean meal": { hex: "#D9A441", icon: "grain", priced: true, meal: true,
+    note: "crushed out of the soybean board price, net of the oil and hull credits" },
   "MPC":      { hex: "#4FB3C4", icon: "dairy", proxy: "SMP",
     note: "milk protein concentrate, tracked against skimmed milk powder" },
   "HDPE":     { hex: "#8E86D6", icon: "poly", proxy: "LDPE",
@@ -2123,6 +2312,21 @@ function resolveInput(key) {
   var d = DERIVED[key];
   if (!d) return null;
 
+  if (d.rawmilk) {
+    var n = rawMilkPrice("spot"), f12 = rawMilkPrice("f12"), y = rawMilkPrice("yoy"), mo = rawMilkPrice("mom");
+    if (!n.egp) return null;
+    return { name: key, hex: d.hex, icon: d.icon, note: d.note, real: false, priced: true, m: null,
+             mom: (mo.egp / n.egp - 1) * 100, yoy: (n.egp / y.egp - 1) * 100,
+             f12: (f12.egp / n.egp - 1) * 100 };
+  }
+  if (d.meal) {
+    var a = mealPrice("spot"), b = mealPrice("f12"), c2 = mealPrice("yoy"), d2 = mealPrice("mom");
+    if (!a || !a.perMT) return null;
+    return { name: key, hex: d.hex, icon: d.icon, note: d.note, real: false, priced: true, m: null,
+             mom: d2 ? (d2.perMT / a.perMT - 1) * 100 : 0,
+             yoy: c2 ? (a.perMT / c2.perMT - 1) * 100 : 0,
+             f12: b ? (b.perMT / a.perMT - 1) * 100 : 0 };
+  }
   if (d.proxy) {
     var pm = MAT.filter(function (m) { return m.key === d.proxy; })[0];
     if (!pm || prefs.hidden[d.proxy]) return null;
@@ -2131,9 +2335,9 @@ function resolveInput(key) {
              note: d.note, real: false, m: pm };
   }
 
-  // a blend of tracked series; the unindexed remainder is treated as flat
+  // a blend of tracked series; the unindexed remainder is genuinely fixed
   var out = { name: key, hex: d.hex, icon: d.icon, mom: 0, yoy: 0, f12: 0,
-              note: d.note, real: false, m: null }, any = false;
+              note: d.note, real: false, priced: !!d.priced, m: null }, any = false;
   Object.keys(d.of).forEach(function (k) {
     var m = MAT.filter(function (x) { return x.key === k; })[0];
     if (!m || prefs.hidden[k]) return;
@@ -2154,25 +2358,30 @@ function resolveInput(key) {
    =================================================================== */
 var PRODUCTS = [
   { key: "yoghurt", name: "Set yoghurt", icon: "yoghurt", colour: "#4FB3C4",
-    spec: "1 kg recombined, sweetened · PS cup, foil-lidded",
-    materialShare: 62,
-    bom: { SMP: 38, WMP: 16, Butter: 8, Sugar: 9, PS: 15, LDPE: 6, Wood: 8 },
-    indirect: ["Corn", "Soya"] },
+    spec: "1 kg set, sweetened · raw milk base, PS cup",
+    materialShare: 64,
+    bom: { "Raw milk": 56, SMP: 13, Sugar: 8, PS: 17, LDPE: 6 },
+    indirect: [] },
+  { key: "milk", name: "Packed milk", icon: "milk", colour: "#8FD0DC",
+    spec: "1 L UHT · raw milk, laminated pack",
+    materialShare: 71,
+    bom: { "Raw milk": 72, LDPE: 12, Aluminium: 10, SMP: 6 },
+    indirect: [] },
+  { key: "cheese", name: "White cheese", icon: "cheese", colour: "#9FC4D4",
+    spec: "Feta style in brine · raw milk and MPC base, HDPE pack",
+    materialShare: 68,
+    bom: { "Raw milk": 40, MPC: 18, HDPE: 16, SMP: 14, Butter: 12 },
+    indirect: [] },
   { key: "juice", name: "Orange juice", icon: "juice", colour: "#F58C1F",
     spec: "1 L nectar from concentrate · PET bottle",
     materialShare: 55,
-    bom: { Orange: 34, Sugar: 22, PET: 26, LDPE: 4, Wood: 9, Aluminium: 5 },
+    bom: { Orange: 37, Sugar: 24, PET: 29, LDPE: 5, Aluminium: 5 },
     indirect: [] },
   { key: "butter", name: "Butter", icon: "butter", colour: "#F2CE5F",
-    spec: "200 g block · laminate wrap, shipper",
+    spec: "200 g block · laminate wrap",
     materialShare: 78,
-    bom: { Butter: 82, LDPE: 7, Wood: 6, Aluminium: 5 },
-    indirect: ["Corn", "Soya"] },
-  { key: "cheese", name: "White cheese", icon: "cheese", colour: "#9FC4D4",
-    spec: "Feta style in brine · MPC and raw milk base, HDPE pack",
-    materialShare: 68,
-    bom: { MPC: 22, "Raw milk": 24, Butter: 14, Milk: 12, HDPE: 16, SMP: 12 },
-    indirect: [] }
+    bom: { Butter: 87, LDPE: 8, Aluminium: 5 },
+    indirect: ["Corn", "Soya"] }
 ];
 
 function productCost(p) {
@@ -2199,8 +2408,112 @@ function productCost(p) {
   return { tot: tot, by: by, ranked: ranked, missing: missing, covered: covered };
 }
 
+function mealCard() {
+  var a = mealPrice("spot"); if (!a) return "";
+  var f = mealPrice("f12");
+  var chg = f && a.perMT ? (f.perMT / a.perMT - 1) * 100 : null;
+  var soya = MAT.filter(function (m) { return m.key === "Soya"; })[0];
+  var rows = [
+    ["Soybeans, board price", "+" + a.bean.toFixed(2), "USD / bu", "start"],
+    ["less oil credit", "\u2212" + a.oilCredit.toFixed(2), prefs.model.oilLb + " lb at " + num(a.oilMT, 0) + " USD/t", "minus"],
+    ["less hull credit", "\u2212" + a.hull.toFixed(2), "recovered on hulls", "minus"],
+    ["plus crush and margin", "+" + a.crush.toFixed(2), "crusher cost and return", "plus"]
+  ];
+  return '<div class="prod meal" style="--pc:#D9A441">' +
+    '<div class="ph">' + lineIcon("Soya", "#D9A441", "lg") +
+      '<div><h3>Soybean meal</h3><div class="spec">crushed from the board price · ' +
+        prefs.model.buPerMT + " bushels behind a tonne of meal</div></div>" +
+      '<div class="hero"><div class="n ' + dirCls(chg, .1) + '">' +
+        (chg === null ? "—" : (chg >= 0 ? "+" : "") + chg.toFixed(1) + "%") +
+        '</div><div class="l">next 12 months</div></div></div>' +
+    '<div class="rmprice"><span class="big">' + num(a.perMT, 0) + '</span><span class="cur">USD / tonne meal</span>' +
+      (f ? '<span class="arrow">&rarr;</span><span class="big2 ' + dirCls(chg, .1) + '">' + num(f.perMT, 0) +
+           '</span><span class="cur">by ' + (soya && soya.f12d ? fmtD(soya.f12d) : "next year") + "</span>" : "") +
+    "</div>" +
+    '<div class="crush">' + rows.map(function (r) {
+      return '<div class="cr ' + r[3] + '"><span class="cn">' + r[0] + '</span>' +
+             '<span class="cv">' + r[1] + '</span><span class="cq">' + r[2] + "</span></div>";
+    }).join("") +
+      '<div class="cr total"><span class="cn">Meal raw-material cost</span>' +
+      '<span class="cv">' + a.perBu.toFixed(2) + '</span><span class="cq">USD / bu \u00d7 ' +
+      prefs.model.buPerMT + " = " + num(a.perMT, 0) + " USD/t</span></div></div>" +
+    '<div class="indirect">Ignoring the oil credit entirely would read ' +
+      num(a.bean * prefs.model.buPerMT, 0) + ' USD/t, which overstates the cost — the crusher sells that oil. ' +
+      'Palm oil stands in as the vegetable-oil reference. Every figure here is editable in settings.</div></div>';
+}
+
+function rawMilkCard() {
+  var corn = MAT.filter(function (m) { return m.key === "Corn"; })[0];
+  if (!corn) return "";
+  var M = prefs.model;
+  var now = rawMilkPrice("spot"), fwd = rawMilkPrice("f12"), back = rawMilkPrice("yoy");
+  var chg = (fwd.egp / now.egp - 1) * 100;
+  var yoy = back.egp ? (now.egp / back.egp - 1) * 100 : 0;
+  var meal = mealPrice("spot");
+  var mealFwd = mealPrice("f12");
+  var mealChg = meal && mealFwd && meal.perMT ? (mealFwd.perMT / meal.perMT - 1) * 100 : null;
+
+  var fp = now.fp;
+  var parts = [
+    { n: "Corn", v: now.corn, hex: CAT_HEX["Grains & Oilseeds"], chg: corn.f12,
+      kg: M.cornShare, unit: fp.corn ? fp.corn.egpKg : 0 },
+    { n: "Soybean meal", v: now.soya, hex: "#C79A3A", chg: mealChg,
+      kg: M.soyaShare, unit: fp.meal ? fp.meal.egpKg : 0 },
+    { n: "Alfalfa", v: now.alfalfa, hex: "#7FA96A", chg: null,
+      kg: M.alfalfaShare, unit: M.alfalfaPrice, setByHand: true },
+    { n: "Fixed farm cost", v: now.fixed, hex: "#7E93AC", chg: null },
+    { n: "Transportation", v: now.transport, hex: "#5F7288", chg: null }
+  ];
+  if (now.summer > 0) parts.push({ n: "Summer premium " + M.summerPct + "%", v: now.summer, hex: "#DFA93A", chg: null });
+  parts = parts.filter(function (x) { return x.v > 0.005; });
+
+  return '<div class="prod rawmilk" style="--pc:#4FB3C4">' +
+    '<div class="ph">' + prodIcon("milk", 56) +
+      '<div><h3>Raw milk index</h3><div class="spec">delivered, EGP per kg' +
+        (now.summerOn ? " · summer premium applied" : " · winter, no premium") +
+        '</div></div>' +
+      '<div class="hero"><div class="n ' + dirCls(chg, .1) + '">' + (chg >= 0 ? "+" : "") + chg.toFixed(1) +
+        '%</div><div class="l">next 12 months</div></div></div>' +
+    '<div class="rmprice"><span class="big">' + now.egp.toFixed(2) + '</span><span class="cur">EGP / kg now</span>' +
+      '<span class="arrow">&rarr;</span><span class="big2 ' + dirCls(chg, .1) + '">' + fwd.egp.toFixed(2) +
+      '</span><span class="cur">by ' + (corn.f12d ? fmtD(corn.f12d) : "next year") + "</span></div>" +
+    '<div class="mixbar">' + parts.map(function (x) {
+      return '<i style="width:' + (x.v / now.egp * 100).toFixed(1) + "%;background:" + x.hex +
+             (x.chg === null || x.chg === undefined ? ";opacity:.45" : "") + '"></i>';
+    }).join("") + "</div>" +
+    '<div class="bom">' + parts.map(function (x) {
+      var moves = x.chg !== null && x.chg !== undefined;
+      var sub = x.kg ? '<em style="font-style:normal;color:var(--muted)"> ' + (x.kg / 100).toFixed(2) +
+        " kg @ " + x.unit.toFixed(2) + (x.setByHand ? " set" : "") + "</em>" : "";
+      return '<div class="r"><span class="d" style="background:' + x.hex + (moves ? "" : ";opacity:.45") + '"></span>' +
+        '<span class="n">' + x.n + sub + "</span>" +
+        '<span class="w">' + x.v.toFixed(2) + " EGP</span>" +
+        '<span class="c ' + (moves ? dirCls(x.chg) : "fl") + '">' + (moves ? pct(x.chg) : "fixed") + "</span></div>";
+    }).join("") + "</div>" +
+    '<div class="foot">' +
+      "<span>ration <b>" + now.ration.toFixed(2) + "</b> EGP</span>" +
+      "<span>gate <b>" + now.gate.toFixed(2) + "</b> EGP</span>" +
+      "<span>delivered <b>" + now.egp.toFixed(2) + "</b> EGP</span>" +
+      "<span>last 12 months <b class='" + dirCls(yoy, .1) + "'>" + (yoy >= 0 ? "+" : "") + yoy.toFixed(1) + "%</b></span>" +
+    "</div>" +
+    '<div class="indirect">Ration is ' + ((M.cornShare + M.soyaShare + M.alfalfaShare) / 100).toFixed(2) +
+      ' kg of feed behind every kg of milk: ' + (M.cornShare / 100).toFixed(2) + ' corn, ' +
+      (M.soyaShare / 100).toFixed(2) + ' soybean meal, ' + (M.alfalfaShare / 100).toFixed(2) +
+      ' alfalfa. Corn and meal are priced off the market at ' + M.fx +
+      ' EGP per USD; alfalfa is the price you set, so it holds flat. All adjustable in settings.</div></div>';
+}
+
+function paintRationNote() {
+  var note = $("#rationNote");
+  if (!note || !MAT.length) return;
+  var M = prefs.model, tot = M.cornShare + M.soyaShare + M.alfalfaShare;
+  var rm = rawMilkPrice("spot");
+  note.innerHTML = (tot / 100).toFixed(2) + " kg of feed per kg of milk, costing <b>" +
+    rm.ration.toFixed(2) + " EGP</b>. Delivered price <b>" + rm.egp.toFixed(2) + " EGP/kg</b>.";
+}
+
 function renderProducts() {
-  $("#prods").innerHTML = PRODUCTS.map(function (p) {
+  $("#prods").innerHTML = rawMilkCard() + mealCard() + PRODUCTS.map(function (p) {
     var c = productCost(p);
     if (!c.ranked.length) {
       return '<div class="prod" style="--pc:' + p.colour + '"><div class="ph">' +
@@ -2255,6 +2568,21 @@ function renderProducts() {
    =================================================================== */
 var prefs = {
   theme: "dark", tspeed: 110, chart: 1, scroll: 0,
+  model: {
+    fixed: 7.6,          // EGP/kg of farm cost that does not move with feed
+    transport: 1.2,      // EGP/kg collection and haulage
+    summerPct: 3,        // summer premium on the gate price
+    summerMode: "auto",  // auto | on | off
+    cornShare: 50,       // kg of each feed behind 1 kg of milk
+    soyaShare: 10,
+    alfalfaShare: 40,
+    alfalfaPrice: 14.75, // EGP/kg, set by hand — Mintec does not quote alfalfa
+    fx: 63.4,            // EGP per USD, used to price the ration
+    buPerMT: 50.1,       // bushels of beans behind one tonne of meal
+    oilLb: 11,           // lb of oil per bushel crushed
+    hullCredit: 0.25,    // USD/bu recovered on hulls
+    crushCost: 1.35      // USD/bu of crush cost plus crusher margin
+  },
   hidden: {},        // material key -> true
   sections: {}       // export label -> false when hidden
 };
@@ -2264,7 +2592,13 @@ function loadPrefs() {
     var raw = store.get("desk_prefs");
     if (raw) {
       var p = JSON.parse(raw);
-      Object.keys(p).forEach(function (k) { prefs[k] = p[k]; });
+      Object.keys(p).forEach(function (k) {
+        if (k === "model" && p.model) {
+          Object.keys(p.model).forEach(function (mk) {
+            if (mk in prefs.model) prefs.model[mk] = p.model[mk];
+          });
+        } else if (k !== "model") { prefs[k] = p[k]; }
+      });
     }
   } catch (e) { /* first run, or storage blocked */ }
   applyTheme();
@@ -2475,16 +2809,28 @@ function renderAll() {
 
   paintSectionIcons();
   renderFan(); renderStrip(); renderMovers(); renderCards(); renderInsights();
-  renderRecs(); renderTips(); renderProducts(); renderMTicker(); buildSettings(); applySections();
+  renderRecs(); renderTips(); renderProducts(); paintRationNote(); renderMTicker(); buildSettings(); applySections();
   if (cast.on) buildScenes();
 }
 
 function boot() {
-  $("#btnUnits").onclick = function () {
-    state.mt = !state.mt; this.setAttribute("aria-pressed", state.mt);
-    this.textContent = state.mt ? "Native units" : "USD/tonne";
-    this.classList.toggle("pri", state.mt); renderAll();
-  };
+  function paintUnitBtn() {
+    var b = $("#btnUnits");
+    b.textContent = state.mt ? "Grains: USD / tonne" : "Grains: ¢ / bushel";
+    b.setAttribute("aria-pressed", state.mt);
+    b.classList.toggle("pri", state.mt);
+    b.title = state.mt
+      ? "Corn and soya converted to USD per tonne. Click for the quoted cents per bushel."
+      : "Corn and soya as quoted, in US cents per bushel. Click to convert to USD per tonne.";
+    $$("#grainUnit button").forEach(function (x) {
+      x.setAttribute("aria-pressed", (x.dataset.u === "mt") === state.mt);
+    });
+  }
+  $("#btnUnits").onclick = function () { state.mt = !state.mt; paintUnitBtn(); renderAll(); };
+  $$("#grainUnit button").forEach(function (b) {
+    b.onclick = function () { state.mt = b.dataset.u === "mt"; paintUnitBtn(); renderAll(); };
+  });
+  paintUnitBtn();
   $("#btnEgp").onclick = function () {
     if (!state.egp) {
       var r = prompt("Exchange rate, EGP per USD.\nThis is a rate you set — the dashboard does not fetch live FX.", state.fx);
@@ -2539,6 +2885,35 @@ function boot() {
       roll.resume = setTimeout(startRoll, 60000);
     }, { passive: true });
   });
+  // ── cost model inputs
+  var DEFAULT_MODEL = JSON.parse(JSON.stringify(prefs.model));
+  function paintModel() {
+    $$("#setPanel input[data-m]").forEach(function (i) { i.value = prefs.model[i.dataset.m]; });
+    paintRationNote();
+    $$("#summerMode button").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.dataset.v === prefs.model.summerMode);
+    });
+  }
+  $$("#setPanel input[data-m]").forEach(function (i) {
+    i.onchange = function () {
+      var v = parseFloat(this.value);
+      if (isNaN(v)) { this.value = prefs.model[i.dataset.m]; return; }
+      if (/Share|Pct/.test(i.dataset.m)) v = Math.max(0, Math.min(300, v));
+      else v = Math.max(0, v);
+      prefs.model[i.dataset.m] = v;
+      this.value = v;
+      savePrefs(); renderAll(); paintModel();
+    };
+  });
+  $$("#summerMode button").forEach(function (b) {
+    b.onclick = function () { prefs.model.summerMode = b.dataset.v; savePrefs(); renderAll(); paintModel(); };
+  });
+  $("#modelReset").onclick = function () {
+    prefs.model = JSON.parse(JSON.stringify(DEFAULT_MODEL));
+    paintModel(); savePrefs(); renderAll();
+  };
+  paintModel();
+
   $("#matAll").onclick = function () { prefs.hidden = {}; savePrefs(); renderAll(); };
   $("#matNone").onclick = function () {
     MAT.forEach(function (m, i) { if (i) prefs.hidden[m.key] = true; });   // keep one, or there is nothing to draw
