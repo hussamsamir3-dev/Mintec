@@ -561,6 +561,27 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
   .ctile svg{height:8vh}
 }
 
+/* colour key under the fan */
+.key-lead{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+  align-self:center;margin-right:4px;font-weight:700}
+.chip.key{padding:4px 10px 4px 5px;gap:7px;font-size:12.5px}
+.chip.key .ic.xs{width:19px;height:19px}
+.chip.key i{width:8px;height:8px;border-radius:50%}
+.chip.key .kn{font-weight:500}
+.chip.key .kv{font-weight:700;font-size:11.5px;opacity:.9}
+
+/* icons on the big screen */
+.ctile .n{display:flex;align-items:center;gap:.55vw;min-width:0}
+.ctile .n span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctile .n .ic{width:2.1vw;height:2.1vw;min-width:22px;min-height:22px}
+.cast-mv .row .nm{display:flex;align-items:center;gap:.55vw;min-width:0}
+.cast-mv .row .nm span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cast-mv .row .nm .ic{width:1.7vw;height:1.7vw;min-width:20px;min-height:20px}
+.cast-key{display:flex;flex-wrap:wrap;gap:.35vw .9vw;margin-top:1.2vh;justify-content:center}
+.ck{display:inline-flex;align-items:center;gap:.4vw;font-size:.88vw;color:var(--text2)}
+.ck .ic{width:1.5vw;height:1.5vw;min-width:18px;min-height:18px}
+.ck i{width:.5vw;height:.5vw;min-width:6px;min-height:6px;border-radius:50%}
+
 </style>
 </head>
 <body>
@@ -1026,7 +1047,8 @@ function fanWindow() {
 function renderFan() {
   var host = $("#fanChart"); if (!MAT.length) { host.innerHTML = ""; return; }
   var W = Math.max(560, host.clientWidth || 900), H = Math.round(320 * prefs.chart);
-  var P = { t: 14, r: 46, b: 26, l: 44 };
+  var P = { t: 14, r: 118, b: 26, l: 44 };   // right margin holds the name labels
+  var ends = [];
   var w = W - P.l - P.r, h = H - P.t - P.b;
   var win = fanWindow(), t0 = win[0], t1 = win[1], tn = win[2];
 
@@ -1081,22 +1103,42 @@ function renderFan() {
     var dl = 900 + idx * 55;
     if (a.length > 1) svg.push('<path class="fanline' + cls + ' drawin" data-k="' + p.m.key + '" d="' + mk(a) + '" stroke="' + c + '" style="--len:' + dl + ';animation-delay:' + (idx * 42) + 'ms"/>');
     if (f.length > 1) svg.push('<path class="fanline fc' + cls + ' drawin" data-k="' + p.m.key + '" d="' + mk(f) + '" stroke="' + c + '" style="--len:' + dl + ';animation-delay:' + (240 + idx * 42) + 'ms"/>');
-    // end label
     var last = p.pts[p.pts.length - 1];
     if (!iso || iso === p.m.key) {
-      svg.push('<text class="ax" x="' + (X(last.t) + 6).toFixed(1) + '" y="' + (Y(last.v) + 3.5).toFixed(1) + '" fill="' + c + '" style="font-size:10px;font-weight:600">' + Math.round(last.v) + '</text>');
+      ends.push({ x: X(last.t), y: Y(last.v), y0: Y(last.v).toFixed(1), v: Math.round(last.v), name: p.m.name, c: c });
     }
+  });
+
+  // de-collide the end labels: sort by y, then push any that sit too close
+  ends.sort(function (a, b) { return a.y - b.y; });
+  var GAP = 12.5;
+  for (var e = 1; e < ends.length; e++) {
+    if (ends[e].y - ends[e - 1].y < GAP) ends[e].y = ends[e - 1].y + GAP;
+  }
+  var over = ends.length ? ends[ends.length - 1].y - (P.t + h) : 0;
+  if (over > 0) ends.forEach(function (l) { l.y -= over; });
+  ends.forEach(function (l) {
+    svg.push('<line x1="' + (l.x + 2).toFixed(1) + '" y1="' + l.y0 + '" x2="' + (l.x + 7).toFixed(1) +
+      '" y2="' + l.y.toFixed(1) + '" stroke="' + l.c + '" stroke-width="1" opacity=".45"/>');
+    svg.push('<text x="' + (l.x + 10).toFixed(1) + '" y="' + (l.y + 3.4).toFixed(1) + '" fill="' + l.c +
+      '" style="font-size:10.5px;font-weight:600">' + esc(l.name) +
+      ' <tspan opacity=".6">' + l.v + "</tspan></text>");
   });
   svg.push("</svg>");
   host.innerHTML = svg.join("");
 
   // legend
-  $("#fanLegend").innerHTML = shown().map(function (m) {
-    var c = cat(m);
-    var on = state.iso === m.key;
-    return '<button class="chip' + (on ? " on" : state.iso ? " dim" : "") + '" data-k="' + m.key + '" style="color:' + (on ? c.hex : "") + '">' +
-      '<i style="background:' + c.hex + '"></i>' + m.name + "</button>";
-  }).join("");
+  $("#fanLegend").innerHTML =
+    '<span class="key-lead">Colour key</span>' +
+    shown().map(function (m) {
+      var c = cat(m);
+      var on = state.iso === m.key;
+      return '<button class="chip key' + (on ? " on" : state.iso ? " dim" : "") + '" data-k="' + m.key +
+        '" title="' + esc(m.desc) + '" style="color:' + (on ? c.hex : "") + '">' +
+        matIcon(m, "xs") + '<i style="background:' + c.hex + '"></i>' +
+        '<span class="kn">' + m.name + "</span>" +
+        '<span class="kv ' + dirCls(m.f12) + '">' + pct(m.f12, 0) + "</span></button>";
+    }).join("");
   $$("#fanLegend .chip").forEach(function (b) {
     b.onclick = function () { state.iso = state.iso === b.dataset.k ? null : b.dataset.k; renderFan(); };
   });
@@ -1632,7 +1674,7 @@ function castTiles(list) {
   return '<div class="cast-tiles">' + list.map(function (m) {
     var c = cat(m), f = factor(m);
     return '<div class="ctile" style="--cc:' + c.hex + '">' +
-      '<div class="n">' + m.name + "</div>" +
+      '<div class="n">' + matIcon(m) + "<span>" + m.name + "</span></div>" +
       '<div class="p">' + num(m.spot * f) + "</div>" +
       '<div class="u">' + unitLabel(m) + "</div>" +
       '<div class="row2"><span class="' + dirCls(m.mom) + '">' + arrow(m.mom) + pct(m.mom) + "</span>" +
@@ -1659,7 +1701,11 @@ function buildScenes() {
       '<div class="k"><div class="lab">Falling</div><div class="val dn">' + dn + '</div><div class="sub">of ' + V.length + ' materials</div></div>' +
     "</div>" +
     '<h2>Where every input is heading <span>indexed to 100 today · dashed is the forward curve</span></h2>' +
-    '<div id="castFan"></div>';
+    '<div id="castFan"></div>' +
+    '<div class="cast-key">' + V.map(function (m) {
+      return '<span class="ck">' + matIcon(m, "sm") +
+        '<i style="background:' + cat(m).hex + '"></i>' + m.name + "</span>";
+    }).join("") + "</div>";
 
   // 1 — movers, two columns
   var rows = f12s.slice().sort(function (a, b) { return b.f12 - a.f12; });
@@ -1668,7 +1714,8 @@ function buildScenes() {
     '<div class="cast-mv">' + rows.map(function (m) {
       var v = m.f12, w = Math.abs(v) / mx * 48, left = v >= 0 ? 50 : 50 - w;
       var col = v > 0.5 ? "var(--heat)" : v < -0.5 ? "var(--cool)" : "var(--flat)";
-      return '<div class="row"><span class="nm" style="color:' + cat(m).hex + '">' + m.name + "</span>" +
+      return '<div class="row"><span class="nm" style="color:' + cat(m).hex + '">' +
+        matIcon(m, "sm") + "<span>" + m.name + "</span></span>" +
         '<span class="tr"><span class="z" style="left:50%"></span>' +
         '<span class="b" style="left:' + left + "%;width:" + w + "%;background:" + col + '"></span></span>' +
         '<span class="v ' + dirCls(v) + '">' + pct(v) + "</span></div>";
@@ -1697,7 +1744,7 @@ function buildScenes() {
         '<div class="n">' + p.name + "</div>" +
         '<div class="v ' + dirCls(c.tot.f12, .1) + '">' + (c.tot.f12 >= 0 ? "+" : "") + c.tot.f12.toFixed(1) + "%</div>" +
         '<div class="l">materials ' + p.materialShare + "% of cost</div>" +
-        '<div class="top">led by <b style="color:' + cat(c.ranked[0].m).hex + '">' + c.ranked[0].m.name + "</b></div></div>";
+        '<div class="top">led by <b style="color:' + c.ranked[0].inp.hex + '">' + c.ranked[0].inp.name + "</b></div></div>";
     }).join("") + "</div>";
 
   // 4 — the board of prices
@@ -1960,6 +2007,59 @@ function prodIcon(kind, size) {
   return open + '<g filter="url(#f-drop)">' + body + "</g></svg>";
 }
 
+
+/* ===================================================================
+   DERIVED INPUTS — things a recipe uses that Mintec does not quote
+   directly. Each one is indexed off tracked series, and every card
+   says which, so nobody mistakes a proxy for a quoted price.
+   =================================================================== */
+var DERIVED = {
+  "Raw milk": { hex: "#4FB3C4", icon: "dairy",
+    of: { Corn: 50, Soya: 10 },
+    note: "indexed off feed — 50% corn, 10% soya meal; the balance is farm cost that Mintec does not quote" },
+  "Milk":     { hex: "#4FB3C4", icon: "dairy", sameAs: "Raw milk",
+    of: { Corn: 50, Soya: 10 },
+    note: "same feed index as raw milk" },
+  "MPC":      { hex: "#4FB3C4", icon: "dairy", proxy: "SMP",
+    note: "milk protein concentrate, tracked against skimmed milk powder" },
+  "HDPE":     { hex: "#8E86D6", icon: "poly", proxy: "LDPE",
+    note: "tracked against LDPE, the nearest quoted polyolefin" }
+};
+
+function resolveInput(key) {
+  var direct = MAT.filter(function (m) { return m.key === key; })[0];
+  if (direct) {
+    if (prefs.hidden[key]) return null;
+    return { name: direct.name, hex: cat(direct).hex, icon: CAT_ICON[direct.category] || "materials",
+             mom: direct.mom || 0, yoy: direct.yoy || 0, f12: direct.f12 || 0,
+             note: null, real: true, m: direct };
+  }
+  var d = DERIVED[key];
+  if (!d) return null;
+
+  if (d.proxy) {
+    var pm = MAT.filter(function (m) { return m.key === d.proxy; })[0];
+    if (!pm || prefs.hidden[d.proxy]) return null;
+    return { name: key, hex: d.hex, icon: d.icon,
+             mom: pm.mom || 0, yoy: pm.yoy || 0, f12: pm.f12 || 0,
+             note: d.note, real: false, m: pm };
+  }
+
+  // a blend of tracked series; the unindexed remainder is treated as flat
+  var out = { name: key, hex: d.hex, icon: d.icon, mom: 0, yoy: 0, f12: 0,
+              note: d.note, real: false, m: null }, any = false;
+  Object.keys(d.of).forEach(function (k) {
+    var m = MAT.filter(function (x) { return x.key === k; })[0];
+    if (!m || prefs.hidden[k]) return;
+    any = true;
+    var wgt = d.of[k] / 100;
+    out.mom += (m.mom || 0) * wgt;
+    out.yoy += (m.yoy || 0) * wgt;
+    out.f12 += (m.f12 || 0) * wgt;
+  });
+  return any ? out : null;
+}
+
 /* ===================================================================
    RECIPES — a working bill of materials per finished product
    Shares are % of the tracked material cost. materialShare is how much
@@ -1983,22 +2083,22 @@ var PRODUCTS = [
     bom: { Butter: 82, LDPE: 7, Wood: 6, Aluminium: 5 },
     indirect: ["Corn", "Soya"] },
   { key: "cheese", name: "White cheese", icon: "cheese", colour: "#9FC4D4",
-    spec: "Feta style in brine · filled recipe, tin and tub",
+    spec: "Feta style in brine · MPC and raw milk base, HDPE pack",
     materialShare: 68,
-    bom: { SMP: 28, "Palm Oil": 18, WMP: 10, Butter: 6, PS: 17, Aluminium: 12, Wood: 9 },
-    indirect: ["Corn", "Soya"] }
+    bom: { MPC: 22, "Raw milk": 24, Butter: 14, Milk: 12, HDPE: 16, SMP: 12 },
+    indirect: [] }
 ];
 
 function productCost(p) {
   var by = {}, tot = { mom: 0, yoy: 0, f12: 0 }, covered = 0, missing = [];
   Object.keys(p.bom).forEach(function (k) {
-    var m = MAT.filter(function (x) { return x.key === k; })[0];
-    if (!m) { missing.push(k); return; }
+    var inp = resolveInput(k);
+    if (!inp) { missing.push(k); return; }
     var wgt = p.bom[k] / 100;
     covered += p.bom[k];
     by[k] = {
-      m: m, share: p.bom[k],
-      mom: (m.mom || 0) * wgt, yoy: (m.yoy || 0) * wgt, f12: (m.f12 || 0) * wgt
+      inp: inp, m: inp.m, share: p.bom[k],
+      mom: inp.mom * wgt, yoy: inp.yoy * wgt, f12: inp.f12 * wgt
     };
     tot.mom += by[k].mom; tot.yoy += by[k].yoy; tot.f12 += by[k].f12;
   });
@@ -2023,19 +2123,24 @@ function renderProducts() {
     }
     var mixTotal = c.ranked.reduce(function (a, x) { return a + x.share; }, 0) || 1;
     var mix = c.ranked.map(function (x) {
-      return '<i style="width:' + (x.share / mixTotal * 100).toFixed(1) + "%;background:" + cat(x.m).hex + '"></i>';
+      return '<i style="width:' + (x.share / mixTotal * 100).toFixed(1) + "%;background:" + x.inp.hex + '"></i>';
     }).join("");
     var rows = c.ranked.map(function (x) {
-      return '<div class="r"><span class="d" style="background:' + cat(x.m).hex + '"></span>' +
-        '<span class="n">' + x.m.name + "</span>" +
+      return '<div class="r"><span class="d" style="background:' + x.inp.hex + '"></span>' +
+        '<span class="n">' + x.inp.name + (x.inp.real ? "" : ' <em style="font-style:normal;color:var(--muted)">·idx</em>') + "</span>" +
         '<span class="w">' + x.share + "%</span>" +
         '<span class="c ' + dirCls(x.f12, .05) + '">' + (x.f12 >= 0 ? "+" : "") + x.f12.toFixed(2) + "%</span></div>";
     }).join("");
     var ind = p.indirect.filter(function (k) {
       return MAT.some(function (m) { return m.key === k; });
     });
+    var notes = c.ranked.filter(function (x) { return x.inp.note; })
+      .map(function (x) { return "<b>" + x.inp.name + "</b> " + x.inp.note; });
     var indTxt = ind.length ? '<div class="indirect"><b>Also watch:</b> ' + ind.join(" and ") +
       " feed local herds, so they reach this product through raw milk rather than the recipe above.</div>" : "";
+    if (notes.length) {
+      indTxt += '<div class="indirect">' + notes.join(" · ") + "</div>";
+    }
     return '<div class="prod" style="--pc:' + p.colour + '">' +
       '<div class="ph">' + prodIcon(p.icon) +
         "<div><h3>" + p.name + '</h3><div class="spec">' + p.spec + "</div></div>" +
@@ -2047,7 +2152,7 @@ function renderProducts() {
       '<div class="foot">' +
         "<span>materials are <b>" + p.materialShare + "%</b> of ex-works cost</span>" +
         '<span>last 12 months <b class="' + dirCls(c.tot.yoy, .1) + '">' + (c.tot.yoy >= 0 ? "+" : "") + c.tot.yoy.toFixed(1) + "%</b></span>" +
-        "<span>biggest mover <b>" + c.ranked[0].m.name + "</b></span>" +
+        "<span>biggest mover <b>" + c.ranked[0].inp.name + "</b></span>" +
       "</div>" + indTxt + "</div>";
   }).join("");
 }
