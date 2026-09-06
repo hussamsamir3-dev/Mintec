@@ -143,7 +143,8 @@ def call(session, method, path, params=None, body=None, retry=True):
 def content_of(r):
     """Every v2 response is {"content": ..., "code": n, "messages": [...]}."""
     if r.status_code != 200:
-        raise RuntimeError(f"HTTP {r.status_code}: {r.text[:160]}")
+        raise RuntimeError(f"HTTP {r.status_code} on {r.url}\n"
+                           f"      body: {r.text[:300] or '(empty)'}")
     body = r.json()
     for m in body.get("messages") or []:
         if isinstance(m, dict) and m.get("message"):
@@ -433,6 +434,88 @@ def catalogue(term):
             print(f"  ... {len(hits) - 40} more")
 
 
+def diagnose(materials):
+    """
+    Try every plausible base and path against the account, and print exactly
+    what Mintec returns for each. Use this when something 403s — it separates
+    a wrong URL from a genuine permissions problem.
+    """
+    session = _session()
+    sample = next((m["code"].strip() for m in materials.values() if (m.get("code") or "").strip()), "BCRD")
+
+    print("Step 1 — which scopes does this credential accept?\n")
+    cid = os.environ.get("MINTEC_CLIENT_ID"); sec = os.environ.get("MINTEC_CLIENT_SECRET")
+    if not cid or not sec:
+        sys.exit("Set MINTEC_CLIENT_ID and MINTEC_CLIENT_SECRET first.")
+    granted = {}
+    for scope in SCOPE_CANDIDATES:
+        r = session.post(AUTHORITY,
+                         data={"grant_type": "client_credentials", "client_id": cid,
+                               "client_secret": sec, "scope": scope},
+                         headers={"Content-Type": "application/x-www-form-urlencoded"},
+                         timeout=45)
+        if r.status_code == 200:
+            body = r.json()
+            got = body.get("scope", "(not stated)")
+            granted[scope] = body["access_token"]
+            print(f"  ok   {scope!r:28} -> token, scope granted: {got!r}")
+        else:
+            print(f"  no   {scope!r:28} -> {r.status_code} {r.text[:80]}")
+
+    if not granted:
+        sys.exit("\nNo scope accepted. The credential itself is being refused.")
+
+    print("\nStep 2 — which base and path actually serve data?\n")
+    bases = [BASE, BASE + "/export", "https://public-api.mintecanalytics.com"]
+    paths = ["/v2/currencies",
+             "/v2/export/series/mintec/" + sample,
+             "/v2/export/series/mintec/" + sample + "/points",
+             "/v2/export/series/mintec",
+             "/v2/series/mintec/" + sample + "/points",
+             "/v2/export/series/forecast/" + sample + "/points"]
+    seen = set()
+    for scope, tok in granted.items():
+        print(f"  -- with scope {scope!r}")
+        for base in dict.fromkeys(bases):
+            for path in paths:
+                url = base.rstrip("/") + path
+                if url in seen:
+                    continue
+                seen.add(url)
+                try:
+                    r = session.get(url, headers={"Authorization": "Bearer " + tok,
+                                                  "Accept": "application/json"},
+                                    params={"startDate": "01/01/2025", "endDate": "31/12/2025"},
+                                    timeout=45)
+                except Exception as exc:                            # noqa: BLE001
+                    print(f"     {path:<46} error {str(exc)[:50]}")
+                    continue
+                note = ""
+                if r.status_code == 200:
+                    try:
+                        n = len(parse_points_safe(r.json()))
+                        note = f"  {n} points" + ("   <-- WORKS" if n else "  (metadata only)")
+                    except Exception:                               # noqa: BLE001
+                        note = "  200"
+                else:
+                    note = "  " + r.text[:70].replace("\n", " ")
+                print(f"     {r.status_code}  {url[-58:]:<58}{note}")
+        print()
+
+
+def parse_points_safe(body):
+    c = body.get("content") if isinstance(body, dict) else None
+    if isinstance(c, dict):
+        c = [c]
+    if not isinstance(c, list):
+        return []
+    out = []
+    for o in c:
+        if isinstance(o, dict):
+            out.extend(o.get("points") or [])
+    return out
+
+
 def refresh_from_api(materials):
     session = _session()
     get_token(session)
@@ -517,6 +600,8 @@ def main():
     g.add_argument("--from-workbook", metavar="XLSX", nargs="?", const=DEFAULT_WB,
                    help="rebuild from a workbook you already refreshed")
     g.add_argument("--catalogue", metavar="TERM", help="search your subscription for a series code")
+    g.add_argument("--diagnose", action="store_true",
+                   help="try every scope, base and path, and report exactly what Mintec returns")
     ap.add_argument("--workbook", default=DEFAULT_WB,
                     help="material list: Book1.xlsx, or a materials.csv of 'Name, Code' lines")
     ap.add_argument("--html", default=DEFAULT_HTML)
@@ -530,12 +615,16 @@ def main():
         return
 
     wb_path = args.from_workbook if args.from_workbook else args.workbook
-    materials = read_source(wb_path, quiet=args.probe)
+    materials = read_source(wb_path, quiet=args.probe or args.diagnose)
     if not materials:
         sys.exit("No material tabs found in the workbook.")
 
     if args.probe:
         probe(materials)
+        return
+
+    if args.diagnose:
+        diagnose(materials)
         return
 
     def once():
