@@ -29,7 +29,7 @@ jobs:
         env:
           MINTEC_CLIENT_ID: ${{ secrets.MINTEC_CLIENT_ID }}
           MINTEC_CLIENT_SECRET: ${{ secrets.MINTEC_CLIENT_SECRET }}
-        run: python mintec_refresh.py --from-api --workbook materials.csv --html index.html
+        run: python mintec_refresh.py --diagnose --workbook materials.csv
 
       - name: Commit if anything changed
         run: |
