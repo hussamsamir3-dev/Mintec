@@ -67,7 +67,15 @@ DEFAULT_HTML = os.path.join(HERE, "Materials_Market_Desk.html")
 
 AUTHORITY = os.environ.get("MINTEC_AUTHORITY", "https://identity.mintecanalytics.com/connect/token")
 BASE = os.environ.get("MINTEC_BASE", "https://public-api.mintecanalytics.com").rstrip("/")
-SCOPE = os.environ.get("MINTEC_SCOPE", "export_api")
+SCOPE = os.environ.get("MINTEC_SCOPE", "")   # blank = try the known variants in turn
+
+# The v2.4 doc lists the scope as "export_api, import_api", which is ambiguous:
+# OAuth separates scopes with spaces, but some servers want a single value or a
+# comma-separated pair. Rather than guess, try each and keep whichever works.
+SCOPE_CANDIDATES = ["export_api",
+                    "export_api import_api",
+                    "export_api,import_api",
+                    "import_api"]
 
 HIST_YEARS = int(os.environ.get("MINTEC_HISTORY_YEARS", "3"))
 FWD_YEARS = int(os.environ.get("MINTEC_FORWARD_YEARS", "3"))
@@ -77,7 +85,7 @@ WB_DATE = re.compile(r"^\d{2}/\d{2}/\d{4}$")
 
 
 # ═══════════════════════════ auth ═══════════════════════════
-_TOKEN = [None, dt.datetime.min]
+_TOKEN = [None, dt.datetime.min, None]
 
 
 def get_token(session, force=False):
@@ -88,13 +96,26 @@ def get_token(session, force=False):
     if not cid or not secret:
         sys.exit("Set MINTEC_CLIENT_ID and MINTEC_CLIENT_SECRET.\n"
                  "Both are on Mintec Analytics > User profile > APIs Access.")
-    r = session.post(AUTHORITY,
-                     data={"grant_type": "client_credentials", "client_id": cid,
-                           "client_secret": secret, "scope": SCOPE},
-                     headers={"Content-Type": "application/x-www-form-urlencoded"},
-                     timeout=45)
-    if r.status_code != 200:
-        raise RuntimeError(f"token request returned {r.status_code}: {r.text[:200]}")
+    tried = []
+    for scope in ([SCOPE] if SCOPE else SCOPE_CANDIDATES):
+        r = session.post(AUTHORITY,
+                         data={"grant_type": "client_credentials", "client_id": cid,
+                               "client_secret": secret, "scope": scope},
+                         headers={"Content-Type": "application/x-www-form-urlencoded"},
+                         timeout=45)
+        if r.status_code == 200:
+            if scope != SCOPE_CANDIDATES[0]:
+                print(f"  (scope '{scope}' accepted)")
+            _TOKEN[2] = scope
+            break
+        tried.append(f"{scope!r} -> {r.status_code} {r.text[:90]}")
+    else:
+        detail = "\n    ".join(tried)
+        raise RuntimeError(
+            "no scope was accepted. Mintec replied:\n    " + detail +
+            "\n  If every line says invalid_scope, the credential is valid but this"
+            "\n  account is not enabled for the Export API — ask Mintec support to"
+            "\n  add export_api to your subscription.")
     body = r.json()
     tok = body.get("access_token")
     if not tok:
@@ -351,11 +372,11 @@ def _session():
 def probe(materials):
     session = _session()
     sample = next((m["code"].strip() for m in materials.values() if (m.get("code") or "").strip()), "BCRD")
-    print(f"Base   {BASE}\nScope  {SCOPE}\nSample {sample}\n")
+    print(f"Base   {BASE}\nScope  {SCOPE or ' / '.join(SCOPE_CANDIDATES)}\nSample {sample}\n")
 
     try:
         get_token(session)
-        print("  token issued")
+        print(f"  token issued (scope: {_TOKEN[2]})")
     except Exception as exc:                                        # noqa: BLE001
         print(f"  token refused: {exc}")
         return
