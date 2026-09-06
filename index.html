@@ -385,7 +385,7 @@ footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
       <button class="btn" id="btnUnits" aria-pressed="false" title="Convert grain contracts from cents per bushel to USD per tonne">USD/tonne</button>
       <button class="btn" id="btnEgp">EGP view</button>
       <button class="btn" id="btnLoad">Load workbook</button>
-      <button class="btn" id="btnApi">Connect Mintec</button>
+      <button class="btn" id="btnApi">Data &amp; refresh</button>
       <button class="btn pri" id="btnCast">Cast to screen</button>
     </div>
   </div>
@@ -534,13 +534,27 @@ footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
 
 <div class="modal" id="mApi">
   <div class="mbox">
-    <h3>Connect to Mintec</h3>
-    <p>Your key is held in this browser tab only, is never written into the file, and is cleared when the tab closes.</p>
-    <div class="field"><label for="apiBase">API endpoint</label><input id="apiBase" placeholder="https://api.mintecglobal.com/api/series"></div>
-    <div class="field"><label for="apiKey">API key</label><input id="apiKey" type="password" placeholder="Paste your key"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" id="apiGo">Refresh prices</button><button class="btn" data-close>Cancel</button></div>
-    <div class="stat-msg" id="apiMsg"></div>
-    <div class="note">Mintec&rsquo;s API does not send browser CORS headers, so a direct call from a web page is usually blocked. If it fails, run the bundled <b>mintec_refresh.py</b> on a scheduler &mdash; it writes a fresh workbook and rebuilds this page unattended.</div>
+    <h3>How this page stays current</h3>
+    <p>Prices are baked into this file. Something has to rewrite it — a browser can&rsquo;t call Mintec directly, and shouldn&rsquo;t: it would put your client secret into a public web page.</p>
+
+    <div class="field" style="border-left:2px solid var(--gold);padding-left:12px;margin:16px 0">
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">
+        <b style="color:var(--text)">Right now:</b> <span id="apiStatus">—</span>
+      </div>
+    </div>
+
+    <h4 style="font-size:14px;margin:18px 0 6px;font-weight:600">Unattended, hourly</h4>
+    <p style="margin:0">The GitHub Actions workflow calls Mintec every hour, rebuilds this file and commits it. Nothing needs to stay switched on. Credentials live in repository secrets.</p>
+
+    <h4 style="font-size:14px;margin:16px 0 6px;font-weight:600">From a machine you control</h4>
+    <p style="margin:0">Run <b>mintec_refresh.py --from-api --every 60</b> next to this file. Same result, inside your own network.</p>
+
+    <h4 style="font-size:14px;margin:16px 0 6px;font-weight:600">Right now, by hand</h4>
+    <p style="margin:0">Refresh the workbook in Excel, then use <b>Load workbook</b> in the toolbar. Nothing leaves this browser and the page updates instantly.</p>
+
+    <div class="note">Mintec authenticates with OAuth 2.0 &mdash; a client id and secret exchanged for a one-hour bearer token &mdash; against <b>public-api.mintecanalytics.com/v2/export</b>. The script implements that. A browser cannot, because Mintec sends no CORS headers.</div>
+
+    <div style="margin-top:18px;text-align:right"><button class="btn" data-close>Close</button></div>
   </div>
 </div>
 
@@ -1618,40 +1632,13 @@ function boot() {
     fr.readAsArrayBuffer(file);
   }
 
-  // Mintec API
-  $("#apiBase").value = store.get("mtc_base") || "https://api.mintecglobal.com/api/series";
-  $("#apiKey").value = store.get("mtc_key") || "";
-  $("#apiGo").onclick = function () {
-    var base = $("#apiBase").value.trim(), key = $("#apiKey").value.trim(), msg = $("#apiMsg");
-    if (!base || !key) { msg.innerHTML = '<span class="up">Endpoint and key are both needed.</span>'; return; }
-    store.set("mtc_base", base); store.set("mtc_key", key);
-    msg.textContent = "Calling Mintec for " + MAT.length + " series…";
-    var got = 0, fail = 0, next = JSON.parse(JSON.stringify(RAW)), keys = Object.keys(RAW);
-    keys.forEach(function (k) {
-      var code = (RAW[k].code || "").trim(); if (!code) { fail++; return; }
-      fetch(base.replace(/\/$/, "") + "/" + encodeURIComponent(code), { headers: { "Ocp-Apim-Subscription-Key": key, "Accept": "application/json" } })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (j) {
-          var arr = j.series || j.data || j.values || [];
-          var pts = arr.map(function (p) {
-            var d = excelDate(p.date || p.Date || p.d), v = p.value !== undefined ? p.value : (p.Value !== undefined ? p.Value : p.v);
-            return d && typeof v === "number" ? [d, v] : null;
-          }).filter(Boolean);
-          if (pts.length) { next[k].series = pts.sort(function (a, b) { return a[0] < b[0] ? -1 : 1; }); got++; }
-        })
-        .catch(function () { fail++; })
-        .then(function () {
-          if (got + fail === keys.length) {
-            if (got) {
-              RAW = next; state.source = "Mintec API"; renderAll();
-              msg.innerHTML = '<span class="dn">Refreshed ' + got + " of " + keys.length + " series.</span>";
-            } else {
-              msg.innerHTML = '<span class="up">No series came back — almost certainly the browser CORS block. Run mintec_refresh.py instead; it does the same job server-side.</span>';
-            }
-          }
-        });
-    });
-  };
+  // data status shown in the refresh panel
+  $("#btnApi").addEventListener("click", function () {
+    var ageD = Math.round((Date.now() - D(state.asOf).getTime()) / 864e5);
+    var built = (window.__BUILT__ || "").replace(/^Mintec API, /, "live from Mintec, ");
+    $("#apiStatus").innerHTML = "prices to <b>" + fmtDFull(state.asOf) + "</b> (" +
+      (ageD <= 1 ? "today" : ageD + " days old") + ") · " + esc(built);
+  });
 
   var rt; window.addEventListener("resize", function () {
     clearTimeout(rt);
