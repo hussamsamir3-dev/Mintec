@@ -504,6 +504,63 @@ html[data-theme="light"] .cast-logo{filter:drop-shadow(0 3px 10px rgba(0,0,0,.18
 .cast-credit b{color:var(--text2);font-weight:600}
 @media (max-width:900px){ .cast-credit{display:none} }
 
+/* ══════════════════════════════════════════════════════════
+   Finished products
+   ══════════════════════════════════════════════════════════ */
+.prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.prod{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;padding:18px;
+  position:relative;overflow:hidden}
+.prod::after{content:"";position:absolute;inset:auto -40px -60px auto;width:200px;height:200px;
+  border-radius:50%;background:radial-gradient(circle,var(--pc),transparent 68%);opacity:.09;
+  pointer-events:none}
+.prod .ph{display:flex;align-items:center;gap:14px}
+.prod .ph svg{flex:0 0 auto;filter:drop-shadow(0 6px 16px rgba(0,0,0,.4))}
+html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,.16))}
+.prod h3{margin:0;font-size:19px;font-weight:600;letter-spacing:-.015em}
+.prod .spec{color:var(--muted);font-size:11.5px;margin-top:3px}
+.prod .hero{margin-left:auto;text-align:right}
+.prod .hero .n{font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.prod .hero .l{color:var(--muted);font-size:10.5px;margin-top:4px}
+.mixbar{display:flex;height:9px;border-radius:5px;overflow:hidden;margin:16px 0 10px;
+  background:var(--ink);gap:1px}
+.mixbar i{display:block;transition:width .5s cubic-bezier(.22,.61,.36,1)}
+.bom{display:grid;gap:5px}
+.bom .r{display:grid;grid-template-columns:16px 1fr 44px 62px;align-items:center;gap:9px;
+  font-size:12.5px;padding:3px 0}
+.bom .r .d{width:9px;height:9px;border-radius:2px}
+.bom .r .n{color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bom .r .w{color:var(--muted);text-align:right;font-size:11.5px}
+.bom .r .c{text-align:right;font-weight:600}
+.prod .foot{margin-top:12px;padding-top:11px;border-top:1px solid var(--rule);
+  display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:11.5px}
+.prod .foot b{color:var(--text);font-weight:600}
+.prod .indirect{margin-top:9px;color:var(--muted);font-size:11.5px;line-height:1.5}
+.prod .indirect b{color:var(--text2)}
+
+/* cast: products panel */
+.cast-prods{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1vw}
+.cprod{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;padding:1.6vh 1.1vw;
+  text-align:center}
+.cprod svg{filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))}
+.cprod .n{font-size:1.15vw;font-weight:600;margin-top:1vh}
+.cprod .v{font-size:2.6vw;font-weight:600;letter-spacing:-.03em;margin-top:.5vh;line-height:1}
+.cprod .l{color:var(--muted);font-size:.78vw;margin-top:.5vh}
+.cprod .top{color:var(--text2);font-size:.82vw;margin-top:1vh;padding-top:.9vh;
+  border-top:1px solid var(--rule)}
+
+/* bigger charts on the "Every material" panel */
+.cast-tiles{grid-template-columns:repeat(5,1fr);gap:1vw}
+.ctile{padding:1.5vh 1.1vw 1.1vh}
+.ctile svg{margin-top:1vh;height:9.5vh;width:100%;display:block}
+.ctile .n{font-size:1.12vw}
+.ctile .p{font-size:2.05vw;margin:.6vh 0 .25vh}
+.ctile .u{font-size:.78vw}
+.ctile .row2{font-size:.9vw;margin-top:.9vh}
+@media (max-width:1500px){
+  .cast-tiles{grid-template-columns:repeat(4,1fr)}
+  .ctile svg{height:8vh}
+}
+
 </style>
 </head>
 <body>
@@ -518,6 +575,13 @@ html[data-theme="light"] .cast-logo{filter:drop-shadow(0 3px 10px rgba(0,0,0,.18
   <radialGradient id="g-poly" cx="32%" cy="24%"><stop offset="0" stop-color="#CFC9F5"/><stop offset="55%" stop-color="#8E86D6"/><stop offset="1" stop-color="#494284"/></radialGradient>
   <radialGradient id="g-wood" cx="32%" cy="24%"><stop offset="0" stop-color="#C6E0B4"/><stop offset="55%" stop-color="#7FA96A"/><stop offset="1" stop-color="#3E5B31"/></radialGradient>
   <radialGradient id="g-gold" cx="32%" cy="24%"><stop offset="0" stop-color="#F6DFA6"/><stop offset="55%" stop-color="#DFA93A"/><stop offset="1" stop-color="#8A6212"/></radialGradient>
+  <linearGradient id="p-yog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#EFF4F8"/><stop offset="1" stop-color="#C6D2DC"/></linearGradient>
+  <linearGradient id="p-yoglid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5BC8DC"/><stop offset="1" stop-color="#17697E"/></linearGradient>
+  <linearGradient id="p-juice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC55C"/><stop offset="55%" stop-color="#F58C1F"/><stop offset="1" stop-color="#B4530A"/></linearGradient>
+  <linearGradient id="p-butter" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEBA8"/><stop offset="55%" stop-color="#F2CE5F"/><stop offset="1" stop-color="#B78F1D"/></linearGradient>
+  <linearGradient id="p-cheese" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#F3F1E6"/><stop offset="1" stop-color="#CFC9B4"/></linearGradient>
+  <linearGradient id="p-brine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEEF5" stop-opacity=".9"/><stop offset="1" stop-color="#9FC4D4" stop-opacity=".9"/></linearGradient>
+  <radialGradient id="p-shine" cx="30%" cy="18%"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
   <linearGradient id="g-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
   <filter id="f-drop" x="-40%" y="-40%" width="180%" height="180%">
     <feDropShadow dx="0" dy="2.4" stdDeviation="2.2" flood-color="#000" flood-opacity=".38"/></filter>
@@ -609,6 +673,15 @@ html[data-theme="light"] .cast-logo{filter:drop-shadow(0 3px 10px rgba(0,0,0,.18
       <p>Read straight off the series each time the data changes — no commentary is stored or assumed.</p>
     </div>
     <div class="ins" id="insights"></div>
+  </section>
+
+  <!-- ── finished products ─────────────────────────────── -->
+  <section data-export="Finished products">
+    <div class="sec-head">
+      <div class="sec-title"><span data-icon="products"></span><h2>What it does to finished product cost</h2></div>
+      <p>Each raw-material move, weighted through a working recipe and packaging spec, then diluted by how much of the ex-works cost is materials at all. Directional &mdash; swap in your own bill of materials for budget numbers.</p>
+    </div>
+    <div class="prods" id="prods"></div>
   </section>
 
   <!-- ── recommendations ──────────────────────────────── -->
@@ -704,6 +777,7 @@ html[data-theme="light"] .cast-logo{filter:drop-shadow(0 3px 10px rgba(0,0,0,.18
     <div class="scene" id="sc2"></div>
     <div class="scene" id="sc3"></div>
     <div class="scene" id="sc4"></div>
+    <div class="scene" id="sc5"></div>
   </div>
 
   <div class="tipband">
@@ -1487,7 +1561,7 @@ function renderTips() {
 /* ===================================================================
    CAST — the big screen
    =================================================================== */
-var cast = { on: false, scene: 0, paused: false, t: null, tick: 0, DUR: 20000, n: 5,
+var cast = { on: false, scene: 0, paused: false, t: null, tick: 0, DUR: 20000, n: 6,
              band: null, bandI: 0, newsT: null };
 var NEWS = [];
 
@@ -1563,7 +1637,7 @@ function castTiles(list) {
       '<div class="u">' + unitLabel(m) + "</div>" +
       '<div class="row2"><span class="' + dirCls(m.mom) + '">' + arrow(m.mom) + pct(m.mom) + "</span>" +
         '<i>12m</i><span class="' + dirCls(m.f12) + '">' + pct(m.f12) + "</span></div>" +
-      sparkline(m, 220, 42) + "</div>";
+      sparkline(m, 260, 110) + "</div>";
   }).join("") + "</div>";
 }
 
@@ -1614,7 +1688,19 @@ function buildScenes() {
         "<span>range <b>" + Math.round(m.pos * 100) + "%</b></span></div></div>";
     }).join("") + "</div>";
 
-  // 3 — the board of prices
+  // 3 — finished products
+  $("#sc5").innerHTML = '<h2>What it does to finished product cost <span>recipe-weighted, next twelve months</span></h2>' +
+    '<div class="cast-prods">' + PRODUCTS.map(function (p) {
+      var c = productCost(p);
+      if (!c.ranked.length) return "";
+      return '<div class="cprod">' + prodIcon(p.icon, 84) +
+        '<div class="n">' + p.name + "</div>" +
+        '<div class="v ' + dirCls(c.tot.f12, .1) + '">' + (c.tot.f12 >= 0 ? "+" : "") + c.tot.f12.toFixed(1) + "%</div>" +
+        '<div class="l">materials ' + p.materialShare + "% of cost</div>" +
+        '<div class="top">led by <b style="color:' + cat(c.ranked[0].m).hex + '">' + c.ranked[0].m.name + "</b></div></div>";
+    }).join("") + "</div>";
+
+  // 4 — the board of prices
   $("#sc3").innerHTML = '<h2>Every material <span>latest settled price and where the curve takes it</span></h2>' +
     castTiles(V.slice(0, 15));
 
@@ -1731,6 +1817,9 @@ var GLYPH = {
   news:   '<rect x="9.2" y="10" width="15.6" height="14" rx="2" fill="#fff" opacity=".95"/>' +
           '<rect x="11.6" y="13" width="7" height="4.4" rx="1" fill="var(--ink2)" opacity=".55"/>' +
           '<rect x="11.6" y="19" width="10.8" height="1.7" rx=".85" fill="var(--ink2)" opacity=".45"/>',
+  products:'<path d="M11.4 12.6h11.2l-1.5 11.8a1.7 1.7 0 0 1-1.7 1.5h-4.8a1.7 1.7 0 0 1-1.7-1.5z" fill="#fff" opacity=".95"/>' +
+          '<rect x="10.2" y="10.2" width="13.6" height="2.6" rx="1.1" fill="#fff" opacity=".72"/>' +
+          '<path d="M24 8.4c1.6 2.4 2.6 4 2.6 5.3a2.6 2.6 0 1 1-5.2 0c0-1.3 1-2.9 2.6-5.3z" fill="#fff" opacity=".8"/>',
   tips:   '<circle cx="17" cy="17" r="7.6" fill="#fff" opacity=".95"/>' +
           '<rect x="16" y="12.2" width="2" height="6.6" rx="1" fill="var(--ink2)" opacity=".6"/>' +
           '<circle cx="17" cy="21.2" r="1.3" fill="var(--ink2)" opacity=".6"/>'
@@ -1756,6 +1845,211 @@ function paintSectionIcons() {
   $$("[data-icon]").forEach(function (el) {
     if (!el.dataset.done) { el.innerHTML = icon3d(el.dataset.icon); el.dataset.done = "1"; }
   });
+}
+
+
+/* ===================================================================
+   MATERIAL ICONS — one drawn glyph per input, on its category chip
+   =================================================================== */
+var MAT_GLYPH = {
+  Corn:      '<path d="M17 7.6c2.9 2 4.3 5 4.3 8.4 0 3.9-1.9 7-4.3 9.4-2.4-2.4-4.3-5.5-4.3-9.4 0-3.4 1.4-6.4 4.3-8.4z" fill="#fff" opacity=".95"/>' +
+             '<path d="M17 9.6v14M14.4 12.2h5.2M14.1 15.4h5.8M14.4 18.6h5.2M15.2 21.6h3.6" stroke="#7A5A0E" stroke-width="1.05" opacity=".55" stroke-linecap="round"/>',
+  Soya:      '<path d="M10.6 19.4c3-5.2 8.4-8 13.4-8.2-1.4 5.6-5.6 9.6-11 10.4z" fill="#fff" opacity=".95"/>' +
+             '<circle cx="14.6" cy="18.4" r="1.5" fill="#3E5B31" opacity=".5"/><circle cx="18" cy="16" r="1.5" fill="#3E5B31" opacity=".5"/><circle cx="21.2" cy="13.8" r="1.5" fill="#3E5B31" opacity=".5"/>' +
+             '<path d="M9.4 22.6c3.4-1 6.2-2.8 8.6-5.2" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".75"/>',
+  Orange:    '<circle cx="17" cy="18" r="7" fill="#fff" opacity=".95"/>' +
+             '<path d="M17 11v14M10 18h14M12.1 13.1l9.8 9.8M21.9 13.1l-9.8 9.8" stroke="#B4530A" stroke-width=".95" opacity=".42"/>' +
+             '<path d="M17.4 10.6c1.5-2 3.4-2.6 5.4-2.2-.5 2.2-2 3.5-4.2 3.6z" fill="#fff" opacity=".8"/>',
+  SMP:       '<path d="M11.5 13.4h11l1.4 10.2a1.6 1.6 0 0 1-1.6 1.8H11.7a1.6 1.6 0 0 1-1.6-1.8z" fill="#fff" opacity=".95"/>' +
+             '<path d="M12.6 9.4h8.8l1 4H11.6z" fill="#fff" opacity=".72"/>' +
+             '<path d="M14.4 17.6h5.2M14.8 20.4h4.4" stroke="#1B6270" stroke-width="1.3" opacity=".45" stroke-linecap="round"/>',
+  WMP:       '<path d="M11.5 13.4h11l1.4 10.2a1.6 1.6 0 0 1-1.6 1.8H11.7a1.6 1.6 0 0 1-1.6-1.8z" fill="#fff" opacity=".95"/>' +
+             '<path d="M12.6 9.4h8.8l1 4H11.6z" fill="#fff" opacity=".72"/>' +
+             '<circle cx="17" cy="19.4" r="3" fill="#1B6270" opacity=".38"/>',
+  "Palm Oil":'<path d="M17 24.6a4.8 4.8 0 0 1-4.8-4.8c0-2.7 3-6.2 4.8-8.4 1.8 2.2 4.8 5.7 4.8 8.4a4.8 4.8 0 0 1-4.8 4.8z" fill="#fff" opacity=".95"/>' +
+             '<path d="M17 10.4c2.6-2.4 5.4-2.6 7.6-1.6-2.4.6-4.4 1.8-6 3.6M17 10.4c-2.6-2.4-5.4-2.6-7.6-1.6 2.4.6 4.4 1.8 6 3.6" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".78"/>',
+  Sugar:     '<path d="M9.6 14.6l5-2.8 5 2.8-5 2.8z" fill="#fff" opacity=".95"/><path d="M9.6 14.6v5.2l5 2.8v-5.2z" fill="#fff" opacity=".72"/><path d="M19.6 14.6v5.2l-5 2.8v-5.2z" fill="#fff" opacity=".55"/>' +
+             '<path d="M17.4 10.4l3.6-2 3.6 2-3.6 2z" fill="#fff" opacity=".85"/><path d="M17.4 10.4v3.8l3.6 2v-3.8z" fill="#fff" opacity=".62"/><path d="M24.6 10.4v3.8l-3.6 2v-3.8z" fill="#fff" opacity=".48"/>',
+  Cocoa:     '<path d="M17 7.8c3.4 1.6 5.4 5 5.4 9.2 0 4.4-2.2 7.8-5.4 9.2-3.2-1.4-5.4-4.8-5.4-9.2 0-4.2 2-7.6 5.4-9.2z" fill="#fff" opacity=".95"/>' +
+             '<path d="M17 9.4v15.2" stroke="#5A3210" stroke-width="1.15" opacity=".5"/>' +
+             '<path d="M14.4 12.4c1.4 3 1.4 6.4 0 9.4M19.6 12.4c-1.4 3-1.4 6.4 0 9.4" stroke="#5A3210" stroke-width=".95" fill="none" opacity=".35"/>',
+  PET:       '<path d="M15.2 7.6h3.6v2.2c0 .9.3 1.3 1 2l.9.9c.7.7 1 1.4 1 2.4v8.6a2 2 0 0 1-2 2h-5.4a2 2 0 0 1-2-2v-8.6c0-1 .3-1.7 1-2.4l.9-.9c.7-.7 1-1.1 1-2z" fill="#fff" opacity=".95"/>' +
+             '<rect x="14.4" y="6.2" width="5.2" height="2" rx=".7" fill="#fff" opacity=".72"/>' +
+             '<rect x="13.6" y="16.4" width="6.8" height="4" rx=".8" fill="#494284" opacity=".3"/>',
+  LDPE:      '<rect x="9.4" y="12" width="15.2" height="10.6" rx="1.6" fill="#fff" opacity=".95"/>' +
+             '<ellipse cx="9.4" cy="17.3" rx="2.3" ry="5.3" fill="#fff" opacity=".7"/>' +
+             '<ellipse cx="9.4" cy="17.3" rx="1.1" ry="2.6" fill="#494284" opacity=".35"/>' +
+             '<path d="M24.6 12v10.6" stroke="#494284" stroke-width="1" opacity=".28"/>',
+  PS:        '<path d="M11.6 11.6h10.8l-1.5 12.2a1.8 1.8 0 0 1-1.8 1.6h-4.2a1.8 1.8 0 0 1-1.8-1.6z" fill="#fff" opacity=".95"/>' +
+             '<rect x="10.4" y="9.2" width="13.2" height="2.6" rx="1.1" fill="#fff" opacity=".72"/>' +
+             '<path d="M14 15.2h6M14.3 18.4h5.4" stroke="#494284" stroke-width="1.2" opacity=".32" stroke-linecap="round"/>',
+  Butter:    '<path d="M8.8 17.4l7.4-4.3 9 5.2-7.4 4.3z" fill="#fff" opacity=".95"/>' +
+             '<path d="M8.8 17.4v3.4l9.4 5.4v-3.4z" fill="#fff" opacity=".7"/>' +
+             '<path d="M25.2 18.3v3.4l-7 4.1v-3.4z" fill="#fff" opacity=".52"/>' +
+             '<path d="M12.4 15.3l9 5.2" stroke="#8A6212" stroke-width=".9" opacity=".4"/>',
+  Wood:      '<ellipse cx="17" cy="12.4" rx="7.4" ry="3" fill="#fff" opacity=".95"/>' +
+             '<path d="M9.6 12.4v8.4c0 1.7 3.3 3 7.4 3s7.4-1.3 7.4-3v-8.4" fill="#fff" opacity=".72"/>' +
+             '<ellipse cx="17" cy="12.4" rx="4.3" ry="1.7" fill="none" stroke="#3E5B31" stroke-width=".9" opacity=".45"/>' +
+             '<ellipse cx="17" cy="12.4" rx="1.8" ry=".8" fill="#3E5B31" opacity=".35"/>',
+  Aluminium: '<path d="M12 10.6h10v13a1.8 1.8 0 0 1-1.8 1.8h-6.4a1.8 1.8 0 0 1-1.8-1.8z" fill="#fff" opacity=".95"/>' +
+             '<ellipse cx="17" cy="10.6" rx="5" ry="1.9" fill="#fff" opacity=".72"/>' +
+             '<ellipse cx="17" cy="10.6" rx="2.4" ry=".9" fill="#7C3A17" opacity=".35"/>' +
+             '<rect x="13.6" y="15.4" width="6.8" height="4.6" rx=".8" fill="#7C3A17" opacity=".24"/>',
+  Copper:    '<path d="M10 12.4h9.6a4 4 0 0 1 0 8H13a3 3 0 0 0 0 6h11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>' +
+             '<circle cx="10" cy="12.4" r="2" fill="#fff"/><circle cx="24" cy="26.4" r="2" fill="#fff"/>'
+};
+function matIcon(m, cls) {
+  var kind = CAT_ICON[m.category] || "materials";
+  var grad = ICON_GRAD[kind] || "g-gold";
+  var g = MAT_GLYPH[m.key] || GLYPH[kind] || GLYPH.materials;
+  return '<svg class="ic ' + (cls || "") + '" viewBox="0 0 34 34" aria-hidden="true">' +
+    '<g filter="url(#f-drop)">' +
+    '<rect x="1.5" y="1.5" width="31" height="31" rx="9.5" fill="url(#' + grad + ')"/>' +
+    '<rect x="1.5" y="1.5" width="31" height="31" rx="9.5" fill="url(#g-gloss)"/>' +
+    '<rect x="2.6" y="2.6" width="28.8" height="28.8" rx="8.6" fill="none" stroke="#fff" stroke-opacity=".28"/>' +
+    "</g>" + g + "</svg>";
+}
+
+/* ===================================================================
+   PRODUCT ICONS — drawn to look like the thing on the shelf
+   =================================================================== */
+function prodIcon(kind, size) {
+  var sz = size || 62;
+  var open = '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 64 64" aria-hidden="true">';
+  var body = {
+    yoghurt:
+      '<ellipse cx="32" cy="57" rx="17" ry="3.6" fill="#000" opacity=".22"/>' +
+      '<path d="M17.5 18h29l-3.4 33.5a4 4 0 0 1-4 3.5H24.9a4 4 0 0 1-4-3.5z" fill="url(#p-yog)"/>' +
+      '<path d="M17.5 18h29l-3.4 33.5a4 4 0 0 1-4 3.5H24.9a4 4 0 0 1-4-3.5z" fill="url(#p-shine)" opacity=".5"/>' +
+      '<rect x="14.6" y="12.4" width="34.8" height="7" rx="3.2" fill="url(#p-yoglid)"/>' +
+      '<rect x="14.6" y="12.4" width="34.8" height="3.2" rx="1.6" fill="#fff" opacity=".3"/>' +
+      '<rect x="22" y="27" width="20" height="14" rx="2.6" fill="#17697E" opacity=".16"/>' +
+      '<path d="M26 34c2.6-3.6 6-3.6 8.6 0 1.4 2 3 2.2 4.4.8" fill="none" stroke="#17697E" stroke-width="2" stroke-linecap="round" opacity=".55"/>' +
+      '<ellipse cx="24" cy="24" rx="2.6" ry="5" fill="#fff" opacity=".5"/>',
+    juice:
+      '<ellipse cx="32" cy="57.5" rx="14" ry="3.2" fill="#000" opacity=".22"/>' +
+      '<path d="M27 9h10v4.6c0 2 .6 2.9 2 4.3l2 2c1.6 1.6 2.3 3 2.3 5.2V51a4 4 0 0 1-4 4H24.7a4 4 0 0 1-4-4V25.1c0-2.2.7-3.6 2.3-5.2l2-2c1.4-1.4 2-2.3 2-4.3z" fill="url(#p-juice)"/>' +
+      '<path d="M27 9h10v4.6c0 2 .6 2.9 2 4.3l2 2c1.6 1.6 2.3 3 2.3 5.2V51a4 4 0 0 1-4 4H24.7a4 4 0 0 1-4-4V25.1c0-2.2.7-3.6 2.3-5.2l2-2c1.4-1.4 2-2.3 2-4.3z" fill="url(#p-shine)" opacity=".45"/>' +
+      '<rect x="25.6" y="5" width="12.8" height="5.4" rx="1.8" fill="#7E3A06"/>' +
+      '<rect x="25.6" y="5" width="12.8" height="2.4" rx="1.2" fill="#fff" opacity=".25"/>' +
+      '<rect x="22.4" y="30" width="19.2" height="15" rx="2.4" fill="#fff" opacity=".82"/>' +
+      '<circle cx="32" cy="37.5" r="5.2" fill="#F58C1F"/>' +
+      '<path d="M32 32.3v10.4M26.8 37.5h10.4M28.3 33.8l7.4 7.4M35.7 33.8l-7.4 7.4" stroke="#fff" stroke-width=".9" opacity=".7"/>' +
+      '<path d="M33 31.8c1.2-1.7 2.8-2.2 4.5-1.9-.4 1.8-1.7 2.9-3.5 3z" fill="#4A7538"/>' +
+      '<ellipse cx="26.5" cy="26" rx="2.2" ry="7" fill="#fff" opacity=".35"/>',
+    butter:
+      '<ellipse cx="32" cy="52" rx="20" ry="3.6" fill="#000" opacity=".22"/>' +
+      '<path d="M8 30.5L26 20l30 8.8-18 10.5z" fill="url(#p-butter)"/>' +
+      '<path d="M8 30.5v7.8L38 47v-7.7z" fill="#D9AE38"/>' +
+      '<path d="M56 28.8v7.8L38 47v-7.7z" fill="#B78F1D"/>' +
+      '<path d="M8 30.5L26 20l30 8.8-18 10.5z" fill="url(#p-shine)" opacity=".45"/>' +
+      '<path d="M20 24.5l29.5 8.7" stroke="#fff" stroke-width="1.4" opacity=".45"/>' +
+      '<path d="M23 34.5c3.5-2 7-2 10.5 0" stroke="#8A6212" stroke-width="1.6" fill="none" opacity=".4" stroke-linecap="round"/>',
+    cheese:
+      '<ellipse cx="32" cy="55.5" rx="18" ry="3.4" fill="#000" opacity=".22"/>' +
+      '<path d="M13 24h38v25a5 5 0 0 1-5 5H18a5 5 0 0 1-5-5z" fill="url(#p-brine)"/>' +
+      '<path d="M17.5 31.5h13.6v13.6H17.5z" fill="url(#p-cheese)"/>' +
+      '<path d="M33.5 31.5h13V45h-13z" fill="url(#p-cheese)" opacity=".9"/>' +
+      '<path d="M17.5 31.5h13.6v3.4H17.5zM33.5 31.5h13v3.4h-13z" fill="#fff" opacity=".55"/>' +
+      '<circle cx="23" cy="38" r="1.5" fill="#CFC9B4" opacity=".8"/><circle cx="27.5" cy="42" r="1.1" fill="#CFC9B4" opacity=".7"/>' +
+      '<circle cx="39" cy="37" r="1.4" fill="#CFC9B4" opacity=".8"/><circle cx="42.5" cy="41.5" r="1" fill="#CFC9B4" opacity=".7"/>' +
+      '<ellipse cx="32" cy="24" rx="19" ry="4.4" fill="#E6F2F7"/>' +
+      '<ellipse cx="32" cy="24" rx="19" ry="4.4" fill="url(#p-shine)" opacity=".55"/>' +
+      '<ellipse cx="32" cy="23.4" rx="14.5" ry="3" fill="none" stroke="#9FC4D4" stroke-width="1.1" opacity=".7"/>'
+  }[kind] || "";
+  return open + '<g filter="url(#f-drop)">' + body + "</g></svg>";
+}
+
+/* ===================================================================
+   RECIPES — a working bill of materials per finished product
+   Shares are % of the tracked material cost. materialShare is how much
+   of the ex-works cost is materials at all, so a 10% move on a input
+   does not read as a 10% move on the product.
+   =================================================================== */
+var PRODUCTS = [
+  { key: "yoghurt", name: "Set yoghurt", icon: "yoghurt", colour: "#4FB3C4",
+    spec: "1 kg recombined, sweetened · PS cup, foil-lidded",
+    materialShare: 62,
+    bom: { SMP: 38, WMP: 16, Butter: 8, Sugar: 9, PS: 15, LDPE: 6, Wood: 8 },
+    indirect: ["Corn", "Soya"] },
+  { key: "juice", name: "Orange juice", icon: "juice", colour: "#F58C1F",
+    spec: "1 L nectar from concentrate · PET bottle",
+    materialShare: 55,
+    bom: { Orange: 34, Sugar: 22, PET: 26, LDPE: 4, Wood: 9, Aluminium: 5 },
+    indirect: [] },
+  { key: "butter", name: "Butter", icon: "butter", colour: "#F2CE5F",
+    spec: "200 g block · laminate wrap, shipper",
+    materialShare: 78,
+    bom: { Butter: 82, LDPE: 7, Wood: 6, Aluminium: 5 },
+    indirect: ["Corn", "Soya"] },
+  { key: "cheese", name: "White cheese", icon: "cheese", colour: "#9FC4D4",
+    spec: "Feta style in brine · filled recipe, tin and tub",
+    materialShare: 68,
+    bom: { SMP: 28, "Palm Oil": 18, WMP: 10, Butter: 6, PS: 17, Aluminium: 12, Wood: 9 },
+    indirect: ["Corn", "Soya"] }
+];
+
+function productCost(p) {
+  var by = {}, tot = { mom: 0, yoy: 0, f12: 0 }, covered = 0, missing = [];
+  Object.keys(p.bom).forEach(function (k) {
+    var m = MAT.filter(function (x) { return x.key === k; })[0];
+    if (!m) { missing.push(k); return; }
+    var wgt = p.bom[k] / 100;
+    covered += p.bom[k];
+    by[k] = {
+      m: m, share: p.bom[k],
+      mom: (m.mom || 0) * wgt, yoy: (m.yoy || 0) * wgt, f12: (m.f12 || 0) * wgt
+    };
+    tot.mom += by[k].mom; tot.yoy += by[k].yoy; tot.f12 += by[k].f12;
+  });
+  // rescale if a material has been hidden or is absent from the workbook
+  var scale = covered ? 100 / covered : 0;
+  ["mom", "yoy", "f12"].forEach(function (k) { tot[k] *= scale * p.materialShare / 100; });
+  Object.keys(by).forEach(function (k) {
+    by[k].f12 *= scale * p.materialShare / 100;
+  });
+  var ranked = Object.keys(by).map(function (k) { return by[k]; })
+    .sort(function (a, b) { return Math.abs(b.f12) - Math.abs(a.f12); });
+  return { tot: tot, by: by, ranked: ranked, missing: missing, covered: covered };
+}
+
+function renderProducts() {
+  $("#prods").innerHTML = PRODUCTS.map(function (p) {
+    var c = productCost(p);
+    if (!c.ranked.length) {
+      return '<div class="prod" style="--pc:' + p.colour + '"><div class="ph">' +
+        prodIcon(p.icon) + "<div><h3>" + p.name + "</h3>" +
+        '<div class="spec">every input for this recipe is hidden in settings</div></div></div></div>';
+    }
+    var mixTotal = c.ranked.reduce(function (a, x) { return a + x.share; }, 0) || 1;
+    var mix = c.ranked.map(function (x) {
+      return '<i style="width:' + (x.share / mixTotal * 100).toFixed(1) + "%;background:" + cat(x.m).hex + '"></i>';
+    }).join("");
+    var rows = c.ranked.map(function (x) {
+      return '<div class="r"><span class="d" style="background:' + cat(x.m).hex + '"></span>' +
+        '<span class="n">' + x.m.name + "</span>" +
+        '<span class="w">' + x.share + "%</span>" +
+        '<span class="c ' + dirCls(x.f12, .05) + '">' + (x.f12 >= 0 ? "+" : "") + x.f12.toFixed(2) + "%</span></div>";
+    }).join("");
+    var ind = p.indirect.filter(function (k) {
+      return MAT.some(function (m) { return m.key === k; });
+    });
+    var indTxt = ind.length ? '<div class="indirect"><b>Also watch:</b> ' + ind.join(" and ") +
+      " feed local herds, so they reach this product through raw milk rather than the recipe above.</div>" : "";
+    return '<div class="prod" style="--pc:' + p.colour + '">' +
+      '<div class="ph">' + prodIcon(p.icon) +
+        "<div><h3>" + p.name + '</h3><div class="spec">' + p.spec + "</div></div>" +
+        '<div class="hero"><div class="n ' + dirCls(c.tot.f12, .1) + '">' +
+          (c.tot.f12 >= 0 ? "+" : "") + c.tot.f12.toFixed(1) + '%</div><div class="l">cost, next 12 months</div></div>' +
+      "</div>" +
+      '<div class="mixbar">' + mix + "</div>" +
+      '<div class="bom">' + rows + "</div>" +
+      '<div class="foot">' +
+        "<span>materials are <b>" + p.materialShare + "%</b> of ex-works cost</span>" +
+        '<span>last 12 months <b class="' + dirCls(c.tot.yoy, .1) + '">' + (c.tot.yoy >= 0 ? "+" : "") + c.tot.yoy.toFixed(1) + "%</b></span>" +
+        "<span>biggest mover <b>" + c.ranked[0].m.name + "</b></span>" +
+      "</div>" + indTxt + "</div>";
+  }).join("");
 }
 
 /* ===================================================================
@@ -1955,7 +2249,7 @@ function renderAll() {
 
   paintSectionIcons();
   renderFan(); renderStrip(); renderMovers(); renderCards(); renderInsights();
-  renderRecs(); renderTips(); renderMTicker(); buildSettings(); applySections();
+  renderRecs(); renderTips(); renderProducts(); renderMTicker(); buildSettings(); applySections();
   if (cast.on) buildScenes();
 }
 
