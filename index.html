@@ -19,6 +19,7 @@
   --r:10px;
   --f-ui:"Archivo","Archivo Expanded",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-dsp:"Fraunces","Iowan Old Style",Georgia,"Times New Roman",serif;
+  --tick-a:#141F2C; --tick-b:rgba(20,31,44,.35); --tick-cast:rgba(13,20,29,.6);
   --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.045'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
@@ -325,7 +326,7 @@ footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
 
 /* ticker */
 .ticker{flex:0 0 auto;border-top:1px solid var(--rule);margin:0 -2.4vw;padding:1.1vh 0;
-  overflow:hidden;white-space:nowrap;position:relative;background:rgba(13,20,29,.6)}
+  overflow:hidden;white-space:nowrap;position:relative;background:var(--tick-cast)}
 .ticker-in{display:inline-block;animation:tick var(--tspeed,110s) linear infinite;will-change:transform}
 .ticker.paused .ticker-in{animation-play-state:paused}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -373,6 +374,7 @@ footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
    THEME — every colour flows from here
    ══════════════════════════════════════════════════════════ */
 html[data-theme="light"]{
+  --tick-a:#FFFFFF; --tick-b:#F7F4ED; --tick-cast:rgba(255,255,255,.72);
   --ink:#F4F1EA; --ink2:#FFFFFF; --ink3:#F0ECE3; --rule:#DED8CC; --rule2:#C6BEAE;
   --text:#161C24; --text2:#3E4A58; --muted:#6E7A88;
   --heat:#C2452A; --heat-d:#E9B3A6; --cool:#0E7C6B; --cool-d:#A8DAD1;
@@ -432,9 +434,9 @@ html[data-theme="light"] .mark img{filter:drop-shadow(0 3px 8px rgba(0,0,0,.16))
    ══════════════════════════════════════════════════════════ */
 .mticker{position:relative;overflow:hidden;white-space:nowrap;z-index:3;
   border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
-  background:linear-gradient(180deg,var(--ink2),rgba(20,31,44,.35));
+  background:linear-gradient(180deg,var(--tick-a),var(--tick-b));
   padding:13px 0;margin-bottom:8px}
-html[data-theme="light"] .mticker{background:linear-gradient(180deg,#fff,rgba(255,255,255,.5))}
+
 .mticker::before,.mticker::after{content:"";position:absolute;top:0;bottom:0;width:90px;z-index:2;
   pointer-events:none}
 .mticker::before{left:0;background:linear-gradient(90deg,var(--ink),transparent)}
@@ -557,15 +559,21 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 
 
 /* colour key under the fan */
-.key-lead{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
-  align-self:center;margin-right:4px;font-weight:700}
-.chip.key{padding:2px 8px 2px 3px;gap:5px;font-size:11.5px;border-radius:6px;
-  line-height:1.5}
-.chip.key .ic.xs{width:15px;height:15px}
-.chip.key i{display:none}
-.chip.key .kn{font-weight:500}
-.chip.key .kv{font-weight:700;font-size:10.5px;opacity:.75}
-.fan-legend{gap:4px;margin-top:10px}
+.fan-legend{display:block;margin-top:14px;padding-top:13px;border-top:1px solid var(--rule)}
+.key-lead{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--muted);font-weight:700;margin-bottom:9px}
+.keygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:2px 10px}
+.chip.key{all:unset;display:grid;grid-template-columns:16px 1fr auto;align-items:center;
+  gap:7px;padding:3px 5px;border-radius:5px;cursor:pointer;font-size:12px;line-height:1.4;
+  border-left:2px solid transparent;transition:background .12s,border-color .12s}
+.chip.key:hover{background:var(--ink3)}
+.chip.key.on{background:var(--ink3);border-left-color:currentColor}
+.chip.key.dim{opacity:.4}
+.chip.key .ic.xs{width:16px;height:16px}
+.chip.key .kn{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--text2)}
+.chip.key.on .kn{color:var(--text)}
+.chip.key .kv{font-weight:600;font-size:11px;font-variant-numeric:tabular-nums}
 
 /* icons on the big screen */
 .ctile .n{display:flex;align-items:center;gap:.55vw;min-width:0}
@@ -830,6 +838,61 @@ section[data-export].seen .sec-head::after{width:min(210px,38%)}
   .sheen{animation:none}
   .sec-head::after{transition:none;width:min(210px,38%)}
 }
+
+/* ══════════════════════════════════════════════════════════
+   Layout refinement — clearer hierarchy, calmer rhythm
+   ══════════════════════════════════════════════════════════ */
+.wrap{max-width:1500px;padding:0 34px}
+section{margin-top:58px}
+.sec-head{align-items:flex-start;gap:0;flex-direction:column;margin-bottom:20px}
+.sec-title{gap:13px;margin-bottom:7px}
+.sec-head h2{font-size:26px;letter-spacing:-.022em;line-height:1.15}
+.sec-head p{font-size:13.5px;line-height:1.6;max-width:76ch;color:var(--muted)}
+.sec-head .ic{width:30px;height:30px}
+.sec-head .btn{position:absolute;right:0;top:0}
+.sec-head{position:relative;padding-right:150px}
+@media (max-width:720px){ .sec-head{padding-right:0} .sec-head .btn{position:static;margin-top:10px} }
+
+/* masthead */
+.mast-in{padding:20px 0 17px;gap:30px}
+.brand h1{font-size:clamp(22px,2.5vw,31px);letter-spacing:-.026em}
+.mark img{height:52px}
+.brand .sub{font-size:12.5px;margin-top:6px}
+.stamp{font-size:12px;line-height:1.7}
+.tools{gap:7px}
+.btn{padding:8px 14px;font-size:12.5px;border-radius:9px}
+
+/* hero panel carries more weight than the rest */
+#fanSec .panel{padding:26px 28px;border-radius:14px;
+  box-shadow:0 18px 44px rgba(0,0,0,.20)}
+html[data-theme="light"] #fanSec .panel{box-shadow:0 14px 34px rgba(20,30,45,.07)}
+#fanSec .panel h2{font-size:24px}
+.strip{gap:13px;margin-top:16px}
+.stat{padding:17px 18px;border-radius:12px}
+.stat .v{font-size:31px}
+
+/* cards breathe a little more */
+.cards{gap:16px}
+.card{padding:18px 18px 14px;border-radius:12px}
+.card h3{font-size:17px}
+.px .big{font-size:29px}
+.recs{gap:15px}
+.rec{padding:17px 19px;border-radius:12px}
+.prods{gap:16px}
+.prod{padding:20px;border-radius:14px}
+.ins{gap:14px}
+.icard{padding:16px 18px;border-radius:12px}
+.tips{gap:14px}
+.tip-c{padding:16px 18px;border-radius:12px}
+.panel{border-radius:12px;padding:22px}
+.movers .mvgrid{gap:34px}
+
+/* controls line */
+.ctl{gap:11px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+.tab{padding:7px 14px;font-size:13px}
+.srch{padding:9px 13px;font-size:13.5px}
+
+footer{margin-top:70px;padding-top:26px}
 
 </style>
 </head>
@@ -1432,16 +1495,16 @@ function renderFan() {
 
   // legend
   $("#fanLegend").innerHTML =
-    '<span class="key-lead">Colour key</span>' +
+    '<span class="key-lead">Colour key &middot; click to isolate a line</span><div class="keygrid">' +
     shown().map(function (m) {
       var c = cat(m);
       var on = state.iso === m.key;
       return '<button class="chip key' + (on ? " on" : state.iso ? " dim" : "") + '" data-k="' + m.key +
         '" title="' + esc(m.desc) + '" style="color:' + (on ? c.hex : "") + '">' +
-        matIcon(m, "xs") + '<i style="background:' + c.hex + '"></i>' +
+        matIcon(m, "xs") +
         '<span class="kn">' + m.name + "</span>" +
         '<span class="kv ' + dirCls(m.f12) + '">' + pct(m.f12, 0) + "</span></button>";
-    }).join("");
+    }).join("") + "</div>";
   $$("#fanLegend .chip").forEach(function (b) {
     b.onclick = function () { state.iso = state.iso === b.dataset.k ? null : b.dataset.k; renderFan(); };
   });
@@ -1861,6 +1924,7 @@ function ingest(wb) {
   RAW = next;
   state.source = "Loaded workbook";
   renderAll();
+  if (NEWS.length) fetchNews();      // headlines follow whichever materials now lead
   return { loaded: Object.keys(next).length, skipped: skipped };
 }
 
@@ -1933,23 +1997,63 @@ function renderRecs() {
   }).join("");
 }
 
-var TIPS = [
-  ["Forward curves are a view, not a price you can buy",
-   "Mintec models them. They move as the market moves. Treat the direction as the signal and the level as an estimate."],
-  ["Range position beats headline change",
-   "A material up 3% but sitting at the bottom of its year is a better buy than one down 3% at the top. That is what the range bar under each price shows."],
-  ["Swing tells you how much to commit",
-   "Wide annualised swing means the twelve-month number could be wrong by more than the move it predicts. Cover in tranches there, not in one decision."],
-  ["Grains quote in cents per bushel",
-   "Corn and soya are not comparable to the rest until you switch on USD/tonne in the toolbar. The conversion uses contract bushel weights, not a rounded factor."],
-  ["EGP is a rate you set",
-   "There is no live FX feed here. Change the rate whenever the official rate moves, or the local numbers drift quietly out of date."],
-  ["The split between solid and dashed is real",
-   "It sits at the last settled observation from Mintec, not at today's date. If a series stops updating, the solid line stops with it."]
-];
+/* Half of these are fixed craft notes; the rest are written from whatever
+   workbook is loaded, so they move when the data does. */
+function buildTips() {
+  var V = shown(), out = [];
+  var vols = V.filter(function (m) { return m.vol !== null; }).sort(function (a, b) { return b.vol - a.vol; });
+  var cheap = V.filter(function (m) { return m.f12 !== null; })
+    .sort(function (a, b) { return (a.pos - b.pos) + (b.f12 - a.f12) / 100; });
+  var f12s = V.filter(function (m) { return m.f12 !== null; });
+  var basket = f12s.length ? f12s.reduce(function (a, m) { return a + m.f12; }, 0) / f12s.length : 0;
+  var stale = V.filter(function (m) {
+    return (D(state.asOf).getTime() - D(m.spotDate).getTime()) > 45 * 864e5;
+  });
+
+  out.push(["Forward curves are a view, not a price you can buy",
+    "Mintec models them. Treat the direction as the signal and the level as an estimate."]);
+
+  if (vols[0]) {
+    out.push(["Size the position to the swing",
+      vols[0].name + " swings " + num(vols[0].vol, 0) + "% a year, " +
+      (vols[vols.length - 1] ? vols[vols.length - 1].name + " only " + num(vols[vols.length - 1].vol, 0) + "%. " : "") +
+      "Cover the first in tranches; the second you can decide once."]);
+  }
+  if (cheap[0]) {
+    out.push(["Range position beats headline change",
+      cheap[0].name + " sits at " + Math.round(cheap[0].pos * 100) + "% of its 12-month range" +
+      (cheap[0].f12 > 0 ? " with the curve still rising — that combination is the buy signal." :
+                          ", which is where cover is cheapest even when the curve is soft.")]);
+  }
+  out.push(["The basket is " + pct(basket) + " over twelve months",
+    "That average hides the spread: " + f12s.filter(function (m) { return m.f12 > 0; }).length +
+    " inputs adding cost, " + f12s.filter(function (m) { return m.f12 < 0; }).length +
+    " taking it out. Work the extremes, not the average."]);
+
+  if (V.some(function (m) { return BUSHEL[m.unit]; })) {
+    out.push(["Grains quote in cents per bushel",
+      "Corn and soya are not comparable to the rest until you switch to USD/tonne. " +
+      "Both readings show on the card, using real contract weights."]);
+  }
+  out.push(["Raw milk moves less than corn does",
+    "Only " + Math.round((function () {
+      var r = rawMilkPrice("spot");
+      return r.egp ? (r.corn + r.soya) / r.egp * 100 : 0;
+    })()) + "% of the gate price tracks the market. The rest is alfalfa, fixed farm cost and haulage."]);
+
+  if (stale.length) {
+    out.push(["Some series have stopped updating",
+      stale.map(function (m) { return m.name; }).slice(0, 3).join(", ") +
+      " last settled before the rest. The solid line stops where the data does."]);
+  } else {
+    out.push(["The split between solid and dashed is real",
+      "It sits at the last settled observation, not at today's date. If a series stops updating, the solid line stops with it."]);
+  }
+  return out;
+}
 
 function renderTips() {
-  $("#tips").innerHTML = TIPS.map(function (t) {
+  $("#tips").innerHTML = buildTips().map(function (t) {
     return '<div class="tip-c"><h5>' + t[0] + "</h5><p>" + t[1] + "</p></div>";
   }).join("");
 }
@@ -2331,12 +2435,19 @@ var LINE = {
 var CAT_HEX = { "Grains & Oilseeds":"#D9A441", Dairy:"#4FB3C4", Softs:"#C77BB0",
                 Metals:"#D2703F", "Plastics & Textiles":"#8E86D6", "Paper & Wood":"#7FA96A" };
 
+var _gid = 0, _grads = {};
 function lineIcon(glyphKey, hex, cls) {
   var g = LINE[glyphKey] || LINE.materials;
+  var id = _grads[hex] || (_grads[hex] = "ig" + (++_gid));
+  var def = '<linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + hex + '" stop-opacity=".26"/>' +
+    '<stop offset="1" stop-color="' + hex + '" stop-opacity=".08"/></linearGradient>';
   return '<svg class="ic ' + (cls || "") + '" viewBox="0 0 24 24" aria-hidden="true">' +
-    '<rect x="0" y="0" width="24" height="24" rx="7" fill="' + hex + '" opacity=".13"/>' +
-    '<g fill="none" stroke="' + hex + '" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" ' +
-    'style="color:' + hex + '">' + g + "</g></svg>";
+    "<defs>" + def + "</defs>" +
+    '<rect x=".5" y=".5" width="23" height="23" rx="6.6" fill="url(#' + id + ')" ' +
+      'stroke="' + hex + '" stroke-opacity=".22"/>' +
+    '<g fill="none" stroke="' + hex + '" stroke-width="1.5" stroke-linecap="round" ' +
+      'stroke-linejoin="round" style="color:' + hex + '">' + g + "</g></svg>";
 }
 function paintSectionIcons() {
   $$("[data-icon]").forEach(function (el) {
