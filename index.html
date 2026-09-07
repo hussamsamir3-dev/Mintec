@@ -894,6 +894,109 @@ html[data-theme="light"] #fanSec .panel{box-shadow:0 14px 34px rgba(20,30,45,.07
 
 footer{margin-top:70px;padding-top:26px}
 
+/* ══════════════════════════════════════════════════════════
+   Raw milk planner
+   ══════════════════════════════════════════════════════════ */
+.planbox{width:min(1080px,100%);max-height:92vh;position:relative}
+.plangrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px}
+.planctl,.planout{background:var(--ink);border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.planctl h4,.planout h4,.plantable h4{margin:0 0 13px;font-size:11px;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--muted);font-weight:700}
+.pf{margin-bottom:11px}
+.pf label{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:12.5px;color:var(--text2);margin-bottom:5px}
+.pf label em{font-style:normal;color:var(--muted);font-size:11px}
+.pfin{display:flex;gap:9px;align-items:center}
+.pfin input[type=range]{flex:1 1 auto;accent-color:var(--gold);height:4px}
+.pfin input[type=number]{width:74px;flex:0 0 auto;background:var(--ink2);
+  border:1px solid var(--rule2);border-radius:7px;padding:5px 8px;color:var(--text);
+  font:inherit;font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+.pfin input[type=number]:focus{border-color:var(--gold);outline:none}
+.pbig{display:flex;align-items:baseline;gap:9px}
+.pbig .v{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1;
+  transition:color .3s}
+.pbig .u{color:var(--muted);font-size:12px}
+.pdelta{margin-top:7px;font-size:12.5px;font-weight:600}
+.pkv{display:grid;grid-template-columns:1fr 1fr;gap:7px 16px;margin:15px 0 14px;
+  padding:13px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.pkv div{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px}
+.pkv span{color:var(--muted)}
+.pkv b{font-weight:600;font-variant-numeric:tabular-nums}
+.plegs{display:grid;gap:5px}
+.pl{display:grid;grid-template-columns:9px 100px 1fr 48px;align-items:center;gap:8px;font-size:12.5px}
+.pl .d{width:8px;height:8px;border-radius:2px}
+.pl .n{color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl .b{height:7px;background:var(--ink2);border-radius:4px;overflow:hidden}
+.pl .b i{display:block;height:100%;border-radius:4px;transition:width .45s cubic-bezier(.22,.61,.36,1)}
+.pl .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.planchart{margin-bottom:16px;padding:14px 16px}
+.plantable table{font-size:12px}
+.plantable .tblwrap{max-height:230px}
+.planfoot{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+@media (max-width:820px){ .plangrid{grid-template-columns:1fr} }
+
+/* ══════════════════════════════════════════════════════════
+   Motion, second pass — staggered reveals, counting numbers,
+   bars that fill on sight, icons that respond to a hover
+   ══════════════════════════════════════════════════════════ */
+.ic .glyph-back{opacity:0;transition:opacity .25s}
+.card:hover .ic .glyph-back,.rec:hover .ic .glyph-back,
+.chip.key:hover .ic .glyph-back,.uchip:hover .ic .glyph-back{opacity:1}
+.ic{transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.card:hover .ic,.rec:hover .ic{transform:scale(1.09) rotate(-3deg)}
+
+/* children arrive after their section, in sequence */
+section[data-export].seen .cards > *,
+section[data-export].seen .recs > *,
+section[data-export].seen .prods > *,
+section[data-export].seen .ins > *,
+section[data-export].seen .tips > *,
+section[data-export].seen .strip > *,
+section[data-export].seen .rmkpi > *{
+  animation:rise .5s cubic-bezier(.22,.61,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.cards > *:nth-child(1),.recs > *:nth-child(1),.prods > *:nth-child(1),
+.ins > *:nth-child(1),.tips > *:nth-child(1),.strip > *:nth-child(1),.rmkpi > *:nth-child(1){animation-delay:.02s}
+.cards > *:nth-child(2),.recs > *:nth-child(2),.prods > *:nth-child(2),
+.ins > *:nth-child(2),.tips > *:nth-child(2),.strip > *:nth-child(2),.rmkpi > *:nth-child(2){animation-delay:.07s}
+.cards > *:nth-child(3),.recs > *:nth-child(3),.prods > *:nth-child(3),
+.ins > *:nth-child(3),.tips > *:nth-child(3),.strip > *:nth-child(3),.rmkpi > *:nth-child(3){animation-delay:.12s}
+.cards > *:nth-child(4),.recs > *:nth-child(4),.prods > *:nth-child(4),
+.ins > *:nth-child(4),.tips > *:nth-child(4),.strip > *:nth-child(4),.rmkpi > *:nth-child(4){animation-delay:.17s}
+.cards > *:nth-child(n+5),.recs > *:nth-child(n+5),.prods > *:nth-child(n+5),
+.ins > *:nth-child(n+5),.tips > *:nth-child(n+5),.strip > *:nth-child(n+5),.rmkpi > *:nth-child(n+5){animation-delay:.22s}
+
+/* movers bars grow from nothing when the section is first seen */
+.mvb{width:0!important}
+section[data-export].seen .mvb{width:var(--w)!important;
+  transition:width .9s cubic-bezier(.22,.61,.36,1) .2s}
+
+/* the mix bars in products do the same */
+.mixbar i,.rml .b i,.pl .b i{transform-origin:left center}
+section[data-export].seen .mixbar i{animation:grow .8s cubic-bezier(.22,.61,.36,1) both .25s}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* a soft pulse on the live dot, so the page feels alive */
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(49,174,157,.18)}
+  50%{box-shadow:0 0 0 6px rgba(49,174,157,.06)}}
+.dot{animation:pulse 2.8s ease-in-out infinite}
+.dot.stale{animation:none}
+
+/* the gold "today" marker breathes */
+@keyframes markpulse{0%,100%{opacity:.55}50%{opacity:.95}}
+.nowline{animation:markpulse 3.4s ease-in-out infinite}
+
+@media (prefers-reduced-motion:reduce){
+  section[data-export].seen .cards > *,section[data-export].seen .recs > *,
+  section[data-export].seen .prods > *,section[data-export].seen .ins > *,
+  section[data-export].seen .tips > *,section[data-export].seen .strip > *,
+  section[data-export].seen .rmkpi > *,
+  section[data-export].seen .mixbar i{animation:none}
+  .mvb,section[data-export].seen .mvb{transition:none}
+  .dot,.nowline{animation:none}
+  .card:hover .ic,.rec:hover .ic{transform:none}
+}
+
 </style>
 </head>
 <body>
@@ -1015,6 +1118,7 @@ footer{margin-top:70px;padding-top:26px}
       <p>The whole ration valued at every date corn and meal are quoted &mdash; real history, and a forward path that follows the feed curves rather than a straight line.</p>
     </div>
     <div id="rmTrend"></div>
+    <div style="margin-top:14px"><button class="btn pri" id="btnPlan">Open the raw milk planner</button></div>
   </section>
 
   <!-- ── finished products ─────────────────────────────── -->
@@ -1062,6 +1166,25 @@ footer{margin-top:70px;padding-top:26px}
     </div>
   </footer>
 </main>
+
+<div class="modal" id="mPlan">
+  <div class="mbox planbox">
+    <button class="x" id="planX" aria-label="Close" style="position:absolute;top:14px;right:18px;font-size:24px;color:var(--muted)">&times;</button>
+    <h3>Raw milk planner</h3>
+    <p style="margin:0 0 16px">Move any lever and the gate price, the delivered price and the whole forward path recalculate. Feed follows the market; everything else is yours to set.</p>
+    <div class="plangrid">
+      <div class="planctl" id="planCtl"></div>
+      <div class="planout" id="planOut"></div>
+    </div>
+    <div class="planchart panel" id="planChart"></div>
+    <div class="plantable" id="planTable"></div>
+    <div class="planfoot">
+      <button class="btn" id="planReset">Reset assumptions</button>
+      <button class="btn" id="planCsv">Download forecast as CSV</button>
+      <button class="btn pri" id="planApply">Done</button>
+    </div>
+  </div>
+</div>
 
 <div class="set" id="setPanel" role="dialog" aria-label="Settings">
   <button class="x" id="setX" aria-label="Close" style="position:absolute;top:16px;right:20px;font-size:22px;color:var(--muted)">&times;</button>
@@ -1560,7 +1683,7 @@ function renderMovers() {
       return '<div class="mvrow" data-k="' + m.key + '" role="button" tabindex="0">' +
         '<span class="mvi">' + matIcon(m, "sm") + "</span>" +
         '<span class="mvn">' + m.name + "</span>" +
-        '<span class="mvt"><span class="mvb ' + cls + '" style="width:' + w.toFixed(1) + '%"></span></span>' +
+        '<span class="mvt"><span class="mvb ' + cls + '" style="--w:' + w.toFixed(1) + '%"></span></span>' +
         '<span class="mvv ' + cls + '">' + (m.f12 > 0 ? "+" : "") + m.f12.toFixed(1) + "%</span></div>";
     }).join("");
     var ticks = [0, .25, .5, .75, 1].map(function (t) {
@@ -2092,7 +2215,7 @@ function buildNewsScene() {
 
 /* rotating band: alternates a reading tip with a signal read off the data */
 function bandItems() {
-  var out = TIPS.map(function (t) { return { k: "Tip", c: "", s: "<b>" + t[0] + ".</b> " + t[1] }; });
+  var out = buildTips().map(function (t) { return { k: "Tip", c: "", s: "<b>" + t[0] + ".</b> " + t[1] }; });
   shown().filter(function (m) { return m.f12 !== null; })
     .sort(function (a, b) { return Math.abs(b.f12) - Math.abs(a.f12); })
     .slice(0, 8).forEach(function (m) {
@@ -2326,7 +2449,11 @@ function castClock() {
 
 function openCast() {
   cast.on = true;
-  buildScenes();
+  try { buildScenes(); }
+  catch (err) {
+    console.error("cast panel build failed", err);
+    $("#sc0").innerHTML = '<div class="empty">A panel failed to build. The dashboard itself is fine — press Esc.</div>';
+  }
   $("#cast").classList.add("on");
   showScene(0);
   castLoop();
@@ -2436,17 +2563,26 @@ var CAT_HEX = { "Grains & Oilseeds":"#D9A441", Dairy:"#4FB3C4", Softs:"#C77BB0",
                 Metals:"#D2703F", "Plastics & Textiles":"#8E86D6", "Paper & Wood":"#7FA96A" };
 
 var _gid = 0, _grads = {};
+/* Duotone: a soft gradient tile, a blurred colour bloom behind the glyph,
+   then the line work on top. Reads as crafted at 16px and at 46px. */
 function lineIcon(glyphKey, hex, cls) {
   var g = LINE[glyphKey] || LINE.materials;
   var id = _grads[hex] || (_grads[hex] = "ig" + (++_gid));
-  var def = '<linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0" stop-color="' + hex + '" stop-opacity=".26"/>' +
-    '<stop offset="1" stop-color="' + hex + '" stop-opacity=".08"/></linearGradient>';
+  var defs =
+    '<linearGradient id="' + id + '" x1=".2" y1="0" x2=".8" y2="1">' +
+      '<stop offset="0" stop-color="' + hex + '" stop-opacity=".30"/>' +
+      '<stop offset="1" stop-color="' + hex + '" stop-opacity=".07"/></linearGradient>' +
+    '<radialGradient id="' + id + 'b" cx="34%" cy="26%">' +
+      '<stop offset="0" stop-color="#fff" stop-opacity=".30"/>' +
+      '<stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>';
   return '<svg class="ic ' + (cls || "") + '" viewBox="0 0 24 24" aria-hidden="true">' +
-    "<defs>" + def + "</defs>" +
-    '<rect x=".5" y=".5" width="23" height="23" rx="6.6" fill="url(#' + id + ')" ' +
-      'stroke="' + hex + '" stroke-opacity=".22"/>' +
-    '<g fill="none" stroke="' + hex + '" stroke-width="1.5" stroke-linecap="round" ' +
+    "<defs>" + defs + "</defs>" +
+    '<rect x=".5" y=".5" width="23" height="23" rx="7" fill="url(#' + id + ')" ' +
+      'stroke="' + hex + '" stroke-opacity=".24"/>' +
+    '<rect x=".5" y=".5" width="23" height="23" rx="7" fill="url(#' + id + 'b)"/>' +
+    '<g class="glyph-back" fill="none" stroke="' + hex + '" stroke-opacity=".16" ' +
+      'stroke-width="4" stroke-linecap="round" stroke-linejoin="round">' + g + "</g>" +
+    '<g class="glyph" fill="none" stroke="' + hex + '" stroke-width="1.5" stroke-linecap="round" ' +
       'stroke-linejoin="round" style="color:' + hex + '">' + g + "</g></svg>";
 }
 function paintSectionIcons() {
@@ -2817,6 +2953,123 @@ function renderRawMilkTrend() {
   var box = $("#rmChartBox");
   if (box) box.innerHTML = rawMilkChart(Math.max(700, box.clientWidth || 1000), Math.round(300 * prefs.chart));
 }
+
+
+/* ===================================================================
+   RAW MILK PLANNER — set the levers, watch the whole path move
+   =================================================================== */
+var PLAN_FIELDS = [
+  { k: "fixed",        label: "Fixed farm cost",   unit: "EGP/kg", min: 0,  max: 25, step: 0.1 },
+  { k: "transport",    label: "Transportation",    unit: "EGP/kg", min: 0,  max: 10, step: 0.1 },
+  { k: "summerPct",    label: "Summer bonus",      unit: "%",      min: 0,  max: 25, step: 0.5 },
+  { k: "alfalfaPrice", label: "Alfalfa price",     unit: "EGP/kg", min: 0,  max: 60, step: 0.25 },
+  { k: "cornShare",    label: "Corn in the ration",unit: "kg/100", min: 0,  max: 150, step: 1 },
+  { k: "soyaShare",    label: "Soybean meal",      unit: "kg/100", min: 0,  max: 100, step: 1 },
+  { k: "alfalfaShare", label: "Alfalfa",           unit: "kg/100", min: 0,  max: 150, step: 1 },
+  { k: "fx",           label: "Exchange rate",     unit: "EGP/$",  min: 10, max: 200, step: 0.5 }
+];
+
+function planControls() {
+  $("#planCtl").innerHTML =
+    '<h4>Your levers</h4>' +
+    PLAN_FIELDS.map(function (f) {
+      var v = prefs.model[f.k];
+      return '<div class="pf"><label for="pf_' + f.k + '"><span>' + f.label +
+        '</span><em>' + f.unit + "</em></label>" +
+        '<div class="pfin"><input type="range" id="pfr_' + f.k + '" data-p="' + f.k + '" min="' + f.min +
+          '" max="' + f.max + '" step="' + f.step + '" value="' + v + '">' +
+        '<input type="number" id="pf_' + f.k + '" data-p="' + f.k + '" step="' + f.step + '" value="' + v + '"></div></div>';
+    }).join("") +
+    '<div class="pf"><label><span>Summer bonus applies</span></label>' +
+      '<div class="mini" id="planSummer">' +
+      ["auto", "on", "off"].map(function (v) {
+        return '<button data-v="' + v + '" aria-pressed="' + (prefs.model.summerMode === v) + '">' +
+          { auto: "Auto", on: "Always", off: "Never" }[v] + "</button>";
+      }).join("") + "</div></div>";
+
+  $$("#planCtl input[data-p]").forEach(function (i) {
+    i.oninput = function () {
+      var v = parseFloat(this.value);
+      if (isNaN(v)) return;
+      prefs.model[this.dataset.p] = v;
+      $$('#planCtl [data-p="' + this.dataset.p + '"]').forEach(function (x) { if (x !== i) x.value = v; });
+      planPaint();
+    };
+    i.onchange = function () { savePrefs(); renderAll(); planPaint(); };
+  });
+  $$("#planSummer button").forEach(function (b) {
+    b.onclick = function () {
+      prefs.model.summerMode = b.dataset.v;
+      $$("#planSummer button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      savePrefs(); renderAll(); planPaint();
+    };
+  });
+}
+
+function planPaint() {
+  var M = prefs.model;
+  var now = rawMilkPrice("spot"), f12 = rawMilkPrice("f12"), yoy = rawMilkPrice("yoy");
+  var chg = now.egp ? (f12.egp / now.egp - 1) * 100 : 0;
+  var ser = rawMilkSeries();
+  var base = PLAN_BASE || now.egp;
+  var delta = now.egp - base;
+
+  var legs = [
+    ["Corn", now.corn, "#D9A441"], ["Soybean meal", now.soya, "#C79A3A"],
+    ["Alfalfa", now.alfalfa, "#7FA96A"], ["Fixed farm cost", now.fixed, "#7E93AC"],
+    ["Transportation", now.transport, "#5F7288"]
+  ];
+  if (now.summer > 0) legs.push(["Summer bonus", now.summer, "#DFA93A"]);
+
+  $("#planOut").innerHTML =
+    '<h4>What that gives you</h4>' +
+    '<div class="pbig"><span class="v">' + now.egp.toFixed(2) + '</span><span class="u">EGP / kg delivered</span></div>' +
+    (Math.abs(delta) > 0.005
+      ? '<div class="pdelta ' + (delta > 0 ? "up" : "dn") + '">' + (delta > 0 ? "+" : "") + delta.toFixed(2) +
+        " EGP against where you started</div>"
+      : '<div class="pdelta fl">unchanged from your saved assumptions</div>') +
+    '<div class="pkv">' +
+      '<div><span>Ration</span><b>' + now.ration.toFixed(2) + "</b></div>" +
+      '<div><span>Gate</span><b>' + now.gate.toFixed(2) + "</b></div>" +
+      '<div><span>Next 12 months</span><b class="' + dirCls(chg, .1) + '">' + pct(chg) + "</b></div>" +
+      '<div><span>Year on year</span><b class="' + dirCls((now.egp / yoy.egp - 1) * 100, .1) + '">' +
+        pct((now.egp / yoy.egp - 1) * 100) + "</b></div>" +
+      '<div><span>Feed exposure</span><b>' + Math.round((now.corn + now.soya) / now.egp * 100) + "%</b></div>" +
+      '<div><span>Ration weight</span><b>' + ((M.cornShare + M.soyaShare + M.alfalfaShare) / 100).toFixed(2) + " kg</b></div>" +
+    "</div>" +
+    '<div class="plegs">' + legs.map(function (l) {
+      return '<div class="pl"><span class="d" style="background:' + l[2] + '"></span>' +
+        '<span class="n">' + l[0] + "</span>" +
+        '<span class="b"><i style="width:' + (l[1] / now.egp * 100).toFixed(1) + "%;background:" + l[2] + '"></i></span>' +
+        '<span class="v">' + l[1].toFixed(2) + "</span></div>";
+    }).join("") + "</div>";
+
+  var box = $("#planChart");
+  if (box) box.innerHTML = rawMilkChart(Math.max(640, box.clientWidth || 900), 250);
+
+  // a year of monthly forward readings
+  var cut = state.asOf;
+  var fwd = ser.filter(function (x) { return x.d > cut; }).slice(0, 14);
+  $("#planTable").innerHTML = fwd.length
+    ? '<h4>Month by month from here</h4><div class="tblwrap"><table><thead><tr><th>Month</th>' +
+      "<th>Corn</th><th>Meal</th><th>Alfalfa</th><th>Fixed</th><th>Haulage</th><th>Bonus</th><th>Delivered</th></tr></thead><tbody>" +
+      fwd.map(function (x) {
+        return "<tr><td>" + fmtD(x.d) + "</td><td>" + x.corn.toFixed(2) + "</td><td>" + x.meal.toFixed(2) +
+          "</td><td>" + x.alfalfa.toFixed(2) + "</td><td>" + x.fixed.toFixed(2) + "</td><td>" +
+          x.transport.toFixed(2) + "</td><td>" + x.summer.toFixed(2) + "</td><td><b>" + x.v.toFixed(2) + "</b></td></tr>";
+      }).join("") + "</tbody></table></div>"
+    : '<div class="empty">No forward points in the corn series, so there is nothing to project.</div>';
+}
+
+var PLAN_BASE = null, PLAN_SNAPSHOT = null;
+function openPlan() {
+  PLAN_BASE = rawMilkPrice("spot").egp;
+  PLAN_SNAPSHOT = JSON.parse(JSON.stringify(prefs.model));
+  $("#mPlan").classList.add("on");
+  planControls();
+  planPaint();
+}
+function closePlan() { $("#mPlan").classList.remove("on"); }
 
 /* ===================================================================
    RECIPES — a working bill of materials per finished product
@@ -3262,6 +3515,28 @@ function renderMTicker() {
 /* ===================================================================
    RENDER + WIRING
    =================================================================== */
+function countUp(el, to, dp, suffix, prefix) {
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  var from = 0, t0 = null, dur = 750;
+  function step(ts) {
+    if (!t0) t0 = ts;
+    var k = Math.min(1, (ts - t0) / dur);
+    var e = 1 - Math.pow(1 - k, 3);
+    el.textContent = (prefix || "") + (from + (to - from) * e).toFixed(dp) + (suffix || "");
+    if (k < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function animateNumbers(root) {
+  if (!window.requestAnimationFrame) return;
+  $$(root + " [data-count]", document).forEach(function (el) {
+    if (el.dataset.done) return;
+    el.dataset.done = "1";
+    countUp(el, parseFloat(el.dataset.count), +el.dataset.dp || 0, el.dataset.suffix || "", el.dataset.prefix || "");
+  });
+}
+
 function renderAll() {
   derive();
   var pts = MAT.reduce(function (a, m) { return a + m.series.length; }, 0);
@@ -3354,6 +3629,26 @@ function boot() {
     };
   });
   $("#btnNews").onclick = fetchNews;
+  $("#btnPlan").onclick = openPlan;
+  $("#planX").onclick = closePlan;
+  $("#planApply").onclick = function () { savePrefs(); renderAll(); closePlan(); };
+  $("#planReset").onclick = function () {
+    if (PLAN_SNAPSHOT) prefs.model = JSON.parse(JSON.stringify(PLAN_SNAPSHOT));
+    savePrefs(); renderAll(); planControls(); planPaint();
+  };
+  $("#planCsv").onclick = function () {
+    var ser = rawMilkSeries();
+    var csv = "date,corn,soybean_meal,alfalfa,fixed,transport,summer_bonus,delivered_egp_per_kg,basis\n" +
+      ser.map(function (x) {
+        return [x.d, x.corn.toFixed(3), x.meal.toFixed(3), x.alfalfa.toFixed(3), x.fixed.toFixed(3),
+                x.transport.toFixed(3), x.summer.toFixed(3), x.v.toFixed(3),
+                x.d > state.asOf ? "forecast" : "settled"].join(",");
+      }).join("\n");
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = "raw_milk_plan_" + state.asOf + ".csv";
+    a.click();
+  };
   $("#btnCast").onclick = openCast;
 
   // ── settings drawer
@@ -3443,6 +3738,7 @@ function boot() {
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       if (cast.on) { closeCast(); return; }
+      if ($("#mPlan").classList.contains("on")) { closePlan(); return; }
       if ($("#setPanel").classList.contains("on")) { setOpen(false); return; }
       closeDrawer();
       $$(".modal.on").forEach(function (m) { m.classList.remove("on"); });
