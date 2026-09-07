@@ -997,6 +997,27 @@ section[data-export].seen .mixbar i{animation:grow .8s cubic-bezier(.22,.61,.36,
   .card:hover .ic,.rec:hover .ic{transform:none}
 }
 
+/* editable monthly plan */
+.plantools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:11px}
+.plantools .esc{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text2)}
+.plantools .esc input{width:62px;background:var(--ink2);border:1px solid var(--rule2);
+  border-radius:7px;padding:5px 8px;color:var(--text);font:inherit;font-size:12.5px;text-align:right}
+.plantbl th.ed{color:var(--gold)}
+.plantbl td.ed{padding:2px 4px}
+.plantbl td.ed input{width:100%;min-width:62px;background:var(--ink2);
+  border:1px solid var(--rule);border-radius:6px;padding:4px 7px;color:var(--text);
+  font:inherit;font-size:12px;text-align:right;font-variant-numeric:tabular-nums;
+  transition:border-color .14s,background .14s}
+.plantbl td.ed input:hover{border-color:var(--rule2)}
+.plantbl td.ed input:focus{border-color:var(--gold);outline:none;background:var(--ink)}
+.plantbl tr.edited td:first-child{position:relative;padding-left:14px}
+.plantbl tr.edited td:first-child::before{content:"";position:absolute;left:4px;top:50%;
+  transform:translateY(-50%);width:4px;height:4px;border-radius:50%;background:var(--gold)}
+.plantbl td.bonus{color:var(--gold);font-weight:600}
+.plantbl tbody tr:hover td{background:var(--ink3)}
+.planhint{margin-top:11px;color:var(--muted);font-size:12px;line-height:1.55}
+.plantable .tblwrap{max-height:300px}
+
 </style>
 </head>
 <body>
@@ -2711,7 +2732,35 @@ function feedPrices() {
   return out;
 }
 
+function seriesPoint(ser, targetIso) {
+  var best = null, bd = Infinity, t = D(targetIso).getTime();
+  ser.forEach(function (x) {
+    var dd = Math.abs(D(x.d).getTime() - t);
+    if (dd < bd) { bd = dd; best = x; }
+  });
+  return best;
+}
+
 function rawMilkPrice(horizon) {
+  var ser = rawMilkSeries();
+  if (ser.length) {
+    var cut = state.asOf, t = D(cut).getTime();
+    var target = horizon === "f12" ? cut : horizon === "yoy" ? cut : cut;
+    if (horizon === "f12") target = new Date(t + 365 * 864e5).toISOString().slice(0, 10);
+    else if (horizon === "yoy") target = new Date(t - 365 * 864e5).toISOString().slice(0, 10);
+    else if (horizon === "mom") target = new Date(t - 31 * 864e5).toISOString().slice(0, 10);
+    var pt = seriesPoint(ser, target);
+    if (pt) {
+      return { egp: pt.v, gate: pt.gate, ration: pt.ration, corn: pt.corn, soya: pt.meal,
+               alfalfa: pt.alfalfa, fixed: pt.fixed, transport: pt.transport,
+               summer: pt.summer, summerOn: pt.summerOn, edited: pt.edited,
+               date: pt.d, fp: feedPrices() };
+    }
+  }
+  return rawMilkFlat(horizon);
+}
+
+function rawMilkFlat(horizon) {
   var M = prefs.model;
   var fp = feedPrices();
   var move = function (m, h) {
@@ -2812,6 +2861,20 @@ function valueAt(m, iso) {
   return bd <= 62 * 864e5 ? best : null;
 }
 
+/* The base assumptions, with any month-specific override applied on top.
+   The summer bonus is never overridden — it follows the calendar. */
+function modelAt(iso) {
+  var M = prefs.model, o = (M.overrides || {})[iso.slice(0, 7)] || {};
+  return {
+    fixed: o.fixed !== undefined ? o.fixed : M.fixed,
+    transport: o.transport !== undefined ? o.transport : M.transport,
+    alfalfaPrice: o.alfalfaPrice !== undefined ? o.alfalfaPrice : M.alfalfaPrice,
+    cornShare: M.cornShare, soyaShare: M.soyaShare, alfalfaShare: M.alfalfaShare,
+    fx: M.fx, summerPct: M.summerPct, summerMode: M.summerMode,
+    edited: o.fixed !== undefined || o.transport !== undefined || o.alfalfaPrice !== undefined
+  };
+}
+
 function rawMilkSeries() {
   var M = prefs.model;
   var corn = MAT.filter(function (m) { return m.key === "Corn"; })[0];
@@ -2822,25 +2885,28 @@ function rawMilkSeries() {
   var out = [];
   corn.series.forEach(function (p) {
     var iso = p[0];
-    var cornEgp = p[1] * buCorn / 100 / 1000 * M.fx;             // ¢/bu -> USD/t -> EGP/kg
+    var A = modelAt(iso);
+    var cornEgp = p[1] * buCorn / 100 / 1000 * A.fx;             // ¢/bu -> USD/t -> EGP/kg
     var mealEgp = null;
     var sv = valueAt(soya, iso), pv = valueAt(palm, iso);
     if (sv !== null) {
       var oilCredit = (pv || 0) * (M.oilLb / LB_PER_MT);
       var mealMT = (sv / 100 - oilCredit - M.hullCredit + M.crushCost) * M.buPerMT;
-      mealEgp = mealMT / 1000 * M.fx;
+      mealEgp = mealMT / 1000 * A.fx;
     }
-    var c = cornEgp * M.cornShare / 100;
-    var so = (mealEgp === null ? 0 : mealEgp) * M.soyaShare / 100;
-    var a = M.alfalfaPrice * M.alfalfaShare / 100;
-    var gate = c + so + a + M.fixed;
+    var c = cornEgp * A.cornShare / 100;
+    var so = (mealEgp === null ? 0 : mealEgp) * A.soyaShare / 100;
+    var a = A.alfalfaPrice * A.alfalfaShare / 100;
+    var gate = c + so + a + A.fixed;
     var mo = D(iso).getUTCMonth();
-    var inSummer = M.summerMode === "on" ? true
-                 : M.summerMode === "off" ? false
+    var inSummer = A.summerMode === "on" ? true
+                 : A.summerMode === "off" ? false
                  : (mo >= 5 && mo <= 8);
-    var summer = inSummer ? gate * M.summerPct / 100 : 0;
-    out.push({ d: iso, v: gate + summer + M.transport, corn: c, meal: so, alfalfa: a,
-               fixed: M.fixed, transport: M.transport, summer: summer });
+    var summer = inSummer ? gate * A.summerPct / 100 : 0;
+    out.push({ d: iso, v: gate + summer + A.transport, corn: c, meal: so, alfalfa: a,
+               fixed: A.fixed, transport: A.transport, summer: summer,
+               ration: c + so + a, gate: gate, edited: A.edited,
+               alfalfaPrice: A.alfalfaPrice, summerOn: inSummer });
   });
   return out;
 }
@@ -3047,18 +3113,75 @@ function planPaint() {
   var box = $("#planChart");
   if (box) box.innerHTML = rawMilkChart(Math.max(640, box.clientWidth || 900), 250);
 
-  // a year of monthly forward readings
+  // the forward months, each one editable
   var cut = state.asOf;
-  var fwd = ser.filter(function (x) { return x.d > cut; }).slice(0, 14);
+  var fwd = ser.filter(function (x) { return x.d > cut; }).slice(0, 24);
   $("#planTable").innerHTML = fwd.length
-    ? '<h4>Month by month from here</h4><div class="tblwrap"><table><thead><tr><th>Month</th>' +
-      "<th>Corn</th><th>Meal</th><th>Alfalfa</th><th>Fixed</th><th>Haulage</th><th>Bonus</th><th>Delivered</th></tr></thead><tbody>" +
+    ? '<h4>Month by month &middot; type into any white cell to plan that month on its own</h4>' +
+      '<div class="plantools">' +
+        '<button class="btn" id="planFill">Copy the first month down</button>' +
+        '<label class="esc">Escalate fixed cost <input type="number" id="planEsc" value="0" step="0.5" min="-10" max="20"> % a month</label>' +
+        '<button class="btn" id="planEscGo">Apply</button>' +
+        '<button class="btn" id="planClear">Clear overrides</button>' +
+      "</div>" +
+      '<div class="tblwrap"><table class="plantbl"><thead><tr>' +
+        "<th>Month</th><th>Corn</th><th>Meal</th>" +
+        '<th class="ed">Alfalfa</th><th class="ed">Fixed</th><th class="ed">Haulage</th>' +
+        "<th>Bonus</th><th>Delivered</th></tr></thead><tbody>" +
       fwd.map(function (x) {
-        return "<tr><td>" + fmtD(x.d) + "</td><td>" + x.corn.toFixed(2) + "</td><td>" + x.meal.toFixed(2) +
-          "</td><td>" + x.alfalfa.toFixed(2) + "</td><td>" + x.fixed.toFixed(2) + "</td><td>" +
-          x.transport.toFixed(2) + "</td><td>" + x.summer.toFixed(2) + "</td><td><b>" + x.v.toFixed(2) + "</b></td></tr>";
-      }).join("") + "</tbody></table></div>"
+        var mk = x.d.slice(0, 7);
+        return '<tr' + (x.edited ? ' class="edited"' : "") + "><td>" + fmtD(x.d) + "</td>" +
+          "<td>" + x.corn.toFixed(2) + "</td><td>" + x.meal.toFixed(2) + "</td>" +
+          '<td class="ed"><input type="number" step="0.25" data-mo="' + mk + '" data-f="alfalfaPrice" value="' + x.alfalfaPrice.toFixed(2) + '"></td>' +
+          '<td class="ed"><input type="number" step="0.1" data-mo="' + mk + '" data-f="fixed" value="' + x.fixed.toFixed(2) + '"></td>' +
+          '<td class="ed"><input type="number" step="0.1" data-mo="' + mk + '" data-f="transport" value="' + x.transport.toFixed(2) + '"></td>' +
+          '<td class="' + (x.summer > 0 ? "bonus" : "") + '">' + x.summer.toFixed(2) + "</td>" +
+          "<td><b>" + x.v.toFixed(2) + "</b></td></tr>";
+      }).join("") + "</tbody></table></div>" +
+      '<div class="planhint">Alfalfa, fixed cost and haulage are yours to set per month. Corn and meal follow the market. ' +
+      'The summer bonus is worked out from the calendar, so it is not editable &mdash; it switches on for June to September.</div>'
     : '<div class="empty">No forward points in the corn series, so there is nothing to project.</div>';
+
+  $$("#planTable input[data-mo]").forEach(function (i) {
+    i.onchange = function () {
+      var v = parseFloat(this.value);
+      if (isNaN(v) || v < 0) { planPaint(); return; }
+      var mo = this.dataset.mo, f = this.dataset.f;
+      prefs.model.overrides = prefs.model.overrides || {};
+      prefs.model.overrides[mo] = prefs.model.overrides[mo] || {};
+      prefs.model.overrides[mo][f] = v;
+      savePrefs(); renderAll(); planPaint();
+    };
+  });
+
+  var first = fwd[0];
+  if ($("#planFill") && first) {
+    $("#planFill").onclick = function () {
+      prefs.model.overrides = prefs.model.overrides || {};
+      fwd.forEach(function (x) {
+        prefs.model.overrides[x.d.slice(0, 7)] = {
+          alfalfaPrice: first.alfalfaPrice, fixed: first.fixed, transport: first.transport
+        };
+      });
+      savePrefs(); renderAll(); planPaint();
+    };
+    $("#planEscGo").onclick = function () {
+      var r = parseFloat($("#planEsc").value) / 100;
+      if (isNaN(r)) return;
+      prefs.model.overrides = prefs.model.overrides || {};
+      fwd.forEach(function (x, i) {
+        var mk = x.d.slice(0, 7);
+        var o = prefs.model.overrides[mk] || {};
+        o.fixed = +(first.fixed * Math.pow(1 + r, i)).toFixed(3);
+        prefs.model.overrides[mk] = o;
+      });
+      savePrefs(); renderAll(); planPaint();
+    };
+    $("#planClear").onclick = function () {
+      prefs.model.overrides = {};
+      savePrefs(); renderAll(); planPaint();
+    };
+  }
 }
 
 var PLAN_BASE = null, PLAN_SNAPSHOT = null;
@@ -3302,7 +3425,8 @@ var prefs = {
     buPerMT: 50.1,       // bushels of beans behind one tonne of meal
     oilLb: 11,           // lb of oil per bushel crushed
     hullCredit: 0.25,    // USD/bu recovered on hulls
-    crushCost: 1.35      // USD/bu of crush cost plus crusher margin
+    crushCost: 1.35,     // USD/bu of crush cost plus crusher margin
+    overrides: {}        // "YYYY-MM" -> { fixed, transport, alfalfaPrice }
   },
   hidden: {},        // material key -> true
   sections: {}       // export label -> false when hidden
@@ -3636,13 +3760,17 @@ function boot() {
     if (PLAN_SNAPSHOT) prefs.model = JSON.parse(JSON.stringify(PLAN_SNAPSHOT));
     savePrefs(); renderAll(); planControls(); planPaint();
   };
+  $("#planClearAll") && ($("#planClearAll").onclick = function () {
+    prefs.model.overrides = {}; savePrefs(); renderAll(); planPaint();
+  });
   $("#planCsv").onclick = function () {
     var ser = rawMilkSeries();
-    var csv = "date,corn,soybean_meal,alfalfa,fixed,transport,summer_bonus,delivered_egp_per_kg,basis\n" +
+    var csv = "date,corn,soybean_meal,alfalfa,fixed,transport,summer_bonus,delivered_egp_per_kg,basis,planned_by_hand\n" +
       ser.map(function (x) {
         return [x.d, x.corn.toFixed(3), x.meal.toFixed(3), x.alfalfa.toFixed(3), x.fixed.toFixed(3),
                 x.transport.toFixed(3), x.summer.toFixed(3), x.v.toFixed(3),
-                x.d > state.asOf ? "forecast" : "settled"].join(",");
+                x.d > state.asOf ? "forecast" : "settled",
+                x.edited ? "yes" : "no"].join(",");
       }).join("\n");
     var a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
