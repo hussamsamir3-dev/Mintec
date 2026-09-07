@@ -1097,6 +1097,60 @@ body.locked{overflow:hidden}
 .crml .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
 @media (max-width:1500px){ .cast-rm{grid-template-columns:1.4fr 1fr} }
 
+/* ══════════════════════════════════════════════════════════
+   Milk local cost contribution
+   ══════════════════════════════════════════════════════════ */
+.donutwrap{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;
+  padding:20px 22px;margin-bottom:16px}
+.dtitle{font-family:var(--f-dsp);font-size:19px;font-weight:600;margin-bottom:16px;
+  letter-spacing:-.015em}
+.dtitle b{color:var(--c-dairy)}
+.donutrow{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.donut{flex:0 0 auto}
+.donut .seg{stroke:var(--ink2);stroke-width:2;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);transform-origin:center}
+.donut .seg:hover{transform:scale(1.035)}
+.donut .dlab{font-size:13px;font-weight:700;fill:#12202C;text-anchor:middle}
+.donut .dpct{font-size:11px;font-weight:600;fill:#12202C;opacity:.72;text-anchor:middle}
+.donut .dmid1{font-size:27px;font-weight:600;fill:var(--text);text-anchor:middle;
+  letter-spacing:-.02em}
+.donut .dmid2{font-size:10.5px;fill:var(--muted);text-anchor:middle}
+.dside{flex:1 1 260px;min-width:0}
+.dkey{display:grid;gap:5px;margin-bottom:14px}
+.dk{display:grid;grid-template-columns:11px 1fr 56px 40px;align-items:center;gap:9px;font-size:13px}
+.dk .d{width:10px;height:10px;border-radius:3px}
+.dk .n{color:var(--text2)}
+.dk .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.dk .p{text-align:right;color:var(--muted);font-size:11.5px}
+.dsum{display:grid;gap:5px;padding:13px 0;border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule)}
+.dsum div{display:flex;justify-content:space-between;align-items:baseline;font-size:13px}
+.dsum span{color:var(--muted)}
+.dsum b{font-weight:600;font-variant-numeric:tabular-nums}
+.dlanded{display:flex;justify-content:space-between;align-items:center;margin-top:13px;
+  background:var(--c-dairy);color:#08222A;border-radius:10px;padding:11px 16px}
+.dlanded span{font-size:13px;font-weight:600}
+.dlanded b{font-size:22px;font-weight:700;letter-spacing:-.02em}
+html[data-theme="light"] .donut .dlab,html[data-theme="light"] .donut .dpct{fill:#1A2530}
+
+/* cast version */
+.cast-stack{display:grid;grid-template-columns:1.5fr 1fr;gap:1.4vw;flex:1 1 auto;min-height:0}
+.csdonut .donutwrap{margin:0;height:100%;display:flex;align-items:center;padding:1.6vh 1.2vw}
+.csdonut .donutrow{gap:1.6vw;width:100%}
+.csdonut .dk{font-size:.95vw;grid-template-columns:.7vw 1fr 3.4vw 2.4vw}
+.csdonut .dsum div{font-size:.95vw}
+.csdonut .dlanded b{font-size:1.8vw}
+.csmonths{display:flex;flex-direction:column;gap:.5vh;min-height:0;justify-content:center}
+.csm{display:grid;grid-template-columns:1fr auto auto;align-items:baseline;gap:.8vw;
+  background:var(--ink2);border:1px solid var(--rule);border-radius:10px;
+  padding:1vh 1vw;font-size:1.05vw}
+.csm.now{border-color:var(--c-dairy);background:rgba(79,179,196,.12)}
+.csm.fwd{opacity:.72;border-style:dashed}
+.csm .mo{color:var(--text2)}
+.csm .pv{font-weight:700;font-variant-numeric:tabular-nums}
+.csm .sb{color:var(--gold);font-size:.72vw;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+@media (max-width:820px){ .donutrow{justify-content:center} }
+
 </style>
 </head>
 <body>
@@ -2390,6 +2444,7 @@ var PANELS = [
   { id: "movers",   label: "Cost pressure",            build: panelMovers },
   { id: "actions",  label: "What to do about it",      build: panelActions },
   { id: "rawmilk",  label: "Raw milk trend",           build: panelRawMilk },
+  { id: "milkstack",label: "Milk cost contribution",   build: panelMilkStack },
   { id: "build",    label: "How inputs are built",     build: panelBuild },
   { id: "products", label: "Finished product cost",    build: panelProducts },
   { id: "materials",label: "Every material",           build: panelMaterials,
@@ -2496,6 +2551,27 @@ function panelRawMilk() {
             '<span class="v">' + l[1].toFixed(2) + "</span></div>";
         }).join("") +
       "</div></div>";
+}
+
+function panelMilkStack() {
+  var st = milkStack();
+  var ser = rawMilkSeries();
+  var cut = state.asOf;
+  var recent = ser.filter(function (x) { return x.d <= cut; }).slice(-6);
+  var fwd = ser.filter(function (x) { return x.d > cut; }).slice(0, 6);
+  var band = recent.concat(fwd);
+  return '<h2><b style="color:var(--c-dairy)">Milk</b> local cost contribution ' +
+    '<span>this month, and the months either side of it</span></h2>' +
+    '<div class="cast-stack">' +
+      '<div class="csdonut">' + milkDonut(Math.round(window.innerHeight * 0.40), false) + "</div>" +
+      '<div class="csmonths">' + band.map(function (x) {
+        var isNow = x.d === (recent.length ? recent[recent.length - 1].d : "");
+        return '<div class="csm' + (isNow ? " now" : "") + (x.d > cut ? " fwd" : "") + '">' +
+          '<span class="mo">' + fmtD(x.d) + "</span>" +
+          '<span class="pv">' + x.v.toFixed(2) + "</span>" +
+          (x.summer > 0 ? '<span class="sb">bonus</span>' : "") + "</div>";
+      }).join("") + "</div>" +
+    "</div>";
 }
 
 function panelBuild() {
@@ -3071,6 +3147,76 @@ function resolveInput(key) {
 }
 
 
+
+/* ===================================================================
+   LOCAL COST CONTRIBUTION — the cost stack as a ring, the way the
+   monthly sheet shows it: five slices, feed split out, landed in
+   the middle.
+   =================================================================== */
+function milkStack(pt) {
+  var p = pt || rawMilkPrice("spot");
+  var parts = [
+    { n: "Corn",           v: p.corn,      hex: "#3B76C4" },
+    { n: "Soya",           v: p.soya,      hex: "#E08A2E" },
+    { n: "Alfalfa",        v: p.alfalfa,   hex: "#A8AEB4" },
+    { n: "Fixed cost",     v: p.fixed,     hex: "#E8C33C" },
+    { n: "Trans & bonus",  v: p.transport + p.summer, hex: "#7FB3DE" }
+  ].filter(function (x) { return x.v > 0.005; });
+  var total = parts.reduce(function (a, x) { return a + x.v; }, 0) || 1;
+  return { parts: parts, total: total, feed: p.corn + p.soya + p.alfalfa,
+           fixed: p.fixed, trans: p.transport + p.summer,
+           summerPct: p.summerOn ? prefs.model.summerPct : 0, landed: p.egp, pt: p };
+}
+
+function milkDonut(size, showTitle) {
+  var st = milkStack();
+  var R = size / 2, r0 = R * 0.60, cx = R, cy = R;
+  var a = -Math.PI / 2, segs = [], labels = [];
+
+  st.parts.forEach(function (x) {
+    var frac = x.v / st.total, sweep = frac * Math.PI * 2, a2 = a + sweep;
+    var big = sweep > Math.PI ? 1 : 0;
+    var P = function (ang, rad) {
+      return [(cx + Math.cos(ang) * rad).toFixed(2), (cy + Math.sin(ang) * rad).toFixed(2)];
+    };
+    var o1 = P(a, R * 0.94), o2 = P(a2, R * 0.94), i1 = P(a2, r0), i2 = P(a, r0);
+    segs.push('<path class="seg" d="M' + o1 + ' A' + (R * 0.94) + " " + (R * 0.94) + " 0 " + big + " 1 " + o2 +
+      " L" + i1 + " A" + r0 + " " + r0 + " 0 " + big + " 0 " + i2 + ' Z" fill="' + x.hex + '"/>');
+    var mid = a + sweep / 2, lr = (R * 0.94 + r0) / 2;
+    labels.push({ x: cx + Math.cos(mid) * lr, y: cy + Math.sin(mid) * lr,
+                  n: x.n, v: x.v, pctv: frac * 100, hex: x.hex, big: frac > 0.11 });
+    a = a2;
+  });
+
+  var inner = labels.filter(function (l) { return l.big; }).map(function (l) {
+    return '<text class="dlab" x="' + l.x.toFixed(1) + '" y="' + (l.y - 3).toFixed(1) + '">' + l.v.toFixed(2) + "</text>" +
+      '<text class="dpct" x="' + l.x.toFixed(1) + '" y="' + (l.y + 11).toFixed(1) + '">' + Math.round(l.pctv) + "%</text>";
+  }).join("");
+
+  return '<div class="donutwrap">' +
+    (showTitle ? '<div class="dtitle"><b>Milk</b> local cost contribution this month</div>' : "") +
+    '<div class="donutrow">' +
+      '<svg class="donut" viewBox="0 0 ' + size + " " + size + '" width="' + size + '" height="' + size + '">' +
+        '<g class="segs">' + segs.join("") + "</g>" + inner +
+        '<text class="dmid1" x="' + cx + '" y="' + (cy - 6) + '">' + st.landed.toFixed(2) + "</text>" +
+        '<text class="dmid2" x="' + cx + '" y="' + (cy + 14) + '">EGP / kg landed</text>' +
+      "</svg>" +
+      '<div class="dside">' +
+        '<div class="dkey">' + st.parts.map(function (x) {
+          return '<div class="dk"><span class="d" style="background:' + x.hex + '"></span>' +
+            '<span class="n">' + x.n + '</span><span class="v">' + x.v.toFixed(2) + "</span>" +
+            '<span class="p">' + Math.round(x.v / st.total * 100) + "%</span></div>";
+        }).join("") + "</div>" +
+        '<div class="dsum">' +
+          '<div><span>Feed cost</span><b>' + st.feed.toFixed(2) + "</b></div>" +
+          '<div><span>Fixed cost</span><b>' + st.fixed.toFixed(2) + "</b></div>" +
+          '<div><span>Trans &amp; bonus</span><b>' + st.trans.toFixed(2) + "</b></div>" +
+          '<div><span>Seasonality</span><b>' + st.summerPct + "%</b></div>" +
+        "</div>" +
+        '<div class="dlanded"><span>Landed</span><b>' + st.landed.toFixed(2) + "</b></div>" +
+      "</div></div></div>";
+}
+
 /* ===================================================================
    RAW MILK TREND — the whole ration priced at every date in the series,
    so the index carries real history and a real forward path.
@@ -3218,6 +3364,7 @@ function renderRawMilkTrend() {
   if (now.summer > 0) legs.push(["Summer premium", now.summer, "#DFA93A"]);
 
   host.innerHTML =
+    milkDonut(320, true) +
     '<div class="rmkpi">' + kpis.map(function (k) {
       return '<div class="rk"><div class="kk">' + k[0] + '</div><div class="kv ' + k[3] + '">' + k[1] +
         '</div><div class="kn">' + k[2] + "</div></div>";
@@ -3637,8 +3784,8 @@ function renderProducts() {
 var prefs = {
   theme: "dark", tspeed: 110, chart: 1, scroll: 0,
   model: {
-    fixed: 7.6,          // EGP/kg of farm cost that does not move with feed
-    transport: 1.2,      // EGP/kg collection and haulage
+    fixed: 7.55,         // EGP/kg of farm cost that does not move with feed
+    transport: 1.0,      // EGP/kg collection and bonus
     summerPct: 3,        // summer premium on the gate price
     summerMode: "auto",  // auto | on | off
     cornShare: 50,       // kg of each feed behind 1 kg of milk
