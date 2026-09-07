@@ -638,10 +638,8 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
    ══════════════════════════════════════════════════════════ */
 .cast-body{overflow:hidden;min-height:0}
 .scene.on{min-height:0}
-#sc3.on{display:flex;flex-direction:column;height:100%;min-height:0}
-#sc3 h2{flex:0 0 auto}
-#sc3 .cast-tiles{flex:1 1 auto;min-height:0;
-  grid-template-rows:repeat(3,minmax(0,1fr));gap:.8vw}
+
+
 .ctile{display:flex;flex-direction:column;min-height:0;overflow:hidden;
   padding:1.1vh 1vw .9vh}
 .ctile .n{flex:0 0 auto;font-size:1.02vw}
@@ -652,14 +650,10 @@ html[data-theme="light"] .prod .ph svg{filter:drop-shadow(0 5px 12px rgba(0,0,0,
 .ctile .row2{flex:0 0 auto;font-size:.82vw;margin-top:.5vh}
 
 /* the same discipline on the other dense panels */
-#sc1.on,#sc2.on,#sc5.on{display:flex;flex-direction:column;height:100%;min-height:0}
-#sc1 .cast-mv,#sc2 .cast-recs,#sc5 .cast-prods{flex:1 1 auto;min-height:0}
-#sc1 .cast-mv{align-content:center}
+
 .cast-recs .crec,.cast-prods .cprod{min-height:0;overflow:hidden}
 
-@media (max-width:1500px){
-  .cast-tiles{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,minmax(0,1fr))}
-}
+
 
 /* raw milk index card */
 .prod.rawmilk{border-color:var(--rule2);
@@ -757,10 +751,7 @@ html[data-theme="light"] .prod.meal{background:linear-gradient(160deg,rgba(176,1
 .cbrow.tot span,.cbrow.tot b{color:var(--text);font-weight:600}
 
 /* every panel is height-bounded, so nothing can spill */
-#sc0.on,#sc4.on,#sc6.on{display:flex;flex-direction:column;height:100%;min-height:0}
-#sc0 #castFan,#sc4 .cast-news{flex:1 1 auto;min-height:0}
-#sc0 .cast-kpi,#sc0 .cast-key{flex:0 0 auto}
-#sc4 .cnews{min-height:0;overflow:hidden}
+
 .scene h2{flex:0 0 auto}
 @media (max-width:1500px){
   .cast-prods{grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(0,1fr)}
@@ -1060,6 +1051,52 @@ html[data-theme="light"] .locklogo{filter:drop-shadow(0 3px 10px rgba(0,0,0,.16)
 body.locked > *:not(.lock){filter:blur(14px);pointer-events:none;user-select:none}
 body.locked{overflow:hidden}
 
+/* ══════════════════════════════════════════════════════════
+   Cast panels are addressed by what they are, not by slot
+   ══════════════════════════════════════════════════════════ */
+.scene.on{display:flex;flex-direction:column;height:100%;min-height:0}
+.scene h2{flex:0 0 auto}
+.scene .cast-mv,.scene .cast-recs,.scene .cast-prods,
+.scene .cast-news,.scene .cast-build,.scene .cast-rm{flex:1 1 auto;min-height:0}
+.scene .cast-mv{align-content:center}
+.scene .cnews{min-height:0;overflow:hidden}
+[data-panel=overview] #castFan{flex:1 1 auto;min-height:0}
+[data-panel=overview] .cast-kpi,[data-panel=overview] .cast-key{flex:0 0 auto}
+
+/* four tiles, two per line — the charts finally have room */
+.cast-tiles{display:grid;grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(2,minmax(0,1fr));gap:1.1vw;flex:1 1 auto;min-height:0}
+.ctile{padding:1.6vh 1.4vw 1.3vh}
+.ctile .n{font-size:1.35vw}
+.ctile .n .ic{width:2.3vw;height:2.3vw;min-width:26px;min-height:26px}
+.ctile .p{font-size:2.6vw;margin:.6vh 0 .2vh}
+.ctile .u{font-size:.92vw}
+.ctile .row2{font-size:1.05vw;margin-top:.7vh}
+
+/* raw milk panel */
+.cast-rm{display:grid;grid-template-columns:1.75fr 1fr;gap:1.4vw}
+.crmchart{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;
+  padding:1.4vh 1.1vw;min-height:0;display:flex;align-items:center}
+.crmchart svg{width:100%}
+.crmside{display:flex;flex-direction:column;min-height:0;
+  background:var(--ink2);border:1px solid var(--rule);border-radius:14px;padding:1.8vh 1.3vw}
+.crmbig{display:flex;align-items:baseline;gap:.5vw;flex:0 0 auto}
+.crmbig .v{font-size:3vw;font-weight:600;letter-spacing:-.03em;line-height:1}
+.crmbig .u{color:var(--muted);font-size:.86vw}
+.crmkv{display:grid;gap:.5vh;margin:1.4vh 0;padding:1.2vh 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);flex:0 0 auto}
+.crmkv div{display:flex;justify-content:space-between;align-items:baseline;font-size:.98vw}
+.crmkv span{color:var(--muted)}
+.crmkv b{font-weight:600;font-variant-numeric:tabular-nums}
+.crml{display:grid;grid-template-columns:.6vw 6.4vw 1fr 3vw;align-items:center;
+  gap:.5vw;font-size:.9vw;padding:.35vh 0}
+.crml .d{width:.55vw;height:.55vw;min-width:6px;min-height:6px;border-radius:2px}
+.crml .n{color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crml .b{height:.7vh;min-height:6px;background:var(--ink);border-radius:4px;overflow:hidden}
+.crml .b i{display:block;height:100%;border-radius:4px}
+.crml .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+@media (max-width:1500px){ .cast-rm{grid-template-columns:1.4fr 1fr} }
+
 </style>
 </head>
 <body>
@@ -1306,6 +1343,10 @@ body.locked{overflow:hidden}
   <h4>Sections on the page</h4>
   <div class="swrap" id="secToggles"></div>
 
+  <h4>Panels on the big screen</h4>
+  <p style="color:var(--text2);font-size:12.5px;margin:0 0 10px;line-height:1.5">Untick a panel and the rotation skips it. Every material spans several pages, four to a page.</p>
+  <div class="swrap" id="castToggles"></div>
+
   <h4>Materials <span style="text-transform:none;letter-spacing:0;font-weight:400" id="matCount"></span></h4>
   <div class="mini" style="margin-bottom:9px">
     <button id="matAll">Select all</button><button id="matNone">Clear all</button>
@@ -1361,15 +1402,7 @@ body.locked{overflow:hidden}
     <div class="cast-clock"><span id="castTime">--:--</span><small id="castDate">&nbsp;</small><small id="castNext" style="color:var(--gold)">&nbsp;</small></div>
   </div>
 
-  <div class="cast-body">
-    <div class="scene" id="sc0"></div>
-    <div class="scene" id="sc1"></div>
-    <div class="scene" id="sc2"></div>
-    <div class="scene" id="sc3"></div>
-    <div class="scene" id="sc4"></div>
-    <div class="scene" id="sc5"></div>
-    <div class="scene" id="sc6"></div>
-  </div>
+  <div class="cast-body" id="castBody"></div>
 
   <div class="tipband">
     <span class="badge" id="tipBadge">Tip</span>
@@ -2346,7 +2379,40 @@ function castTiles(list) {
   }).join("") + "</div>";
 }
 
-function buildScenes() {
+/* ===================================================================
+   CAST PANELS — a list, not fixed slots. Each entry can be switched
+   off in settings, and a panel may span several pages.
+   =================================================================== */
+var MAT_PER_PAGE = 4;
+
+var PANELS = [
+  { id: "overview", label: "Overview and forward fan", build: panelOverview },
+  { id: "movers",   label: "Cost pressure",            build: panelMovers },
+  { id: "actions",  label: "What to do about it",      build: panelActions },
+  { id: "rawmilk",  label: "Raw milk trend",           build: panelRawMilk },
+  { id: "build",    label: "How inputs are built",     build: panelBuild },
+  { id: "products", label: "Finished product cost",    build: panelProducts },
+  { id: "materials",label: "Every material",           build: panelMaterials,
+    pages: function () { return Math.max(1, Math.ceil(shown().length / MAT_PER_PAGE)); } },
+  { id: "news",     label: "Market headlines",         build: panelNews }
+];
+
+function livePanels() {
+  return PANELS.filter(function (p) { return prefs.castPanels[p.id] !== false; });
+}
+
+/* one entry per screenful, so a paged panel gets several */
+function castSteps() {
+  var steps = [];
+  livePanels().forEach(function (p) {
+    var n = p.pages ? p.pages() : 1;
+    for (var i = 0; i < n; i++) steps.push({ p: p, page: i, pages: n });
+  });
+  return steps.length ? steps : [{ p: PANELS[0], page: 0, pages: 1 }];
+}
+
+/* ── the panels themselves ─────────────────────────────── */
+function panelOverview() {
   var V = shown();
   var f12s = V.filter(function (m) { return m.f12 !== null; });
   var basket = f12s.length ? f12s.reduce(function (a, m) { return a + m.f12; }, 0) / f12s.length : null;
@@ -2354,10 +2420,7 @@ function buildScenes() {
   var byoy = yoys.length ? yoys.reduce(function (a, m) { return a + m.yoy; }, 0) / yoys.length : null;
   var up = f12s.filter(function (m) { return m.f12 > 0.5; }).length;
   var dn = f12s.filter(function (m) { return m.f12 < -0.5; }).length;
-
-  // 0 — headline + fan
-  $("#sc0").innerHTML =
-    '<div class="cast-kpi">' +
+  return '<div class="cast-kpi">' +
       '<div class="k"><div class="lab">Basket, next 12 months</div><div class="val ' + dirCls(basket) + '">' + pct(basket) + '</div><div class="sub">across ' + f12s.length + ' forward curves</div></div>' +
       '<div class="k"><div class="lab">Basket, last 12 months</div><div class="val ' + dirCls(byoy) + '">' + pct(byoy) + '</div><div class="sub">settled prices</div></div>' +
       '<div class="k"><div class="lab">Rising</div><div class="val up">' + up + '</div><div class="sub">of ' + V.length + ' materials</div></div>' +
@@ -2366,14 +2429,15 @@ function buildScenes() {
     '<h2>Where every input is heading <span>indexed to 100 today · dashed is the forward curve</span></h2>' +
     '<div id="castFan"></div>' +
     '<div class="cast-key">' + V.map(function (m) {
-      return '<span class="ck">' + matIcon(m, "sm") +
-        '<i style="background:' + cat(m).hex + '"></i>' + m.name + "</span>";
+      return '<span class="ck">' + matIcon(m, "sm") + '<i style="background:' + cat(m).hex + '"></i>' + m.name + "</span>";
     }).join("") + "</div>";
+}
 
-  // 1 — movers, two columns
-  var rows = f12s.slice().sort(function (a, b) { return b.f12 - a.f12; });
+function panelMovers() {
+  var rows = shown().filter(function (m) { return m.f12 !== null; })
+    .sort(function (a, b) { return b.f12 - a.f12; });
   var mx = Math.max.apply(null, rows.map(function (m) { return Math.abs(m.f12); })) || 1;
-  $("#sc1").innerHTML = '<h2>Forward pressure on the basket <span>change to twelve months out</span></h2>' +
+  return '<h2>Forward pressure on the basket <span>change to twelve months out</span></h2>' +
     '<div class="cast-mv">' + rows.map(function (m) {
       var v = m.f12, w = Math.abs(v) / mx * 48, left = v >= 0 ? 50 : 50 - w;
       var col = v > 0.5 ? "var(--heat)" : v < -0.5 ? "var(--cool)" : "var(--flat)";
@@ -2383,11 +2447,12 @@ function buildScenes() {
         '<span class="b" style="left:' + left + "%;width:" + w + "%;background:" + col + '"></span></span>' +
         '<span class="v ' + dirCls(v) + '">' + pct(v) + "</span></div>";
     }).join("") + "</div>";
+}
 
-  // 2 — action board
-  var recs = V.map(function (m) { return { m: m, r: recFor(m) }; })
+function panelActions() {
+  var recs = shown().map(function (m) { return { m: m, r: recFor(m) }; })
     .sort(function (a, b) { return b.r.score - a.r.score; }).slice(0, 6);
-  $("#sc2").innerHTML = '<h2>What to do about it <span>ranked by what moves the bill most</span></h2>' +
+  return '<h2>What to do about it <span>ranked by what moves the bill most</span></h2>' +
     '<div class="cast-recs">' + recs.map(function (x) {
       var m = x.m, r = x.r, f = factor(m);
       return '<div class="crec" style="--ac:' + r.action.color + '">' +
@@ -2397,32 +2462,43 @@ function buildScenes() {
         '<span>12m <b class="' + dirCls(m.f12) + '">' + pct(m.f12) + "</b></span>" +
         "<span>range <b>" + Math.round(m.pos * 100) + "%</b></span></div></div>";
     }).join("") + "</div>";
+}
 
-  // 3 — finished products, in full
-  $("#sc5").innerHTML = '<h2>What it does to finished product cost <span>recipe weighted · next twelve months</span></h2>' +
-    '<div class="cast-prods">' + PRODUCTS.map(function (p) {
-      var cc = productCost(p);
-      if (!cc.ranked.length) return "";
-      var mixTotal = cc.ranked.reduce(function (a, x) { return a + x.share; }, 0) || 1;
-      return '<div class="cprod">' +
-        '<div class="cph">' + prodIcon(p.icon, 46) +
-          '<div class="cpn">' + p.name + '<span>' + p.spec.split(" · ")[0] + "</span></div></div>" +
-        '<div class="v ' + dirCls(cc.tot.f12, .1) + '">' +
-          (cc.tot.f12 >= 0 ? "+" : "") + cc.tot.f12.toFixed(1) + "%</div>" +
-        '<div class="cmix">' + cc.ranked.map(function (x) {
-          return '<i style="width:' + (x.share / mixTotal * 100).toFixed(1) + "%;background:" + x.inp.hex + '"></i>';
-        }).join("") + "</div>" +
-        '<div class="cbom">' + cc.ranked.map(function (x) {
-          return '<div class="cbr"><span class="cd" style="background:' + x.inp.hex + '"></span>' +
-            '<span class="cbn">' + x.inp.name + "</span>" +
-            '<span class="cbw">' + x.share + "%</span>" +
-            '<span class="cbc ' + dirCls(x.f12, .05) + '">' + (x.f12 >= 0 ? "+" : "") + x.f12.toFixed(1) + "</span></div>";
-        }).join("") + "</div>" +
-        '<div class="cpf">materials <b>' + p.materialShare + "%</b> of cost · led by <b style=\"color:" +
-          cc.ranked[0].inp.hex + '">' + cc.ranked[0].inp.name + "</b></div></div>";
-    }).join("") + "</div>";
+function panelRawMilk() {
+  var ser = rawMilkSeries();
+  if (ser.length < 2) return '<h2>Raw milk</h2><div class="empty">Corn is hidden, so the index cannot be built.</div>';
+  var cut = state.asOf;
+  var act = ser.filter(function (x) { return x.d <= cut; });
+  var now = act.length ? act[act.length - 1] : ser[0];
+  var end = ser[ser.length - 1];
+  var f12 = rawMilkPrice("f12"), sp = rawMilkPrice("spot");
+  var chg = sp.egp ? (f12.egp / sp.egp - 1) * 100 : 0;
+  var legs = [["Corn", now.corn, "#D9A441"], ["Soybean meal", now.meal, "#C79A3A"],
+              ["Alfalfa", now.alfalfa, "#7FA96A"], ["Fixed", now.fixed, "#7E93AC"],
+              ["Haulage", now.transport, "#5F7288"]];
+  if (now.summer > 0) legs.push(["Summer bonus", now.summer, "#DFA93A"]);
+  return '<h2>Raw milk, priced and projected <span>the whole ration valued at every date</span></h2>' +
+    '<div class="cast-rm">' +
+      '<div class="crmchart" id="castRmChart"></div>' +
+      '<div class="crmside">' +
+        '<div class="crmbig"><span class="v ' + dirCls(chg, .1) + '">' + sp.egp.toFixed(2) + '</span>' +
+          '<span class="u">EGP / kg now</span></div>' +
+        '<div class="crmkv">' +
+          '<div><span>Next 12 months</span><b class="' + dirCls(chg, .1) + '">' + pct(chg) + "</b></div>" +
+          '<div><span>Curve ends</span><b>' + end.v.toFixed(2) + "</b></div>" +
+          '<div><span>Gate</span><b>' + now.gate.toFixed(2) + "</b></div>" +
+          '<div><span>Feed exposure</span><b>' + Math.round((now.corn + now.meal) / now.v * 100) + "%</b></div>" +
+        "</div>" +
+        legs.map(function (l) {
+          return '<div class="crml"><span class="d" style="background:' + l[2] + '"></span>' +
+            '<span class="n">' + l[0] + "</span>" +
+            '<span class="b"><i style="width:' + (l[1] / now.v * 100).toFixed(1) + "%;background:" + l[2] + '"></i></span>' +
+            '<span class="v">' + l[1].toFixed(2) + "</span></div>";
+        }).join("") +
+      "</div></div>";
+}
 
-  // 4 — how raw milk and meal are built
+function panelBuild() {
   var rm = rawMilkPrice("spot"), rmF = rawMilkPrice("f12"), ml = mealPrice("spot"), mlF = mealPrice("f12");
   var rmChg = rm.egp ? (rmF.egp / rm.egp - 1) * 100 : 0;
   var mlChg = ml && mlF && ml.perMT ? (mlF.perMT / ml.perMT - 1) * 100 : 0;
@@ -2441,61 +2517,145 @@ function buildScenes() {
     ["less hull credit", "recovered on hulls", -ml.hull],
     ["plus crush and margin", "crusher cost and return", ml.crush]
   ] : [];
-
-  $("#sc6").innerHTML = '<h2>How the indexed inputs are built <span>everything below is editable in settings</span></h2>' +
+  return '<h2>How the indexed inputs are built <span>everything below is editable in settings</span></h2>' +
     '<div class="cast-build">' +
       '<div class="cbcard"><div class="cbh">' + prodIcon("milk", 42) +
         '<div class="cbt">Raw milk<span>EGP per kg, delivered</span></div>' +
         '<div class="cbv ' + dirCls(rmChg, .1) + '">' + rm.egp.toFixed(2) +
-          '<span>' + (rmChg >= 0 ? "+" : "") + rmChg.toFixed(1) + "%</span></div></div>" +
+          '<span>' + pct(rmChg) + "</span></div></div>" +
         rmRows.map(function (r) {
           return '<div class="cbrow"><span>' + r[0] + '</span><em>' + r[1] + '</em><b>' + r[2].toFixed(2) + "</b></div>";
         }).join("") +
         '<div class="cbrow tot"><span>Delivered</span><em>ration ' + rm.ration.toFixed(2) +
           " · gate " + rm.gate.toFixed(2) + '</em><b>' + rm.egp.toFixed(2) + "</b></div></div>" +
-
       '<div class="cbcard"><div class="cbh">' + lineIcon("Soya", "#D9A441", "lg") +
         '<div class="cbt">Soybean meal<span>USD per tonne, crushed</span></div>' +
         '<div class="cbv ' + dirCls(mlChg, .1) + '">' + (ml ? num(ml.perMT, 0) : "—") +
-          '<span>' + (mlChg >= 0 ? "+" : "") + mlChg.toFixed(1) + "%</span></div></div>" +
+          '<span>' + pct(mlChg) + "</span></div></div>" +
         mlRows.map(function (r) {
           return '<div class="cbrow"><span>' + r[0] + '</span><em>' + r[1] + '</em><b>' +
             (r[2] >= 0 ? "+" : "\u2212") + Math.abs(r[2]).toFixed(2) + "</b></div>";
         }).join("") +
         (ml ? '<div class="cbrow tot"><span>Meal cost</span><em>' + ml.perBu.toFixed(2) + " USD/bu × " +
-          Md.buPerMT + '</em><b>' + num(ml.perMT, 0) + "</b></div>" : "") + "</div>" +
-    "</div>";
+          Md.buPerMT + '</em><b>' + num(ml.perMT, 0) + "</b></div>" : "") + "</div></div>";
+}
 
-  // 4 — the board of prices
-  $("#sc3").innerHTML = '<h2>Every material <span>latest settled price and where the curve takes it</span></h2>' +
-    castTiles(V.slice(0, 15));
+function panelProducts() {
+  return '<h2>What it does to finished product cost <span>recipe weighted · next twelve months</span></h2>' +
+    '<div class="cast-prods">' + PRODUCTS.map(function (p) {
+      var cc = productCost(p);
+      if (!cc.ranked.length) return "";
+      var mixTotal = cc.ranked.reduce(function (a, x) { return a + x.share; }, 0) || 1;
+      return '<div class="cprod">' +
+        '<div class="cph">' + prodIcon(p.icon, 46) +
+          '<div class="cpn">' + p.name + '<span>' + p.spec.split(" · ")[0] + "</span></div></div>" +
+        '<div class="v ' + dirCls(cc.tot.f12, .1) + '">' + pct(cc.tot.f12) + "</div>" +
+        '<div class="cmix">' + cc.ranked.map(function (x) {
+          return '<i style="width:' + (x.share / mixTotal * 100).toFixed(1) + "%;background:" + x.inp.hex + '"></i>';
+        }).join("") + "</div>" +
+        '<div class="cbom">' + cc.ranked.map(function (x) {
+          return '<div class="cbr"><span class="cd" style="background:' + x.inp.hex + '"></span>' +
+            '<span class="cbn">' + x.inp.name + '</span><span class="cbw">' + x.share + "%</span>" +
+            '<span class="cbc ' + dirCls(x.f12, .05) + '">' + (x.f12 >= 0 ? "+" : "") + x.f12.toFixed(1) + "</span></div>";
+        }).join("") + "</div>" +
+        '<div class="cpf">materials <b>' + p.materialShare + '%</b> of cost · led by <b style="color:' +
+          cc.ranked[0].inp.hex + '">' + cc.ranked[0].inp.name + "</b></div></div>";
+    }).join("") + "</div>";
+}
 
-  // ticker, doubled so the loop is seamless
-  var one = V.map(function (m) {
+function panelMaterials(page, pages) {
+  var V = shown();
+  var slice = V.slice(page * MAT_PER_PAGE, page * MAT_PER_PAGE + MAT_PER_PAGE);
+  return '<h2>Every material <span>latest settled price and where the curve takes it' +
+    (pages > 1 ? " · " + (page + 1) + " of " + pages : "") + "</span></h2>" +
+    '<div class="cast-tiles">' + slice.map(function (m) {
+      var c = cat(m), f = factor(m);
+      return '<div class="ctile" style="--cc:' + c.hex + '">' +
+        '<div class="n">' + matIcon(m) + "<span>" + m.name + "</span></div>" +
+        '<div class="p">' + num(m.spot * f) + "</div>" +
+        '<div class="u">' + unitLabel(m) + "</div>" +
+        '<div class="row2"><span class="' + dirCls(m.mom) + '">' + arrow(m.mom) + pct(m.mom) + "</span>" +
+        '<i>12m</i><span class="' + dirCls(m.f12) + '">' + pct(m.f12) + "</span></div>" +
+        sparkline(m, 320, 150) + "</div>";
+    }).join("") + "</div>";
+}
+
+function panelNews() {
+  var flag = NEWS.length ? "" : '<span class="newsflag">headlines unavailable offline — showing what the data says instead</span>';
+  var body;
+  if (NEWS.length) {
+    body = '<div class="cast-news">' + NEWS.slice(0, 6).map(function (n) {
+      return '<div class="cnews" style="--cc:' + cat(n.m).hex + '">' +
+        '<div class="h">' + esc(n.t) + "</div>" +
+        '<div class="m"><b>' + n.m.name + "</b> · " + esc(n.s) +
+        (n.d ? " · " + esc(n.d.slice(5, 16)) : "") + "</div></div>";
+    }).join("") + "</div>";
+  } else {
+    body = '<div class="cast-news">' + shown().filter(function (m) { return m.f12 !== null; })
+      .sort(function (a, b) { return Math.abs(b.f12) - Math.abs(a.f12); }).slice(0, 6)
+      .map(function (m) {
+        var i = insightFor(m);
+        return '<div class="cnews" style="--cc:' + cat(m).hex + '">' +
+          '<div class="h">' + i.lines[0] + "</div>" +
+          '<div class="m"><b>' + m.name + "</b> · " + i.tag + "</div></div>";
+      }).join("") + "</div>";
+  }
+  return '<h2>Market headlines <span>live from public news feeds</span>' + flag + "</h2>" + body;
+}
+
+/* ── the rotation ──────────────────────────────────────── */
+function buildScenes() {
+  prefs.castPanels = prefs.castPanels || {};
+  cast.steps = castSteps();
+  cast.n = cast.steps.length;
+  $("#castBody").innerHTML = cast.steps.map(function (st, i) {
+    return '<div class="scene" id="sc' + i + '" data-panel="' + st.p.id + '"></div>';
+  }).join("");
+  cast.steps.forEach(function (st, i) {
+    try { $("#sc" + i).innerHTML = st.p.build(st.page, st.pages); }
+    catch (err) {
+      console.error("panel " + st.p.id + " failed", err);
+      $("#sc" + i).innerHTML = '<div class="empty">This panel could not be built.</div>';
+    }
+  });
+
+  var one = shown().map(function (m) {
     var c = cat(m), f = factor(m);
     return '<span class="tk"><i class="c" style="background:' + c.hex + '"></i>' +
       '<span class="n">' + m.name + '</span><span class="p">' + num(m.spot * f) + "</span>" +
       '<span class="d ' + dirCls(m.mom) + '">' + arrow(m.mom) + pct(m.mom) + "</span></span>";
   }).join("");
-  $("#tickerIn").innerHTML = tickerLoop(one, V.length);
+  $("#tickerIn").innerHTML = tickerLoop(one, shown().length);
 
   buildNewsScene();
   cast.band = bandItems();
   var dots = ""; for (var di = 0; di < cast.n; di++) dots += "<b></b>";
   $("#castDots").innerHTML = dots;
-  $("#castSub").textContent = V.length + " materials · Mintec Expana · prices to " +
+  $("#castSub").textContent = shown().length + " materials · Mintec Expana · prices to " +
     fmtDFull(state.asOf) + " · " + state.source;
+}
+
+function buildNewsScene() {
+  var idx = (cast.steps || []).map(function (s, i) { return s.p.id === "news" ? i : -1; })
+    .filter(function (i) { return i >= 0; })[0];
+  if (idx === undefined) return;
+  var el = $("#sc" + idx);
+  if (el) el.innerHTML = panelNews();
 }
 
 function castFan() {
   var host = $("#castFan");
   if (!host) return;
-  var save = $("#fanChart");
-  // reuse the same renderer, then move the svg across
   renderFan();
-  host.innerHTML = save.innerHTML;
+  host.innerHTML = $("#fanChart").innerHTML;
   var svg = host.querySelector("svg");
-  if (svg) { svg.setAttribute("height", Math.round(window.innerHeight * 0.42)); svg.style.height = "42vh"; }
+  if (svg) { svg.setAttribute("height", Math.round(window.innerHeight * 0.40)); svg.style.height = "40vh"; }
+}
+
+function castRmChart() {
+  var box = $("#castRmChart");
+  if (box) box.innerHTML = rawMilkChart(Math.max(700, box.clientWidth || 1000),
+    Math.max(220, Math.round(window.innerHeight * 0.42)));
 }
 
 function showScene(i) {
@@ -2505,7 +2665,9 @@ function showScene(i) {
     if (el) el.classList.toggle("on", k === cast.scene);
   }
   $$("#castDots b").forEach(function (b, k) { b.classList.toggle("on", k === cast.scene); });
-  if (cast.scene === 0) castFan();
+  var id = (cast.steps[cast.scene] || {}).p;
+  if (id && id.id === "overview") castFan();
+  if (id && id.id === "rawmilk") castRmChart();
   cast.tick = 0;
   $("#castProg").style.width = "0%";
 }
@@ -3491,6 +3653,7 @@ var prefs = {
     overrides: {}        // "YYYY-MM" -> { fixed, transport, alfalfaPrice }
   },
   hidden: {},        // material key -> true
+  castPanels: {},    // cast panel id -> false when hidden
   sections: {}       // export label -> false when hidden
 };
 
@@ -3500,11 +3663,12 @@ function loadPrefs() {
     if (raw) {
       var p = JSON.parse(raw);
       Object.keys(p).forEach(function (k) {
-        if (k === "model" && p.model) {
+        if (k === "castPanels") { prefs.castPanels = p.castPanels || {}; }
+        else if (k === "model" && p.model) {
           Object.keys(p.model).forEach(function (mk) {
             if (mk in prefs.model) prefs.model[mk] = p.model[mk];
           });
-        } else if (k !== "model") { prefs[k] = p[k]; }
+        } else if (k !== "model" && k !== "castPanels") { prefs[k] = p[k]; }
       });
     }
   } catch (e) { /* first run, or storage blocked */ }
@@ -3573,6 +3737,25 @@ function buildSettings() {
     };
   });
   $("#matCount").textContent = "· " + shown().length + " of " + MAT.length + " shown";
+
+  var cp = $("#castToggles");
+  if (cp) {
+    cp.innerHTML = PANELS.map(function (p) {
+      var on = prefs.castPanels[p.id] !== false;
+      return '<label class="chk' + (on ? "" : " off") + '" data-cp="' + p.id + '">' +
+        '<input type="checkbox"' + (on ? " checked" : "") + '><span>' + p.label + "</span>" +
+        (p.pages ? '<span class="gr">' + p.pages() + " pages</span>" : "") + "</label>";
+    }).join("");
+    $$("#castToggles .chk").forEach(function (l) {
+      l.querySelector("input").onchange = function () {
+        prefs.castPanels[l.dataset.cp] = this.checked;
+        l.classList.toggle("off", !this.checked);
+        savePrefs();
+        if (cast.on) { buildScenes(); showScene(0); }
+        buildSettings();
+      };
+    });
+  }
 }
 
 /* ===================================================================
