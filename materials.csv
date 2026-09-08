@@ -1,6 +1,5 @@
 # Materials shown on the dashboard.
 # One per line:  Name, MintecCode
-# Add or remove a line to change what appears. Nothing else needed.
 
 Name, Code
 Corn, CRNC
@@ -18,3 +17,8 @@ Butter, SDBN
 Wood, FBX2
 Aluminium, LN02
 Copper, LN06
+Petrol, BCRD
+Wheat, WHTC
+EUR-USD, EUR
+KraftLiner, PA06
+PP CN, 2O05
