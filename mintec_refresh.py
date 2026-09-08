@@ -63,7 +63,9 @@ except ImportError:
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_WB = os.path.join(HERE, "Book1.xlsx")
-DEFAULT_HTML = os.path.join(HERE, "Materials_Market_Desk.html")
+# GitHub Pages serves index.html.  Keeping the same default here prevents the
+# refresher from updating one file while the published page serves another.
+DEFAULT_HTML = os.path.join(HERE, "index.html")
 
 AUTHORITY = os.environ.get("MINTEC_AUTHORITY", "https://identity.mintecanalytics.com/connect/token")
 BASE = os.environ.get("MINTEC_BASE", "https://public-api.mintecanalytics.com").rstrip("/")

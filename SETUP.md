@@ -1,10 +1,10 @@
 # Running the Market Desk from GitHub
 
-Three files live in the repo root, plus one workflow:
+Four files live in the repo root, plus one workflow:
 
-    Materials_Market_Desk.html      the dashboard
+    index.html                      the dashboard
     mintec_refresh.py               the refresh script
-    Book1.xlsx                      the material list and Mintec codes
+    materials.csv                   the material list and Mintec codes
     .github/workflows/refresh.yml   the hourly job
 
 ## 1. Add your credentials
@@ -22,7 +22,7 @@ never appear in the repo or the logs.
 Repo → Settings → Pages → Source: **Deploy from a branch**, branch `main`,
 folder `/ (root)`. Your URL appears within a minute:
 
-    https://<your-account>.github.io/<repo-name>/Materials_Market_Desk.html?cast=1&reload=60
+    https://<your-account>.github.io/<repo-name>/?cast=1&reload=60
 
 ## 3. Check the job
 
@@ -37,7 +37,7 @@ After that it runs itself at five past every hour.
 Any device with a browser. Nothing to install.
 
     Chrome kiosk:
-    chrome.exe --kiosk --app="https://<account>.github.io/<repo>/Materials_Market_Desk.html?cast=1&reload=60"
+    chrome.exe --kiosk --app="https://<account>.github.io/<repo>/?cast=1&reload=60"
 
     iPad: open the URL in Safari, Share → Add to Home Screen, launch from there.
 
