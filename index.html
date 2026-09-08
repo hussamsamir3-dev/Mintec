@@ -1165,22 +1165,6 @@ html[data-theme="light"] .donut .dlab,html[data-theme="light"] .donut .dpct{fill
   text-transform:uppercase;letter-spacing:.05em;font-weight:700}
 .ctile .row2 b{font-weight:700}
 
-/* ══════════════════════════════════════════════════════════
-   Cast controls
-   ══════════════════════════════════════════════════════════ */
-.cast-ctl{display:flex;align-items:center;gap:.45vw;flex:0 0 auto;opacity:.35;
-  transition:opacity .3s}
-#cast:hover .cast-ctl,.cast-ctl:focus-within{opacity:1}
-.cbtn{width:2.4vw;height:2.4vw;min-width:34px;min-height:34px;border-radius:50%;
-  border:1px solid var(--rule2);background:var(--ink2);color:var(--text2);
-  display:grid;place-items:center;font-size:1.1vw;line-height:1;
-  transition:background .15s,color .15s,border-color .15s,transform .12s}
-.cbtn:hover{background:var(--ink3);color:var(--text);border-color:var(--gold)}
-.cbtn:active{transform:scale(.93)}
-.cbtn.exit{width:auto;min-width:0;padding:0 1vw;border-radius:999px;
-  font-size:.86vw;font-weight:600;letter-spacing:.02em;
-  background:var(--heat);border-color:var(--heat);color:#fff}
-.cbtn.exit:hover{background:#ef7a5f;border-color:#ef7a5f;color:#fff}
 
 /* panels slide, they do not just appear */
 .scene{display:none}
@@ -1270,6 +1254,46 @@ body.ar .scene h2,body.ar .dtitle,body.ar .cast-head h1{font-family:"Noto Kufi A
 [dir=rtl] .rmprice,[dir=rtl] .pbig,[dir=rtl] .dlanded,
 [dir=rtl] .mvv,[dir=rtl] .cbv,[dir=rtl] .crmbig{direction:ltr}
 [dir=rtl] .px,[dir=rtl] .rmprice,[dir=rtl] .pbig{justify-content:flex-end}
+
+/* one small exit, top corner of the cast layer */
+.castx{position:absolute;top:1.6vh;right:1.4vw;z-index:20;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--rule2);background:rgba(20,31,44,.72);color:var(--text2);
+  display:grid;place-items:center;font-size:20px;line-height:1;
+  opacity:.32;transition:opacity .25s,background .15s,color .15s,border-color .15s,transform .12s}
+html[data-theme="light"] .castx{background:rgba(255,255,255,.82)}
+#cast:hover .castx{opacity:1}
+.castx:hover{background:var(--heat);border-color:var(--heat);color:#fff;opacity:1}
+.castx:focus-visible{opacity:1}
+.castx:active{transform:scale(.92)}
+[dir=rtl] .castx{right:auto;left:1.4vw}
+
+/* ══════════════════════════════════════════════════════════
+   Cast in RTL — mirror the layouts, keep the data LTR
+   ══════════════════════════════════════════════════════════ */
+[dir=rtl] .cast-mv .row,[dir=rtl] .cbr,[dir=rtl] .crml,
+[dir=rtl] .cbrow,[dir=rtl] .dk,[dir=rtl] .csm{direction:rtl}
+[dir=rtl] .cast-mv .row .b{left:auto;right:0}
+[dir=rtl] .cast-mv .row .v,[dir=rtl] .cbc,[dir=rtl] .crml .v,
+[dir=rtl] .cbrow b,[dir=rtl] .dk .v,[dir=rtl] .dk .p{direction:ltr;text-align:left}
+[dir=rtl] .crec{border-top-color:var(--ac)}
+[dir=rtl] .cnews{border-left:1px solid var(--rule);border-right:3px solid var(--cc)}
+[dir=rtl] .cprod .v,[dir=rtl] .ctile .p,[dir=rtl] .ctile .row2,
+[dir=rtl] .cast-kpi .val,[dir=rtl] .crmbig,[dir=rtl] .cbv,
+[dir=rtl] .csm .pv,[dir=rtl] .dlanded b{direction:ltr}
+[dir=rtl] .ctile,[dir=rtl] .cprod,[dir=rtl] .cast-kpi .k,
+[dir=rtl] .cbcard,[dir=rtl] .crmside{text-align:right}
+[dir=rtl] .ctile{border-left:1px solid var(--rule);border-right:3px solid var(--cc)}
+[dir=rtl] .tipband{direction:rtl}
+[dir=rtl] .cast-head{direction:rtl}
+[dir=rtl] .cast-clock{text-align:left;direction:ltr}
+[dir=rtl] .cast-foot{direction:rtl}
+[dir=rtl] .cast-hint,[dir=rtl] .cast-credit{direction:rtl}
+[dir=rtl] .cast-credit{border-right:none;border-left:1px solid var(--rule);
+  padding-right:0;padding-left:1vw}
+/* the fan chart itself must never mirror — the time axis runs left to right */
+[dir=rtl] #castFan,[dir=rtl] .crmchart,[dir=rtl] .csdonut,
+[dir=rtl] .cast-tiles > .ctile > svg{direction:ltr}
 
 </style>
 </head>
@@ -1591,20 +1615,14 @@ body.ar .scene h2,body.ar .dtitle,body.ar .cast-head h1{font-family:"Noto Kufi A
 
 <!-- ── cast ────────────────────────────────────────────── -->
 <div id="cast" role="region" aria-label="Big screen view">
+  <button class="castx" id="castExit" aria-label="Exit full screen" title="Exit (Esc)">&times;</button>
   <div class="cast-head">
     <img data-logo alt="Beyti" class="cast-logo">
     <div style="flex:1 1 auto;min-width:0">
       <h1 data-i18n="hero">Direct Materials Market Desk</h1>
       <div class="sub" id="castSub">&nbsp;</div>
     </div>
-    <div class="cast-ctl">
-      <button class="cbtn" id="castPrev" aria-label="Previous panel">&#8249;</button>
-      <button class="cbtn" id="castPlay" aria-label="Pause">&#10073;&#10073;</button>
-      <button class="cbtn" id="castNext" aria-label="Next panel">&#8250;</button>
-      <button class="cbtn" id="castFs" aria-label="Toggle fullscreen">&#9974;</button>
-      <button class="cbtn exit" id="castExit" data-i18n="castExit">Exit</button>
-    </div>
-    <div class="cast-clock"><span id="castTime">--:--</span><small id="castDate">&nbsp;</small><small id="castNext" style="color:var(--gold)">&nbsp;</small></div>
+    <div class="cast-clock"><span id="castTime">--:--</span><small id="castDate">&nbsp;</small></div>
   </div>
 
   <div class="cast-body" id="castBody"></div>
@@ -2500,8 +2518,8 @@ function buildTips() {
 }
 
 function renderTips() {
-  $("#tips").innerHTML = buildTips().map(function (t) {
-    return '<div class="tip-c"><h5>' + t[0] + "</h5><p>" + t[1] + "</p></div>";
+  $("#tips").innerHTML = buildTips().map(function (tp) {
+    return '<div class="tip-c"><h5>' + tp[0] + "</h5><p>" + tp[1] + "</p></div>";
   }).join("");
 }
 
@@ -2539,17 +2557,17 @@ function buildNewsScene() {
 
 /* rotating band: alternates a reading tip with a signal read off the data */
 function bandItems() {
-  var out = buildTips().map(function (t) { return { k: "Tip", c: "", s: "<b>" + t[0] + ".</b> " + t[1] }; });
+  var out = buildTips().map(function (tp) { return { kind: "tip", k: t("tip"), c: "", s: "<b>" + tp[0] + ".</b> " + tp[1] }; });
   shown().filter(function (m) { return m.f12 !== null; })
     .sort(function (a, b) { return Math.abs(b.f12) - Math.abs(a.f12); })
     .slice(0, 8).forEach(function (m) {
       var r = recFor(m);
-      out.push({ k: "Signal", c: "sig",
+      out.push({ kind: "sig", k: t("signal"), c: "sig",
                  s: "<b>" + m.name + " — " + r.action.label + ".</b> " + r.text.split(". ")[0] + "." });
     });
   // interleave so the badge alternates
-  var tips = out.filter(function (x) { return x.k === "Tip"; });
-  var sigs = out.filter(function (x) { return x.k === "Signal"; });
+  var tips = out.filter(function (x) { return x.kind === "tip"; });
+  var sigs = out.filter(function (x) { return x.kind === "sig"; });
   var mixed = [];
   for (var i = 0; i < Math.max(tips.length, sigs.length); i++) {
     if (sigs[i]) mixed.push(sigs[i]);
@@ -2631,12 +2649,12 @@ function panelOverview() {
   var up = f12s.filter(function (m) { return m.f12 > 0.5; }).length;
   var dn = f12s.filter(function (m) { return m.f12 < -0.5; }).length;
   return '<div class="cast-kpi">' +
-      '<div class="k"><div class="lab">Basket, next 12 months</div><div class="val ' + dirCls(basket) + '">' + pct(basket) + '</div><div class="sub">across ' + f12s.length + ' forward curves</div></div>' +
-      '<div class="k"><div class="lab">Basket, last 12 months</div><div class="val ' + dirCls(byoy) + '">' + pct(byoy) + '</div><div class="sub">settled prices</div></div>' +
-      '<div class="k"><div class="lab">Rising</div><div class="val up">' + up + '</div><div class="sub">of ' + V.length + ' materials</div></div>' +
-      '<div class="k"><div class="lab">Falling</div><div class="val dn">' + dn + '</div><div class="sub">of ' + V.length + ' materials</div></div>' +
+      '<div class="k"><div class="lab">' + t("kBasketF") + '</div><div class="val ' + dirCls(basket) + '">' + pct(basket) + '</div><div class="sub">' + f12s.length + " " + t("kCurves") + '</div></div>' +
+      '<div class="k"><div class="lab">' + t("kBasketY") + '</div><div class="val ' + dirCls(byoy) + '">' + pct(byoy) + '</div><div class="sub">' + t("kSettled") + '</div></div>' +
+      '<div class="k"><div class="lab">' + t("kRising") + '</div><div class="val up">' + up + '</div><div class="sub">' + t("kOf") + " " + V.length + " " + t("kMaterials") + '</div></div>' +
+      '<div class="k"><div class="lab">' + t("kFalling") + '</div><div class="val dn">' + dn + '</div><div class="sub">' + t("kOf") + " " + V.length + " " + t("kMaterials") + '</div></div>' +
     "</div>" +
-    '<h2>Where every input is heading <span>indexed to 100 today · dashed is the forward curve</span></h2>' +
+    '<h2>' + t("pOverview") + ' <span>' + t("pOverviewSub") + '</span></h2>' +
     '<div id="castFan"></div>' +
     '<div class="cast-key">' + V.map(function (m) {
       return '<span class="ck">' + matIcon(m, "sm") + '<i style="background:' + cat(m).hex + '"></i>' + m.name + "</span>";
@@ -2647,7 +2665,7 @@ function panelMovers() {
   var rows = shown().filter(function (m) { return m.f12 !== null; })
     .sort(function (a, b) { return b.f12 - a.f12; });
   var mx = Math.max.apply(null, rows.map(function (m) { return Math.abs(m.f12); })) || 1;
-  return '<h2>Forward pressure on the basket <span>change to twelve months out</span></h2>' +
+  return '<h2>' + t("pMovers") + ' <span>' + t("pMoversSub") + '</span></h2>' +
     '<div class="cast-mv">' + rows.map(function (m) {
       var v = m.f12, w = Math.abs(v) / mx * 48, left = v >= 0 ? 50 : 50 - w;
       var col = v > 0.5 ? "var(--heat)" : v < -0.5 ? "var(--cool)" : "var(--flat)";
@@ -2662,15 +2680,15 @@ function panelMovers() {
 function panelActions() {
   var recs = shown().map(function (m) { return { m: m, r: recFor(m) }; })
     .sort(function (a, b) { return b.r.score - a.r.score; }).slice(0, 6);
-  return '<h2>What to do about it <span>ranked by what moves the bill most</span></h2>' +
+  return '<h2>' + t("pActions") + ' <span>' + t("pActionsSub") + '</span></h2>' +
     '<div class="cast-recs">' + recs.map(function (x) {
       var m = x.m, r = x.r, f = factor(m);
       return '<div class="crec" style="--ac:' + r.action.color + '">' +
         '<div class="t"><b>' + m.name + "</b><em>" + r.action.label + "</em></div>" +
         "<p>" + r.text.split(". ").slice(0, 2).join(". ") + "</p>" +
-        '<div class="f"><span>now <b>' + num(m.spot * f) + "</b></span>" +
-        '<span>12m <b class="' + dirCls(m.f12) + '">' + pct(m.f12) + "</b></span>" +
-        "<span>range <b>" + Math.round(m.pos * 100) + "%</b></span></div></div>";
+        '<div class="f"><span>' + t("now") + ' <b>' + num(m.spot * f) + "</b></span>" +
+        '<span>' + t("next12") + ' <b class="' + dirCls(m.f12) + '">' + pct(m.f12) + "</b></span>" +
+        "<span>" + t("range") + " <b>" + Math.round(m.pos * 100) + "%</b></span></div></div>";
     }).join("") + "</div>";
 }
 
@@ -2687,17 +2705,17 @@ function panelRawMilk() {
               ["Alfalfa", now.alfalfa, "#7FA96A"], ["Fixed", now.fixed, "#7E93AC"],
               ["Haulage", now.transport, "#5F7288"]];
   if (now.summer > 0) legs.push(["Summer bonus", now.summer, "#DFA93A"]);
-  return '<h2>Raw milk, priced and projected <span>the whole ration valued at every date</span></h2>' +
+  return '<h2>' + t("pRawMilk") + ' <span>' + t("pRawMilkSub") + '</span></h2>' +
     '<div class="cast-rm">' +
       '<div class="crmchart" id="castRmChart"></div>' +
       '<div class="crmside">' +
         '<div class="crmbig"><span class="v ' + dirCls(chg, .1) + '">' + sp.egp.toFixed(2) + '</span>' +
           '<span class="u">EGP / kg now</span></div>' +
         '<div class="crmkv">' +
-          '<div><span>Next 12 months</span><b class="' + dirCls(chg, .1) + '">' + pct(chg) + "</b></div>" +
-          '<div><span>Curve ends</span><b>' + end.v.toFixed(2) + "</b></div>" +
-          '<div><span>Gate</span><b>' + now.gate.toFixed(2) + "</b></div>" +
-          '<div><span>Feed exposure</span><b>' + Math.round((now.corn + now.meal) / now.v * 100) + "%</b></div>" +
+          '<div><span>' + t("next12") + '</span><b class="' + dirCls(chg, .1) + '">' + pct(chg) + "</b></div>" +
+          '<div><span>' + t("curveEnds") + '</span><b>' + end.v.toFixed(2) + "</b></div>" +
+          '<div><span>' + t("gate") + '</span><b>' + now.gate.toFixed(2) + "</b></div>" +
+          '<div><span>' + t("feedExposure") + '</span><b>' + Math.round((now.corn + now.meal) / now.v * 100) + "%</b></div>" +
         "</div>" +
         legs.map(function (l) {
           return '<div class="crml"><span class="d" style="background:' + l[2] + '"></span>' +
@@ -2715,8 +2733,8 @@ function panelMilkStack() {
   var recent = ser.filter(function (x) { return x.d <= cut; }).slice(-6);
   var fwd = ser.filter(function (x) { return x.d > cut; }).slice(0, 6);
   var band = recent.concat(fwd);
-  return '<h2><b style="color:var(--c-dairy)">Milk</b> local cost contribution ' +
-    '<span>this month, and the months either side of it</span></h2>' +
+  return '<h2><b style="color:var(--c-dairy)">' + (isAr() ? "اللبن" : "Milk") + '</b> ' + t("pStack") +
+    ' <span>' + t("pStackSub") + '</span></h2>' +
     '<div class="cast-stack">' +
       '<div class="csdonut">' + milkDonut(Math.round(window.innerHeight * 0.40), false) + "</div>" +
       '<div class="csmonths">' + band.map(function (x) {
@@ -2724,7 +2742,7 @@ function panelMilkStack() {
         return '<div class="csm' + (isNow ? " now" : "") + (x.d > cut ? " fwd" : "") + '">' +
           '<span class="mo">' + fmtD(x.d) + "</span>" +
           '<span class="pv">' + x.v.toFixed(2) + "</span>" +
-          (x.summer > 0 ? '<span class="sb">bonus</span>' : "") + "</div>";
+          (x.summer > 0 ? '<span class="sb">' + t("bonus") + '</span>' : "") + "</div>";
       }).join("") + "</div>" +
     "</div>";
 }
@@ -2748,7 +2766,7 @@ function panelBuild() {
     ["less hull credit", "recovered on hulls", -ml.hull],
     ["plus crush and margin", "crusher cost and return", ml.crush]
   ] : [];
-  return '<h2>How the indexed inputs are built <span>everything below is editable in settings</span></h2>' +
+  return '<h2>' + t("pBuild") + ' <span>' + t("pBuildSub") + '</span></h2>' +
     '<div class="cast-build">' +
       '<div class="cbcard"><div class="cbh">' + prodIcon("milk", 42) +
         '<div class="cbt">Raw milk<span>EGP per kg, delivered</span></div>' +
@@ -2757,7 +2775,7 @@ function panelBuild() {
         rmRows.map(function (r) {
           return '<div class="cbrow"><span>' + r[0] + '</span><em>' + r[1] + '</em><b>' + r[2].toFixed(2) + "</b></div>";
         }).join("") +
-        '<div class="cbrow tot"><span>Delivered</span><em>ration ' + rm.ration.toFixed(2) +
+        '<div class="cbrow tot"><span>' + t("delivered") + '</span><em>' + t("rationW") + ' ' + rm.ration.toFixed(2) +
           " · gate " + rm.gate.toFixed(2) + '</em><b>' + rm.egp.toFixed(2) + "</b></div></div>" +
       '<div class="cbcard"><div class="cbh">' + lineIcon("Soya", "#D9A441", "lg") +
         '<div class="cbt">Soybean meal<span>USD per tonne, crushed</span></div>' +
@@ -2767,12 +2785,12 @@ function panelBuild() {
           return '<div class="cbrow"><span>' + r[0] + '</span><em>' + r[1] + '</em><b>' +
             (r[2] >= 0 ? "+" : "\u2212") + Math.abs(r[2]).toFixed(2) + "</b></div>";
         }).join("") +
-        (ml ? '<div class="cbrow tot"><span>Meal cost</span><em>' + ml.perBu.toFixed(2) + " USD/bu × " +
+        (ml ? '<div class="cbrow tot"><span>' + t("mealCost") + '</span><em>' + ml.perBu.toFixed(2) + " USD/bu × " +
           Md.buPerMT + '</em><b>' + num(ml.perMT, 0) + "</b></div>" : "") + "</div></div>";
 }
 
 function panelProducts() {
-  return '<h2>What it does to finished product cost <span>recipe weighted · next twelve months</span></h2>' +
+  return '<h2>' + t("pProducts") + ' <span>' + t("pProductsSub") + '</span></h2>' +
     '<div class="cast-prods">' + PRODUCTS.map(function (p) {
       var cc = productCost(p);
       if (!cc.ranked.length) return "";
@@ -2789,7 +2807,7 @@ function panelProducts() {
             '<span class="cbn">' + x.inp.name + '</span><span class="cbw">' + x.share + "%</span>" +
             '<span class="cbc ' + dirCls(x.f12, .05) + '">' + (x.f12 >= 0 ? "+" : "") + x.f12.toFixed(1) + "</span></div>";
         }).join("") + "</div>" +
-        '<div class="cpf">materials <b>' + p.materialShare + '%</b> of cost · led by <b style="color:' +
+        '<div class="cpf">' + t("materialsPct") + ' <b>' + p.materialShare + '%</b> ' + t("ofCost") + ' · ' + t("ledBy") + ' <b style="color:' +
           cc.ranked[0].inp.hex + '">' + cc.ranked[0].inp.name + "</b></div></div>";
     }).join("") + "</div>";
 }
@@ -2797,8 +2815,8 @@ function panelProducts() {
 function panelMaterials(page, pages) {
   var V = shown();
   var slice = V.slice(page * MAT_PER_PAGE, page * MAT_PER_PAGE + MAT_PER_PAGE);
-  return '<h2>Every material <span>latest settled price and where the curve takes it' +
-    (pages > 1 ? " · " + (page + 1) + " of " + pages : "") + "</span></h2>" +
+  return '<h2>' + t("pMaterials") + ' <span>' + t("pMaterialsSub") +
+    (pages > 1 ? " · " + t("page") + " " + (page + 1) + "/" + pages : "") + "</span></h2>" +
     '<div class="cast-tiles">' + slice.map(function (m) {
       var c = cat(m), f = factor(m);
       return '<div class="ctile" style="--cc:' + c.hex + '">' +
@@ -2831,7 +2849,7 @@ function panelNews() {
           '<div class="m"><b>' + m.name + "</b> · " + i.tag + "</div></div>";
       }).join("") + "</div>";
   }
-  return '<h2>Market headlines <span>live from public news feeds</span>' + flag + "</h2>" + body;
+  return '<h2>' + t("pNews") + ' <span>' + t("pNewsSub") + '</span>' + flag + "</h2>" + body;
 }
 
 /* ── the rotation ──────────────────────────────────────── */
@@ -2863,8 +2881,8 @@ function buildScenes() {
   cast.band = bandItems();
   var dots = ""; for (var di = 0; di < cast.n; di++) dots += "<b></b>";
   $("#castDots").innerHTML = dots;
-  $("#castSub").textContent = shown().length + " materials · Mintec Expana · prices to " +
-    fmtDFull(state.asOf) + " · " + state.source;
+  $("#castSub").textContent = shown().length + " " + t("kMaterials") + " · Mintec Expana · " +
+    t("pricesAsOf") + " " + fmtDFull(state.asOf);
 }
 
 function buildNewsScene() {
@@ -3626,8 +3644,8 @@ function planPaint() {
       : '<div class="pdelta fl">unchanged from your saved assumptions</div>') +
     '<div class="pkv">' +
       '<div><span>Ration</span><b>' + now.ration.toFixed(2) + "</b></div>" +
-      '<div><span>Gate</span><b>' + now.gate.toFixed(2) + "</b></div>" +
-      '<div><span>Next 12 months</span><b class="' + dirCls(chg, .1) + '">' + pct(chg) + "</b></div>" +
+      '<div><span>' + t("gate") + '</span><b>' + now.gate.toFixed(2) + "</b></div>" +
+      '<div><span>' + t("next12") + '</span><b class="' + dirCls(chg, .1) + '">' + pct(chg) + "</b></div>" +
       '<div><span>Year on year</span><b class="' + dirCls((now.egp / yoy.egp - 1) * 100, .1) + '">' +
         pct((now.egp / yoy.egp - 1) * 100) + "</b></div>" +
       '<div><span>Feed exposure</span><b>' + Math.round((now.corn + now.soya) / now.egp * 100) + "%</b></div>" +
@@ -3983,7 +4001,24 @@ var STR = {
     secTips:"Worth knowing", secTipsSub:"Before you act on any of it.",
     secNews:"Market headlines", secNewsSub:"Pulled live for whatever is moving most.",
     castExit:"Exit", loadWorkbook:"Load workbook", castTo:"Cast to screen", lock:"Lock",
-    lastUpdate:"Last update", pricesAsOf:"Prices as of", source:"Source"
+    lastUpdate:"Last update", pricesAsOf:"Prices as of", source:"Source",
+    pOverview:"Where every input is heading", pOverviewSub:"set to 100 today · dashed is what the market expects",
+    pMovers:"What is pushing cost up, and what is pulling it down", pMoversSub:"twelve months from now",
+    pActions:"What to do about it", pActionsSub:"the ones that move the bill most",
+    pRawMilk:"Raw milk, priced and projected", pRawMilkSub:"the whole ration, valued every month",
+    pStack:"local cost contribution", pStackSub:"this month, and the months either side",
+    pBuild:"How the indexed inputs are built", pBuildSub:"all of it editable in settings",
+    pProducts:"What it does to your products", pProductsSub:"recipe weighted · twelve months out",
+    pMaterials:"Every material", pMaterialsSub:"latest price and where it is heading",
+    pNews:"Market headlines", pNewsSub:"live, for whatever is moving most",
+    kBasketF:"Basket, next 12 months", kBasketY:"Basket, last 12 months",
+    kRising:"Rising", kFalling:"Falling", kOf:"of", kMaterials:"materials",
+    kCurves:"forward curves", kSettled:"settled prices",
+    now:"now", next12:"next 12 months", range:"range", ledBy:"led by",
+    materialsPct:"materials", ofCost:"of cost", gate:"gate", delivered:"Delivered",
+    feedExposure:"Feed exposure", curveEnds:"Curve ends", page:"page",
+    mealCost:"Meal cost", rationW:"ration", noFeed:"Nothing to show here.",
+    bonus:"bonus", tip:"Tip", signal:"Signal"
   },
   ar: {
     settings:"الإعدادات", settingsLead:"محفوظة على هذا الجهاز.",
@@ -4024,7 +4059,24 @@ var STR = {
     secTips:"أشياء تستحق المعرفة", secTipsSub:"قبل أن تتصرف بناءً على أي من هذا.",
     secNews:"عناوين السوق", secNewsSub:"مباشرة، لأكثر الخامات حركة.",
     castExit:"خروج", loadWorkbook:"تحميل ملف", castTo:"عرض على الشاشة", lock:"قفل",
-    lastUpdate:"آخر تحديث", pricesAsOf:"أسعار حتى", source:"المصدر"
+    lastUpdate:"آخر تحديث", pricesAsOf:"أسعار حتى", source:"المصدر",
+    pOverview:"إلى أين تتجه كل خامة", pOverviewSub:"الكل يبدأ من ١٠٠ اليوم · المتقطع هو ما يتوقعه السوق",
+    pMovers:"ما الذي يرفع التكلفة وما الذي يخفضها", pMoversSub:"بعد اثني عشر شهراً",
+    pActions:"ما العمل", pActionsSub:"الخامات الأكثر تأثيراً على الفاتورة",
+    pRawMilk:"اللبن الخام، السعر والتوقع", pRawMilkSub:"العليقة كاملة، محسوبة كل شهر",
+    pStack:"مكونات التكلفة المحلية", pStackSub:"هذا الشهر والشهور المحيطة به",
+    pBuild:"كيف تُحسب المدخلات المرتبطة", pBuildSub:"كل ذلك قابل للتعديل في الإعدادات",
+    pProducts:"أثر ذلك على منتجاتك", pProductsSub:"محسوب بالتركيبة · بعد اثني عشر شهراً",
+    pMaterials:"كل الخامات", pMaterialsSub:"آخر سعر وإلى أين يتجه",
+    pNews:"عناوين السوق", pNewsSub:"مباشرة، لأكثر الخامات حركة",
+    kBasketF:"السلة، الاثني عشر شهراً القادمة", kBasketY:"السلة، الاثني عشر شهراً الماضية",
+    kRising:"صاعدة", kFalling:"هابطة", kOf:"من", kMaterials:"خامة",
+    kCurves:"منحنى مستقبلي", kSettled:"أسعار مستقرة",
+    now:"الآن", next12:"١٢ شهراً", range:"المدى", ledBy:"يقودها",
+    materialsPct:"الخامات", ofCost:"من التكلفة", gate:"سعر المزرعة", delivered:"السعر النهائي",
+    feedExposure:"نسبة العلف", curveEnds:"نهاية المنحنى", page:"صفحة",
+    mealCost:"تكلفة الكسب", rationW:"العليقة", noFeed:"لا يوجد ما يُعرض هنا.",
+    bonus:"حافز", tip:"نصيحة", signal:"إشارة"
   }
 };
 
@@ -4517,18 +4569,6 @@ function boot() {
   };
   $("#btnCast").onclick = openCast;
   $("#castExit").onclick = closeCast;
-  $("#castPrev").onclick = function () { showScene(cast.scene - 1, -1); };
-  $("#castNext").onclick = function () { showScene(cast.scene + 1, 1); };
-  $("#castFs").onclick = function () {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-  };
-  $("#castPlay").onclick = function () {
-    cast.paused = !cast.paused;
-    this.innerHTML = cast.paused ? "&#9654;" : "&#10073;&#10073;";
-    this.setAttribute("aria-label", cast.paused ? "Play" : "Pause");
-    $("#ticker").classList.toggle("paused", cast.paused);
-  };
 
   // ── settings drawer
   var setOpen = function (on) { $("#setPanel").classList.toggle("on", on); };
@@ -4603,16 +4643,11 @@ function boot() {
   setInterval(castClock, 15000);
   var RELOAD_MIN = parseInt((location.search.match(/reload=(\d+)/) || [])[1] || "60", 10);
   if (RELOAD_MIN > 0) {
+    // reload quietly so a scheduled rebuild lands on the screen; no visible timer
     var due = Date.now() + RELOAD_MIN * 60000;
     setInterval(function () {
-      var left = due - Date.now();
-      var el = $("#castNext");
-      if (el) {
-        var mm = Math.max(0, Math.floor(left / 60000)), ss = Math.max(0, Math.floor(left / 1000) % 60);
-        el.textContent = "next refresh in " + mm + ":" + String(ss).padStart(2, "0");
-      }
-      if (left <= 0 && !document.hidden) location.reload();
-    }, 1000);
+      if (Date.now() >= due && !document.hidden) location.reload();
+    }, 5000);
   }
   $("#scrim").onclick = closeDrawer;
   $("#drawerX").onclick = closeDrawer;
@@ -4633,8 +4668,6 @@ function boot() {
       e.preventDefault();
       cast.paused = !cast.paused;
       $("#ticker").classList.toggle("paused", cast.paused);
-      var pb = $("#castPlay");
-      if (pb) { pb.innerHTML = cast.paused ? "&#9654;" : "&#10073;&#10073;"; }
       $("#castHint").textContent = cast.paused ? "Paused — space resumes" :
         "Space pauses · arrows change panel · F fullscreen · Esc exits";
     } else if (e.key === "ArrowRight") { showScene(cast.scene + 1); }
