@@ -932,11 +932,10 @@ footer{margin-top:70px;padding-top:26px}
    Motion, second pass — staggered reveals, counting numbers,
    bars that fill on sight, icons that respond to a hover
    ══════════════════════════════════════════════════════════ */
-.ic .glyph-back{opacity:0;transition:opacity .25s}
-.card:hover .ic .glyph-back,.rec:hover .ic .glyph-back,
-.chip.key:hover .ic .glyph-back,.uchip:hover .ic .glyph-back{opacity:1}
-.ic{transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
-.card:hover .ic,.rec:hover .ic{transform:scale(1.09) rotate(-3deg)}
+.ic{transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .2s}
+.ic .glyph{transition:stroke-width .2s}
+.card:hover .ic,.rec:hover .ic{transform:scale(1.06)}
+.card:hover .ic .glyph,.rec:hover .ic .glyph{stroke-width:1.7}
 
 /* children arrive after their section, in sequence */
 section[data-export].seen .cards > *,
@@ -1200,10 +1199,8 @@ html[data-theme="light"] .donut .dlab,html[data-theme="light"] .donut .dpct{fill
   list-style:none;transition:background .14s}
 .acc summary::-webkit-details-marker{display:none}
 .acc summary:hover{background:var(--ink3)}
-.acc summary .ai{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
-  background:linear-gradient(150deg,rgba(223,169,58,.28),rgba(223,169,58,.08));
-  color:var(--gold);font-size:15px;flex:0 0 auto;
-  border:1px solid rgba(223,169,58,.26)}
+.acc summary .ai{width:24px;height:24px;display:grid;place-items:center;
+  color:var(--accent);font-size:15px;flex:0 0 auto}
 .acc summary b{font-size:14.5px;font-weight:600}
 .acc summary em{font-style:normal;color:var(--muted);font-size:11.5px;margin-left:auto;
   text-align:right;padding-left:10px}
@@ -1460,6 +1457,44 @@ html[data-theme="light"] .cast-kpi .val{text-shadow:none}
   .gauges{grid-template-columns:repeat(2,1fr)}
 }
 @media (prefers-reduced-motion:reduce){ .gtrack{transition:none} }
+
+/* readability fixes */
+.donut .dpct{text-anchor:middle;font-size:12px;font-weight:800;fill:#0E1621;
+  paint-order:stroke;stroke:rgba(255,255,255,.55);stroke-width:2.6px;stroke-linejoin:round}
+.donut .dmid1{font-size:26px}
+.donut .dmid2{font-size:10px}
+.donut .seg{stroke:var(--ink2);stroke-width:2.5;filter:none}
+.fan-legend{padding-top:15px}
+.keyhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
+.key-lead{margin:0}
+.btn.keyall{padding:5px 12px;font-size:11.5px;border-radius:7px;flex:0 0 auto}
+.keygrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px 12px}
+.chip.key{padding:4px 7px;border-radius:7px}
+.chip.key.off{opacity:.35}
+.chip.key.off .kn{text-decoration:none}
+.fanline{stroke-width:2.1}
+
+/* icons sit on their own now, so give them room rather than a box */
+.sec-title .ic{width:26px;height:26px;filter:none;opacity:.95}
+.card .ic.sm,.uchip .ic,.chip.key .ic.xs{opacity:.9}
+.mvi .ic{width:20px;height:20px;opacity:.9}
+.icard h4 .ic{width:20px;height:20px}
+.acc summary .ai{background:none;border:none}
+#noteText{width:100%;background:var(--ink2);border:1px solid var(--rule2);border-radius:9px;
+  padding:10px 12px;color:var(--text);font:inherit;font-size:13px;resize:vertical}
+#noteText:focus{border-color:var(--accent);outline:none}
+.notelist{margin-top:12px;display:grid;gap:6px}
+.noterow{display:grid;grid-template-columns:1fr auto auto;align-items:baseline;gap:9px;
+  background:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 11px;font-size:12.5px}
+.noterow span{color:var(--text2);line-height:1.45}
+.noterow em{font-style:normal;color:var(--muted);font-size:11px;white-space:nowrap}
+.noterow button{color:var(--muted);font-size:17px;line-height:1}
+.noterow button:hover{color:var(--heat)}
+.nitem.note{border-left:3px solid var(--accent);cursor:default}
+[dir=rtl] .nitem.note{border-left:1px solid var(--rule);border-right:3px solid var(--accent)}
+.nitem.note .delnote{background:none;border:none;color:var(--muted);font-size:15px;
+  margin-left:6px;cursor:pointer;line-height:1}
+.nitem.note .delnote:hover{color:var(--heat)}
 
 </style>
 </head>
@@ -1787,6 +1822,16 @@ html[data-theme="light"] .cast-kpi .val{text-shadow:none}
   </details>
 
   <details class="acc">
+    <summary><span class="ai">&#9998;</span><b data-i18n="accNotes">Your own market notes</b><em data-i18n="accNotesSub">shown with the raw milk news</em></summary>
+    <div class="accbody">
+      <p class="hint" data-i18n="notesHint">Anything you hear from suppliers or the farms. It shows in the raw milk section alongside the headlines, and stays on this device.</p>
+      <textarea id="noteText" rows="3" placeholder="e.g. two Delta farms cut collection this week"></textarea>
+      <div class="mini" style="margin-top:9px"><button id="noteAdd" data-i18n="addNote">Add note</button></div>
+      <div class="notelist" id="noteList"></div>
+    </div>
+  </details>
+
+  <details class="acc">
     <summary><span class="ai">&#8681;</span><b data-i18n="accExport">Save and share</b><em data-i18n="accExportSub">images for email</em></summary>
     <div class="accbody">
       <p class="hint" data-i18n="exportHint">One picture per section, sized for email. Colours match whatever theme you are using.</p>
@@ -1925,7 +1970,7 @@ var BUSHEL = { "56 lbs Bushel": 1000 / 25.4012, "60 lbs Bushel": 1000 / 27.2155 
 var state = {
   mt: false, egp: false, fx: 63.4,
   cat: "all", q: "", sort: "cat",
-  horizon: 18, iso: null,
+  horizon: 18, iso: null, fanAll: false,
   asOf: null, source: (window.__BUILT__ || "Embedded snapshot"), updated: null
 };
 
@@ -2094,7 +2139,17 @@ function renderFan() {
   var w = W - P.l - P.r, h = H - P.t - P.b;
   var win = fanWindow(), t0 = win[0], t1 = win[1], tn = win[2];
 
-  var paths = shown().map(function (m) {
+  var pool = shown();
+  if (!state.fanAll && pool.length > 9) {
+    pool = pool.slice().sort(function (a, b) {
+      return Math.abs(b.f12 === null ? 0 : b.f12) - Math.abs(a.f12 === null ? 0 : a.f12);
+    }).slice(0, 9);
+  }
+  if (state.iso && !pool.some(function (m) { return m.key === state.iso; })) {
+    var extra = shown().filter(function (m) { return m.key === state.iso; });
+    pool = pool.concat(extra);
+  }
+  var paths = pool.map(function (m) {
     var base = m.spot;
     var pts = m.series.filter(function (p) { var q = D(p[0]).getTime(); return q >= t0 && q <= t1; })
       .map(function (p) { return { t: D(p[0]).getTime(), v: p[1] / base * 100, f: p[0] > state.asOf }; });
@@ -2110,7 +2165,6 @@ function renderFan() {
 
   var svg = ['<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Forward price paths for all materials, indexed to 100 today">'];
   svg.push(svgDefs("fan"));
-  svg.push('<g filter="url(#glowfan)">');
 
   // gridlines
   var step = (hi - lo) > 120 ? 25 : (hi - lo) > 60 ? 20 : 10;
@@ -2161,7 +2215,6 @@ function renderFan() {
   }
   var over = ends.length ? ends[ends.length - 1].y - (P.t + h) : 0;
   if (over > 0) ends.forEach(function (l) { l.y -= over; });
-  svg.push("</g>");
   ends.forEach(function (l) {
     svg.push('<line x1="' + (l.x + 2).toFixed(1) + '" y1="' + l.y0 + '" x2="' + (l.x + 7).toFixed(1) +
       '" y2="' + l.y.toFixed(1) + '" stroke="' + l.c + '" stroke-width="1" opacity=".45"/>');
@@ -2174,11 +2227,17 @@ function renderFan() {
 
   // legend
   $("#fanLegend").innerHTML =
-    '<span class="key-lead">Colour key &middot; figures are the next 12 months &middot; click to isolate a line</span><div class="keygrid">' +
+    '<div class="keyhead"><span class="key-lead">' +
+      (isAr() ? "مفتاح الألوان · النسب لاثني عشر شهراً" : "Colour key · figures are the next 12 months") + '</span>' +
+      (shown().length > 9 ? '<button class="btn keyall" id="fanAll">' +
+        (state.fanAll ? (isAr() ? "أظهر الأبرز فقط" : "Show top movers only")
+                      : (isAr() ? "أظهر كل الخامات" : "Show all ") + shown().length) + "</button>" : "") +
+      '</div><div class="keygrid">' +
     shown().map(function (m) {
       var c = cat(m);
+      var inFan = !state.fanAll ? pool.some(function (x) { return x.key === m.key; }) : true;
       var on = state.iso === m.key;
-      return '<button class="chip key' + (on ? " on" : state.iso ? " dim" : "") + '" data-k="' + m.key +
+      return '<button class="chip key' + (on ? " on" : state.iso ? " dim" : (inFan ? "" : " off")) + '" data-k="' + m.key +
         '" title="' + esc(m.desc) + '" style="color:' + (on ? c.hex : "") + '">' +
         matIcon(m, "xs") +
         '<span class="kn">' + m.name + "</span>" +
@@ -2188,6 +2247,7 @@ function renderFan() {
   $$("#fanLegend .chip").forEach(function (b) {
     b.onclick = function () { state.iso = state.iso === b.dataset.k ? null : b.dataset.k; renderFan(); };
   });
+  if ($("#fanAll")) $("#fanAll").onclick = function () { state.fanAll = !state.fanAll; state.iso = null; renderFan(); };
 }
 
 /* ===================================================================
@@ -2328,10 +2388,10 @@ function sparkline(m, w, h) {
       '<stop offset="0" stop-color="' + c + '" stop-opacity=".45"/>' +
       '<stop offset="1" stop-color="' + c + '" stop-opacity="0"/></linearGradient></defs>' +
     area +
-    (a.length > 1 ? '<path d="' + mk(a) + '" fill="none" stroke="' + c + '" stroke-width="2" stroke-linejoin="round" style="filter:drop-shadow(0 0 3px ' + c + ')"/>' : "") +
+    (a.length > 1 ? '<path d="' + mk(a) + '" fill="none" stroke="' + c + '" stroke-width="2" stroke-linejoin="round" />' : "") +
     (f.length > 1 ? '<path d="' + mk(f) + '" fill="none" stroke="' + c + '" stroke-width="1.7" stroke-dasharray="4 3" opacity=".85"/>' : "") +
     '<line x1="' + nx + '" y1="2" x2="' + nx + '" y2="' + (h - 2) + '" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2 2" opacity=".7"/>' +
-    '<circle cx="' + nx + '" cy="' + Y(m.spot).toFixed(1) + '" r="3" fill="' + c + '" style="filter:drop-shadow(0 0 5px ' + c + ')"/></svg>';
+    '<circle cx="' + nx + '" cy="' + Y(m.spot).toFixed(1) + '" r="3" fill="' + c + '" /></svg>';
 }
 
 function visible() {
@@ -2589,19 +2649,38 @@ var NEWSQ = {
    public read-only proxy. Corporate networks often block those, and any one
    of them can be down, so try several and use whichever answers first. */
 var NEWS_PROXIES = [
+  { name: "direct",     url: function (u) { return u; } },
   { name: "allorigins", url: function (u) { return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); } },
   { name: "codetabs",   url: function (u) { return "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u); } },
   { name: "corsproxy",  url: function (u) { return "https://corsproxy.io/?url=" + encodeURIComponent(u); } },
+  { name: "jina",       url: function (u) { return "https://r.jina.ai/" + u; } },
+  { name: "whateverorigin", url: function (u) { return "https://www.whateverorigin.org/get?url=" + encodeURIComponent(u); } },
   { name: "thingproxy", url: function (u) { return "https://thingproxy.freeboard.io/fetch/" + u; } }
 ];
 var NEWS_PROXY_OK = null;
 var EGYPT_NEWS = [];
-var EGYPT_QUERIES = [
-  "Egypt dairy farms milk production",
-  "Egypt raw milk price farmers",
-  "Egypt fodder alfalfa feed prices",
-  "Egypt milk supply shortage dairy"
-];
+/* Several publishers, because any one of them may be unreachable and the
+   feeds themselves differ in what they cover. */
+function egyptFeeds() {
+  var g = function (q) {
+    return "https://news.google.com/rss/search?q=" + encodeURIComponent(q) + "&hl=en-EG&gl=EG&ceid=EG:en";
+  };
+  var b = function (q) {
+    return "https://www.bing.com/news/search?q=" + encodeURIComponent(q) + "&format=RSS";
+  };
+  var y = function (q) {
+    return "https://news.search.yahoo.com/rss?p=" + encodeURIComponent(q);
+  };
+  return [
+    g("Egypt dairy farms milk production"),
+    g("Egypt raw milk price farmers"),
+    g("Egypt fodder alfalfa feed prices"),
+    b("Egypt dairy milk market"),
+    b("Egypt animal feed corn soybean imports"),
+    y("Egypt dairy milk price"),
+    y("Egypt feed fodder prices farms")
+  ];
+}
 
 function fetchViaProxy(feedUrl) {
   var order = NEWS_PROXY_OK
@@ -2620,6 +2699,9 @@ function fetchViaProxy(feedUrl) {
         return r.text();
       })
       .then(function (txt) {
+        if (txt && txt.charAt(0) === "{") {
+          try { var j = JSON.parse(txt); txt = j.contents || j.body || txt; } catch (e) {}
+        }
         if (!txt || txt.indexOf("<item") === -1) throw new Error("not a feed");
         NEWS_PROXY_OK = p;
         return txt;
@@ -2674,9 +2756,8 @@ function fetchEgyptNews() {
     EGYPT_NEWS = out;
     paintEgyptNews();
   };
-  EGYPT_QUERIES.forEach(function (q) {
-    var rss = "https://news.google.com/rss/search?q=" + encodeURIComponent(q) +
-      "&hl=en-EG&gl=EG&ceid=EG:en";
+  var feeds = egyptFeeds();
+  feeds.forEach(function (rss) {
     fetchViaProxy(rss).then(function (txt) {
       var x = new DOMParser().parseFromString(txt, "text/xml");
       Array.prototype.slice.call(x.querySelectorAll("item")).slice(0, 3).forEach(function (it) {
@@ -2684,29 +2765,52 @@ function fetchEgyptNews() {
           t: (it.querySelector("title") || {}).textContent || "",
           l: (it.querySelector("link") || {}).textContent || "#",
           s: (it.querySelector("source") || {}).textContent || "",
-          d: (it.querySelector("pubDate") || {}).textContent || "",
-          q: q
+          d: (it.querySelector("pubDate") || {}).textContent || ""
         });
       });
     }).catch(function () {}).then(function () {
-      if (++done === EGYPT_QUERIES.length) finish();
+      if (++done === feeds.length) finish();
     });
   });
   setTimeout(finish, 20000);
+}
+
+function noteCards() {
+  var ar = isAr();
+  return (prefs.notes || []).map(function (n, i) {
+    return '<div class="nitem note"><div class="t">' + esc(n.text) + "</div>" +
+      '<div class="s">' + (ar ? "ملاحظة داخلية" : "Internal note") + " · " + esc(n.date) +
+      ' <button class="delnote" data-i="' + i + '" title="' + (ar ? "حذف" : "Remove") + '">&times;</button></div></div>';
+  }).join("");
+}
+
+function wireNoteDelete() {
+  $$("#rmNews .delnote").forEach(function (b) {
+    b.onclick = function (e) {
+      e.preventDefault();
+      prefs.notes.splice(+b.dataset.i, 1);
+      savePrefs();
+      paintEgyptNews();
+      buildNoteList();
+    };
+  });
 }
 
 function paintEgyptNews() {
   var wrap = $("#rmNews");
   if (!wrap) return;
   var ar = isAr();
+  var notes = noteCards();
   if (!EGYPT_NEWS.length) {
     wrap.innerHTML = '<div class="newsoff">' +
       (ar ? "تعذّر تحميل أخبار السوق المصري. شبكات الشركات عادةً تحجب الخدمات التي تجلبها."
           : "Egyptian market headlines could not load. Company networks usually block the services that fetch them.") +
       ' <button class="btn" id="rmNewsRetry" style="margin-left:10px">' +
       (ar ? "حاول مرة أخرى" : "Try again") + "</button></div>";
+    if (notes) wrap.innerHTML += '<div class="news">' + notes + "</div>";
     var rb = $("#rmNewsRetry");
     if (rb) rb.onclick = function () { NEWS_PROXY_OK = null; fetchEgyptNews(); };
+    wireNoteDelete();
     return;
   }
   // newest first, and drop anything repeated across the four searches
@@ -2717,13 +2821,14 @@ function paintEgyptNews() {
     var k = n.t.slice(0, 60);
     if (!seen[k]) { seen[k] = 1; items.push(n); }
   });
-  wrap.innerHTML = '<div class="news">' + items.slice(0, 8).map(function (n) {
+  wrap.innerHTML = '<div class="news">' + notes + items.slice(0, 8).map(function (n) {
     var when = n.d ? new Date(n.d) : null;
     return '<a class="nitem" href="' + esc(n.l) + '" target="_blank" rel="noopener noreferrer">' +
       '<div class="t">' + esc(n.t) + "</div>" +
       '<div class="s">' + esc(n.s) + (when && !isNaN(when) ? " · " +
         when.getDate() + " " + MON[when.getMonth()] : "") + "</div></a>";
   }).join("") + "</div>";
+  wireNoteDelete();
 }
 
 function paintNews(items) {
@@ -3509,28 +3614,15 @@ var CAT_HEX = { "Grains & Oilseeds":"#D9A441", Dairy:"#4FB3C4", Softs:"#C77BB0",
                 Metals:"#D2703F", "Plastics & Textiles":"#8E86D6", "Paper & Wood":"#7FA96A",
                 "Energy & Transport":"#E0654A", Economics:"#5AA9E6" };
 
-var _gid = 0, _grads = {};
-/* Duotone: a soft gradient tile, a blurred colour bloom behind the glyph,
-   then the line work on top. Reads as crafted at 16px and at 46px. */
+/* No tile, no gradient, no gloss — just the mark, drawn at a consistent
+   1.35px weight on a 24px grid. Reads as a considered icon set rather than
+   a row of coloured buttons. */
 function lineIcon(glyphKey, hex, cls) {
   var g = LINE[glyphKey] || LINE.materials;
-  var id = _grads[hex] || (_grads[hex] = "ig" + (++_gid));
-  var defs =
-    '<linearGradient id="' + id + '" x1=".2" y1="0" x2=".8" y2="1">' +
-      '<stop offset="0" stop-color="' + hex + '" stop-opacity=".30"/>' +
-      '<stop offset="1" stop-color="' + hex + '" stop-opacity=".07"/></linearGradient>' +
-    '<radialGradient id="' + id + 'b" cx="34%" cy="26%">' +
-      '<stop offset="0" stop-color="#fff" stop-opacity=".30"/>' +
-      '<stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>';
   return '<svg class="ic ' + (cls || "") + '" viewBox="0 0 24 24" aria-hidden="true">' +
-    "<defs>" + defs + "</defs>" +
-    '<rect x=".5" y=".5" width="23" height="23" rx="7" fill="url(#' + id + ')" ' +
-      'stroke="' + hex + '" stroke-opacity=".24"/>' +
-    '<rect x=".5" y=".5" width="23" height="23" rx="7" fill="url(#' + id + 'b)"/>' +
-    '<g class="glyph-back" fill="none" stroke="' + hex + '" stroke-opacity=".16" ' +
-      'stroke-width="4" stroke-linecap="round" stroke-linejoin="round">' + g + "</g>" +
-    '<g class="glyph" fill="none" stroke="' + hex + '" stroke-width="1.5" stroke-linecap="round" ' +
-      'stroke-linejoin="round" style="color:' + hex + '">' + g + "</g></svg>";
+    '<g class="glyph" fill="none" stroke="' + hex + '" stroke-width="1.35" ' +
+      'stroke-linecap="round" stroke-linejoin="round" ' +
+      'vector-effect="non-scaling-stroke" style="color:' + hex + '">' + g + "</g></svg>";
 }
 function paintSectionIcons() {
   $$("[data-icon]").forEach(function (el) {
@@ -3814,9 +3906,10 @@ function milkDonut(size, showTitle) {
     a = a2;
   });
 
-  var inner = labels.filter(function (l) { return l.big; }).map(function (l) {
-    return '<text class="dlab" x="' + l.x.toFixed(1) + '" y="' + (l.y - 3).toFixed(1) + '">' + l.v.toFixed(2) + "</text>" +
-      '<text class="dpct" x="' + l.x.toFixed(1) + '" y="' + (l.y + 11).toFixed(1) + '">' + Math.round(l.pctv) + "%</text>";
+  // percentages sit on the ring only when the slice is genuinely big enough
+  var inner = labels.filter(function (l) { return l.pctv >= 14; }).map(function (l) {
+    return '<text class="dpct" x="' + l.x.toFixed(1) + '" y="' + (l.y + 4).toFixed(1) + '">' +
+      Math.round(l.pctv) + "%</text>";
   }).join("");
 
   return '<div class="donutwrap">' +
@@ -3824,8 +3917,9 @@ function milkDonut(size, showTitle) {
     '<div class="donutrow">' +
       '<svg class="donut" viewBox="0 0 ' + size + " " + size + '" width="' + size + '" height="' + size + '">' +
         '<g class="segs">' + segs.join("") + "</g>" + inner +
-        '<text class="dmid1" x="' + cx + '" y="' + (cy - 6) + '">' + st.landed.toFixed(2) + "</text>" +
-        '<text class="dmid2" x="' + cx + '" y="' + (cy + 14) + '">EGP / kg landed</text>' +
+        '<text class="dmid1" x="' + cx + '" y="' + (cy - 4) + '">' + st.landed.toFixed(2) + "</text>" +
+        '<text class="dmid2" x="' + cx + '" y="' + (cy + 15) + '">' +
+          (isAr() ? "جنيه / كجم" : "EGP / kg") + "</text>" +
       "</svg>" +
       '<div class="dside">' +
         '<div class="dkey">' + st.parts.map(function (x) {
@@ -3945,7 +4039,7 @@ function rawMilkChart(w, h) {
   var nx = X(D(cut).getTime()).toFixed(1);
   if (act.length > 1) {
     o.push('<path d="' + mk(act) + " L" + nx + " " + (P.t + ih) + " L" + P.l + " " + (P.t + ih) + ' Z" fill="url(#rmfill)"/>');
-    o.push('<path class="rmline drawin" style="--len:2400;filter:drop-shadow(0 0 6px #4FB3C4)" d="' + mk(act) + '" fill="none" stroke="#4FB3C4" stroke-width="2.6" stroke-linejoin="round"/>');
+    o.push('<path class="rmline drawin" style="--len:2400" d="' + mk(act) + '" fill="none" stroke="#4FB3C4" stroke-width="2.6" stroke-linejoin="round"/>');
   }
   if (fc.length > 1) o.push('<path class="rmline drawin" style="--len:2400;animation-delay:.35s" d="' + mk(fc) +
     '" fill="none" stroke="#4FB3C4" stroke-width="2.1" stroke-dasharray="6 4" opacity=".9"/>');
@@ -4344,6 +4438,25 @@ function rawMilkCard() {
       ' EGP per USD; alfalfa is the price you set, so it holds flat. All adjustable in settings.</div></div>';
 }
 
+function buildNoteList() {
+  var el = $("#noteList");
+  if (!el) return;
+  var list = prefs.notes || [];
+  el.innerHTML = list.length
+    ? list.map(function (n, i) {
+        return '<div class="noterow"><span>' + esc(n.text) + '</span>' +
+          '<em>' + esc(n.date) + '</em>' +
+          '<button data-i="' + i + '" aria-label="Remove">&times;</button></div>';
+      }).join("")
+    : '<div class="hint">' + t("noNotes") + "</div>";
+  $$("#noteList button").forEach(function (b) {
+    b.onclick = function () {
+      prefs.notes.splice(+b.dataset.i, 1);
+      savePrefs(); buildNoteList(); paintEgyptNews();
+    };
+  });
+}
+
 function paintRationNote() {
   var note = $("#rationNote");
   if (!note || !MAT.length) return;
@@ -4413,7 +4526,10 @@ function renderProducts() {
 var STR = {
   en: {
     settings:"Settings", settingsLead:"Saved on this device.",
-    accentColour:"Accent colour", openPlanner:"Open the raw milk planner",
+    accentColour:"Accent colour", accNotes:"Your own market notes",
+    accNotesSub:"shown with the raw milk news", addNote:"Add note",
+    notesHint:"Anything you hear from suppliers or the farms. It shows in the raw milk section alongside the headlines, and stays on this device.",
+    noNotes:"No notes yet.", openPlanner:"Open the raw milk planner",
     egyptNews:"Egyptian dairy and feed news",
     egyptNewsSub:"Farms, milk supply, fodder. Refreshed while the page is open.",
     refreshNews:"Refresh", newsIdle:"Press refresh to pull the latest.", accLook:"Look and feel", accLookSub:"theme, language, size",
@@ -4474,7 +4590,10 @@ var STR = {
   },
   ar: {
     settings:"الإعدادات", settingsLead:"محفوظة على هذا الجهاز.",
-    accentColour:"لون التمييز", openPlanner:"افتح مخطط اللبن الخام",
+    accentColour:"لون التمييز", accNotes:"ملاحظاتك عن السوق",
+    accNotesSub:"تظهر مع أخبار اللبن الخام", addNote:"أضف ملاحظة",
+    notesHint:"أي شيء تسمعه من الموردين أو المزارع. يظهر في قسم اللبن الخام بجوار الأخبار، ويبقى على هذا الجهاز.",
+    noNotes:"لا توجد ملاحظات بعد.", openPlanner:"افتح مخطط اللبن الخام",
     egyptNews:"أخبار الألبان والأعلاف في مصر",
     egyptNewsSub:"المزارع، توافر اللبن، الأعلاف. يتم التحديث أثناء فتح الصفحة.",
     refreshNews:"تحديث", newsIdle:"اضغط تحديث لجلب آخر الأخبار.", accLook:"الشكل والمظهر", accLookSub:"السمة واللغة والحجم",
@@ -4577,6 +4696,7 @@ var prefs = {
     overrides: {}        // "YYYY-MM" -> { fixed, transport, alfalfaPrice }
   },
   hidden: {},        // material key -> true
+  notes: [],         // your own market notes for the raw milk section
   castPanels: {},    // cast panel id -> false when hidden
   sections: {}       // export label -> false when hidden
 };
@@ -4890,7 +5010,8 @@ function renderAll() {
   applyLang();
   paintSectionIcons();
   renderFan(); renderStrip(); renderMovers(); renderCards(); renderInsights();
-  renderRecs(); renderTips(); renderProducts(); renderRawMilkTrend(); paintEgyptNews(); paintRationNote(); renderMTicker(); buildSettings(); applySections();
+  renderRecs(); renderTips(); renderProducts(); renderRawMilkTrend();
+  paintEgyptNews(); buildNoteList(); paintRationNote(); renderMTicker(); buildSettings(); applySections();
   if (cast.on) buildScenes();
 }
 
@@ -5011,6 +5132,20 @@ function boot() {
   });
   $("#btnNews").onclick = fetchNews;
   if ($("#rmNewsGo")) $("#rmNewsGo").onclick = fetchEgyptNews;
+  if ($("#noteAdd")) {
+    $("#noteAdd").onclick = function () {
+      var box = $("#noteText"), txt = (box.value || "").trim();
+      if (!txt) return;
+      prefs.notes = prefs.notes || [];
+      var d = new Date();
+      prefs.notes.unshift({ text: txt, date: d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() });
+      box.value = "";
+      savePrefs(); buildNoteList(); paintEgyptNews();
+    };
+    $("#noteText").addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) $("#noteAdd").click();
+    });
+  }
   // both feeds keep themselves current while the page is open
   setInterval(function () {
     if (document.hidden) return;
