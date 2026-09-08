@@ -16,6 +16,8 @@
   --gold:#DFA93A; --flat:#7E93AC;
   --c-grain:#D9A441; --c-dairy:#4FB3C4; --c-soft:#C77BB0; --c-metal:#D2703F;
   --c-poly:#8E86D6; --c-wood:#7FA96A;
+  --accent:#DFA93A; --accent-2:#F0C766; --on-accent:#171008;
+  --glow:rgba(223,169,58,.30);
   --r:10px;
   --f-ui:"Archivo","Archivo Expanded",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-dsp:"Fraunces","Iowan Old Style",Georgia,"Times New Roman",serif;
@@ -1294,6 +1296,136 @@ html[data-theme="light"] .castx{background:rgba(255,255,255,.82)}
 /* the fan chart itself must never mirror — the time axis runs left to right */
 [dir=rtl] #castFan,[dir=rtl] .crmchart,[dir=rtl] .csdonut,
 [dir=rtl] .cast-tiles > .ctile > svg{direction:ltr}
+.newsoff{background:var(--ink2);border:1px solid var(--rule);border-left:3px solid var(--gold);
+  border-radius:10px;padding:14px 16px;margin-bottom:13px;color:var(--text2);
+  font-size:13px;line-height:1.55}
+[dir=rtl] .newsoff{border-left:1px solid var(--rule);border-right:3px solid var(--gold)}
+.nitem.asig{border-left:3px solid var(--cc);cursor:default}
+[dir=rtl] .nitem.asig{border-left:1px solid var(--rule);border-right:3px solid var(--cc)}
+
+/* ══════════════════════════════════════════════════════════
+   ACCENT THEMES — six, each with a text colour chosen to stay
+   readable on top of it in both dark and light modes
+   ══════════════════════════════════════════════════════════ */
+html[data-accent="amber"]  {--accent:#DFA93A;--accent-2:#F0C766;--on-accent:#171008;--glow:rgba(223,169,58,.30)}
+html[data-accent="cyan"]   {--accent:#2BB8D6;--accent-2:#6FE0F5;--on-accent:#04222B;--glow:rgba(43,184,214,.32)}
+html[data-accent="violet"] {--accent:#8B7BE8;--accent-2:#B4A8F5;--on-accent:#120C2E;--glow:rgba(139,123,232,.32)}
+html[data-accent="emerald"]{--accent:#28B67F;--accent-2:#6BDCB0;--on-accent:#03251A;--glow:rgba(40,182,127,.30)}
+html[data-accent="rose"]   {--accent:#E2648C;--accent-2:#F49CB7;--on-accent:#2B0714;--glow:rgba(226,100,140,.30)}
+html[data-accent="steel"]  {--accent:#7C93B8;--accent-2:#A9BCD8;--on-accent:#0B1520;--glow:rgba(124,147,184,.28)}
+/* light mode needs deeper accents so white text and dark ink both work */
+html[data-theme="light"][data-accent="amber"]  {--accent:#9A6B12;--accent-2:#C08A20;--on-accent:#FFFFFF;--glow:rgba(154,107,18,.18)}
+html[data-theme="light"][data-accent="cyan"]   {--accent:#0E7C92;--accent-2:#1AA0BB;--on-accent:#FFFFFF;--glow:rgba(14,124,146,.18)}
+html[data-theme="light"][data-accent="violet"] {--accent:#5B4CB8;--accent-2:#7A69D6;--on-accent:#FFFFFF;--glow:rgba(91,76,184,.18)}
+html[data-theme="light"][data-accent="emerald"]{--accent:#0E7C5A;--accent-2:#149E73;--on-accent:#FFFFFF;--glow:rgba(14,124,90,.18)}
+html[data-theme="light"][data-accent="rose"]   {--accent:#B23A63;--accent-2:#D0537E;--on-accent:#FFFFFF;--glow:rgba(178,58,99,.18)}
+html[data-theme="light"][data-accent="steel"]  {--accent:#42597A;--accent-2:#5B7398;--on-accent:#FFFFFF;--glow:rgba(66,89,122,.16)}
+
+/* everything that used the fixed gold now follows the accent */
+.btn.pri{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.pri:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn:hover,.srch:focus,.lockin input:focus,.mrow input:focus,
+.pfin input[type=number]:focus,.plantbl td.ed input:focus{border-color:var(--accent)}
+.chk input:checked{background:var(--accent);border-color:var(--accent)}
+.chk input:checked::after{border-color:var(--on-accent)}
+.mini button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.prog i,.expbar .b i{background:var(--accent)}
+.cast-dots b.on{background:var(--accent)}
+.nowline{stroke:var(--accent)} .nowtag{fill:var(--accent)}
+.acc summary .ai{background:linear-gradient(150deg,var(--glow),transparent);
+  color:var(--accent);border-color:var(--glow)}
+.sec-head::after{background:linear-gradient(90deg,var(--accent),transparent)}
+[dir=rtl] .sec-head::after{background:linear-gradient(270deg,var(--accent),transparent)}
+.lastup,.plantbl th.ed,.plantbl td.bonus,.tipband .badge:not(.sig){color:var(--accent)}
+.tipband .badge{background:var(--accent);color:var(--on-accent)}
+.tipband .badge.sig{background:var(--cool);color:#03251A}
+.rng,.pfin input[type=range]{accent-color:var(--accent)}
+.newsoff{border-left-color:var(--accent)}
+[dir=rtl] .newsoff{border-right-color:var(--accent)}
+.nitem:hover{border-color:var(--accent)}
+.castx:hover{background:var(--heat);border-color:var(--heat)}
+.plantbl tr.edited td:first-child::before{background:var(--accent)}
+.dlanded{background:var(--accent);color:var(--on-accent)}
+.csm.now{border-color:var(--accent);background:var(--glow)}
+.csm .sb{color:var(--accent)}
+.mvhead.up{color:var(--heat)} .mvhead.dn{color:var(--cool)}
+
+/* swatch picker */
+.accrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}
+.acsw{width:34px;height:34px;border-radius:11px;border:2px solid transparent;
+  cursor:pointer;position:relative;transition:transform .16s cubic-bezier(.34,1.56,.64,1),
+  box-shadow .18s;display:grid;place-items:center}
+.acsw:hover{transform:translateY(-2px) scale(1.06)}
+.acsw[aria-pressed=true]{border-color:var(--text);box-shadow:0 0 0 3px var(--ink2),0 6px 18px rgba(0,0,0,.35)}
+.acsw[aria-pressed=true]::after{content:"✓";font-size:15px;font-weight:800}
+
+/* ══════════════════════════════════════════════════════════
+   SURFACE OVERHAUL — glass panels, a lit edge, quiet glow.
+   Restrained on purpose: this gets read across a boardroom,
+   so contrast wins over spectacle.
+   ══════════════════════════════════════════════════════════ */
+.panel,.card,.rec,.prod,.icard,.tip-c,.stat,.rk,.nitem,.mgroup,
+.planctl,.planout,.crmside,.cbcard,.cprod,.ctile,.crec,.cnews,.donutwrap{
+  position:relative;overflow:hidden}
+.panel::before,.card::after,.stat::after,.rk::after,.prod::after,
+.donutwrap::before,.cbcard::before,.crmside::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);
+  pointer-events:none}
+html[data-theme="light"] .panel::before,html[data-theme="light"] .card::after,
+html[data-theme="light"] .stat::after,html[data-theme="light"] .rk::after{
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent)}
+.panel,.card,.rec,.prod,.stat,.rk,.icard,.tip-c{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.028),transparent 42%)}
+html[data-theme="light"] .panel,html[data-theme="light"] .card,
+html[data-theme="light"] .rec,html[data-theme="light"] .prod,
+html[data-theme="light"] .stat,html[data-theme="light"] .rk{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.9),transparent 50%)}
+
+/* the hero panel gets a soft accent halo */
+#fanSec .panel{box-shadow:0 18px 44px rgba(0,0,0,.22),0 0 0 1px var(--rule),
+  inset 0 1px 0 rgba(255,255,255,.05)}
+#fanSec .panel::after{content:"";position:absolute;inset:-40% -10% auto -10%;height:70%;
+  background:radial-gradient(60% 100% at 50% 0%,var(--glow),transparent 70%);
+  opacity:.5;pointer-events:none}
+
+/* headline numbers glow faintly in dark mode, flat in light */
+.stat .v,.rk .kv,.prod .hero .n,.rmprice .big,.pbig .v,.dmid1,.cast-kpi .val{
+  text-shadow:0 0 24px var(--glow)}
+html[data-theme="light"] .stat .v,html[data-theme="light"] .rk .kv,
+html[data-theme="light"] .prod .hero .n,html[data-theme="light"] .rmprice .big,
+html[data-theme="light"] .pbig .v,html[data-theme="light"] .dmid1,
+html[data-theme="light"] .cast-kpi .val{text-shadow:none}
+
+/* bars and rings pick up a lit edge */
+.mvb,.mixbar i,.rml .b i,.pl .b i,.crml .b i{
+  box-shadow:0 0 12px -2px currentColor}
+.mvb.up{color:var(--heat)} .mvb.dn{color:var(--cool)}
+.donut .seg{filter:drop-shadow(0 0 6px rgba(0,0,0,.25))}
+
+/* KPI cards read as instruments */
+.stat,.rk{border-radius:14px}
+.stat::before,.rk::before{content:"";position:absolute;inset:auto auto -30% -20%;
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,var(--glow),transparent 68%);
+  opacity:.55;pointer-events:none}
+
+/* section icons sit in a lit chip */
+.sec-title .ic{filter:drop-shadow(0 3px 10px rgba(0,0,0,.3))}
+
+/* cast surfaces match */
+.cast-kpi .k,.ctile,.crec,.cprod,.cbcard,.crmside,.cnews,.csm{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.03),transparent 45%)}
+.cast-kpi .k{border-radius:14px}
+
+@media (prefers-reduced-motion:reduce){ .sheen{animation:none} }
+.rmnews-wrap{margin-top:18px;background:var(--ink2);border:1px solid var(--rule);
+  border-radius:14px;padding:18px 20px}
+.rmnews-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.rmnews-head h3{margin:0;font-size:16px;font-weight:600}
+.rmnews-head p{margin:3px 0 0;color:var(--muted);font-size:12.5px}
+.rmnews-head .btn{margin-left:auto;flex:0 0 auto}
+[dir=rtl] .rmnews-head .btn{margin-left:0;margin-right:auto}
 
 </style>
 </head>
@@ -1434,7 +1566,17 @@ html[data-theme="light"] .castx{background:rgba(255,255,255,.82)}
       <p data-i18n="secRawMilkSub">The whole ration valued at every date corn and meal are quoted &mdash; real history, and a forward path that follows the feed curves rather than a straight line.</p>
     </div>
     <div id="rmTrend"></div>
-    <div style="margin-top:14px"><button class="btn pri" id="btnPlan">Open the raw milk planner</button></div>
+    <div style="margin-top:14px"><button class="btn pri" id="btnPlan" data-i18n="openPlanner">Open the raw milk planner</button></div>
+
+    <div class="rmnews-wrap">
+      <div class="rmnews-head">
+        <span data-icon="news"></span>
+        <div><h3 data-i18n="egyptNews">Egyptian dairy and feed news</h3>
+        <p data-i18n="egyptNewsSub">Farms, milk supply, fodder. Refreshed while the page is open.</p></div>
+        <button class="btn" id="rmNewsGo" data-i18n="refreshNews">Refresh</button>
+      </div>
+      <div id="rmNews"><div class="empty" data-i18n="newsIdle">Press refresh to pull the latest.</div></div>
+    </div>
   </section>
 
   <!-- ── finished products ─────────────────────────────── -->
@@ -1521,6 +1663,15 @@ html[data-theme="light"] .castx{background:rgba(255,255,255,.82)}
         <div class="seg" id="langSeg" role="group">
           <button data-l="en" aria-pressed="true">English</button>
           <button data-l="ar" aria-pressed="false">العربية</button>
+        </div></div>
+      <div class="setrow" style="align-items:flex-start"><span data-i18n="accentColour">Accent colour</span>
+        <div class="accrow" id="accentPick">
+          <button class="acsw" data-a="amber"   style="background:#DFA93A;color:#171008" title="Amber"></button>
+          <button class="acsw" data-a="cyan"    style="background:#2BB8D6;color:#04222B" title="Cyan"></button>
+          <button class="acsw" data-a="violet"  style="background:#8B7BE8;color:#120C2E" title="Violet"></button>
+          <button class="acsw" data-a="emerald" style="background:#28B67F;color:#03251A" title="Emerald"></button>
+          <button class="acsw" data-a="rose"    style="background:#E2648C;color:#2B0714" title="Rose"></button>
+          <button class="acsw" data-a="steel"   style="background:#7C93B8;color:#0B1520" title="Steel"></button>
         </div></div>
       <div class="setrow"><span data-i18n="chartSize">Chart size</span>
         <div class="mini" id="chartsize">
@@ -2134,45 +2285,68 @@ function esc(s) { return String(s || "").replace(/[&<>"]/g, function (c) { retur
    INSIGHTS — written from the series, never stored
    =================================================================== */
 function insightFor(m) {
-  var f = factor(m), u = unitLabel(m), per = m.freq === "Weekly" ? "week" : "month";
+  var f = factor(m), u = unitLabel(m), ar = isAr();
+  var per = m.freq === "Weekly" ? (ar ? "أسبوع" : "week") : (ar ? "شهر" : "month");
   var lines = [], tag, tagc;
 
   // 1. where it is now, and what the curve says it becomes
   if (m.f12 !== null) {
-    var dirn = m.f12 > 1 ? "rises to" : m.f12 < -1 ? "falls to" : "holds near";
-    lines.push("Now " + num(m.spot * f) + " " + u + "; the curve " + dirn + " " +
-      num(m.f12v * f) + " by " + fmtD(m.f12d) + ", " + pct(m.f12) + ".");
+    if (ar) {
+      var dirA = m.f12 > 1 ? "يرتفع إلى" : m.f12 < -1 ? "ينزل إلى" : "يظل قرب";
+      lines.push("السعر الآن " + num(m.spot * f) + " " + u + "، والمنحنى " + dirA + " " +
+        num(m.f12v * f) + " بحلول " + fmtD(m.f12d) + "، أي " + pct(m.f12) + ".");
+    } else {
+      var dirn = m.f12 > 1 ? "rises to" : m.f12 < -1 ? "falls to" : "holds near";
+      lines.push("Now " + num(m.spot * f) + " " + u + "; the curve " + dirn + " " +
+        num(m.f12v * f) + " by " + fmtD(m.f12d) + ", " + pct(m.f12) + ".");
+    }
   } else {
-    lines.push("Now " + num(m.spot * f) + " " + u + ". No forward curve in this series.");
+    lines.push(ar ? "السعر الآن " + num(m.spot * f) + " " + u + ". لا يوجد منحنى مستقبلي لهذه السلسلة."
+                  : "Now " + num(m.spot * f) + " " + u + ". No forward curve in this series.");
   }
 
   // 2. is that expensive or cheap against its own year?
-  var band = m.pos >= 0.8 ? "the top" : m.pos >= 0.55 ? "the upper half"
-           : m.pos >= 0.2 ? "the lower half" : "the bottom";
-  lines.push("That sits in " + band + " of a 12-month range of " +
-    num(m.lo * f) + " to " + num(m.hi * f) +
-    (m.yoy !== null ? ", and it is " + (m.yoy > 0 ? "up " : "down ") + Math.abs(m.yoy).toFixed(0) +
-      "% on the year." : "."));
+  if (ar) {
+    var bandA = m.pos >= 0.8 ? "أعلى" : m.pos >= 0.55 ? "النصف الأعلى من"
+              : m.pos >= 0.2 ? "النصف الأدنى من" : "أدنى";
+    lines.push("وهذا يقع في " + bandA + " مدى اثني عشر شهراً بين " +
+      num(m.lo * f) + " و " + num(m.hi * f) +
+      (m.yoy !== null ? "، وهو " + (m.yoy > 0 ? "أعلى بـ " : "أقل بـ ") + Math.abs(m.yoy).toFixed(0) +
+        "% عن العام الماضي." : "."));
+  } else {
+    var band = m.pos >= 0.8 ? "the top" : m.pos >= 0.55 ? "the upper half"
+             : m.pos >= 0.2 ? "the lower half" : "the bottom";
+    lines.push("That sits in " + band + " of a 12-month range of " +
+      num(m.lo * f) + " to " + num(m.hi * f) +
+      (m.yoy !== null ? ", and it is " + (m.yoy > 0 ? "up " : "down ") + Math.abs(m.yoy).toFixed(0) +
+        "% on the year." : "."));
+  }
 
   // 3. how much confidence the swing allows
   if (m.vol !== null) {
-    var reliability = m.vol >= 30 ? "Swing is wide at " + num(m.vol, 0) +
-        "% a year, so treat the level as a direction, not a number."
-      : m.vol >= 15 ? "Swing of " + num(m.vol, 0) + "% a year is normal for this input."
-      : "Swing is low at " + num(m.vol, 0) + "% a year, so the curve is worth more here than usual.";
+    var reliability = ar
+      ? (m.vol >= 30 ? "التذبذب واسع عند " + num(m.vol, 0) + "% سنوياً، فاقرأ الاتجاه لا الرقم."
+        : m.vol >= 15 ? "تذبذب " + num(m.vol, 0) + "% سنوياً أمر معتاد لهذه الخامة."
+        : "التذبذب منخفض عند " + num(m.vol, 0) + "% سنوياً، فالمنحنى هنا أكثر موثوقية.")
+      : (m.vol >= 30 ? "Swing is wide at " + num(m.vol, 0) +
+          "% a year, so treat the level as a direction, not a number."
+        : m.vol >= 15 ? "Swing of " + num(m.vol, 0) + "% a year is normal for this input."
+        : "Swing is low at " + num(m.vol, 0) + "% a year, so the curve is worth more here than usual.");
     lines.push(reliability);
   }
 
   // 4. the shape of the path, when it is not a straight line
   if (m.fcPeakD && m.fcPeak && m.f12v && m.fcPeak > m.f12v * 1.05) {
-    lines.push("It peaks first at " + num(m.fcPeak * f) + " around " + fmtD(m.fcPeakD) + ", then eases.");
+    lines.push(ar ? "ويبلغ ذروته أولاً عند " + num(m.fcPeak * f) + " حوالي " + fmtD(m.fcPeakD) + " ثم يهدأ."
+                  : "It peaks first at " + num(m.fcPeak * f) + " around " + fmtD(m.fcPeakD) + ", then eases.");
   } else if (m.fcTrough && m.f12v && m.fcTrough < m.f12v * 0.95 && m.fcEnd) {
-    lines.push("It dips to " + num(m.fcTrough * f) + " before recovering into " + fmtD(m.fcEnd[0]) + ".");
+    lines.push(ar ? "وينخفض إلى " + num(m.fcTrough * f) + " قبل أن يتعافى بحلول " + fmtD(m.fcEnd[0]) + "."
+                  : "It dips to " + num(m.fcTrough * f) + " before recovering into " + fmtD(m.fcEnd[0]) + ".");
   }
 
-  if (m.f12 !== null && m.f12 >= 5) { tag = "Cost risk"; tagc = "a"; }
-  else if (m.f12 !== null && m.f12 <= -5) { tag = "Saving"; tagc = "b"; }
-  else { tag = "Steady"; tagc = "c"; }
+  if (m.f12 !== null && m.f12 >= 5) { tag = ar ? "خطر تكلفة" : "Cost risk"; tagc = "a"; }
+  else if (m.f12 !== null && m.f12 <= -5) { tag = ar ? "توفير" : "Saving"; tagc = "b"; }
+  else { tag = ar ? "مستقر" : "Steady"; tagc = "c"; }
 
   return { text: lines.join(" "), lines: lines, tag: tag, tagc: tagc };
 }
@@ -2296,20 +2470,69 @@ var NEWSQ = {
   PET: "PET resin price Europe", LDPE: "LDPE price Europe", PS: "polystyrene price Europe",
   Wood: "timber pulpwood price Europe"
 };
+/* Browsers cannot call a news feed directly, so the request goes through a
+   public read-only proxy. Corporate networks often block those, and any one
+   of them can be down, so try several and use whichever answers first. */
+var NEWS_PROXIES = [
+  { name: "allorigins", url: function (u) { return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); } },
+  { name: "codetabs",   url: function (u) { return "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u); } },
+  { name: "corsproxy",  url: function (u) { return "https://corsproxy.io/?url=" + encodeURIComponent(u); } },
+  { name: "thingproxy", url: function (u) { return "https://thingproxy.freeboard.io/fetch/" + u; } }
+];
+var NEWS_PROXY_OK = null;
+var EGYPT_NEWS = [];
+var EGYPT_QUERIES = [
+  "Egypt dairy farms milk production",
+  "Egypt raw milk price farmers",
+  "Egypt fodder alfalfa feed prices",
+  "Egypt milk supply shortage dairy"
+];
+
+function fetchViaProxy(feedUrl) {
+  var order = NEWS_PROXY_OK
+    ? [NEWS_PROXY_OK].concat(NEWS_PROXIES.filter(function (p) { return p !== NEWS_PROXY_OK; }))
+    : NEWS_PROXIES.slice();
+  var i = 0;
+  function attempt() {
+    if (i >= order.length) return Promise.reject(new Error("all proxies blocked"));
+    var p = order[i++];
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { ctl && ctl.abort(); }, 7000);
+    return fetch(p.url(feedUrl), ctl ? { signal: ctl.signal } : {})
+      .then(function (r) {
+        clearTimeout(timer);
+        if (!r.ok) throw new Error(r.status);
+        return r.text();
+      })
+      .then(function (txt) {
+        if (!txt || txt.indexOf("<item") === -1) throw new Error("not a feed");
+        NEWS_PROXY_OK = p;
+        return txt;
+      })
+      .catch(function () { clearTimeout(timer); return attempt(); });
+  }
+  return attempt();
+}
+
 function fetchNews() {
   var picks = shown().filter(function (m) { return m.f12 !== null; })
     .sort(function (a, b) { return Math.abs(b.f12) - Math.abs(a.f12); }).slice(0, 6);
   var wrap = $("#newsWrap");
-  wrap.innerHTML = '<div class="empty">Fetching headlines…</div>';
-  var out = [], done = 0;
+  wrap.innerHTML = '<div class="empty">Looking for headlines&hellip;</div>';
+  var out = [], done = 0, settled = false;
+
+  var finish = function () {
+    if (settled) return;
+    settled = true;
+    paintNews(out);
+  };
+
   picks.forEach(function (m) {
     var q = NEWSQ[m.key] || m.name + " price";
     var rss = "https://news.google.com/rss/search?q=" + encodeURIComponent(q) + "&hl=en-US&gl=US&ceid=US:en";
-    var url = "https://api.allorigins.win/raw?url=" + encodeURIComponent(rss);
-    fetch(url).then(function (r) { return r.text(); }).then(function (t) {
-      var x = new DOMParser().parseFromString(t, "text/xml");
-      var items = Array.prototype.slice.call(x.querySelectorAll("item")).slice(0, 2);
-      items.forEach(function (it) {
+    fetchViaProxy(rss).then(function (txt) {
+      var x = new DOMParser().parseFromString(txt, "text/xml");
+      Array.prototype.slice.call(x.querySelectorAll("item")).slice(0, 2).forEach(function (it) {
         out.push({
           m: m,
           t: (it.querySelector("title") || {}).textContent || "",
@@ -2319,17 +2542,96 @@ function fetchNews() {
         });
       });
     }).catch(function () {}).then(function () {
-      if (++done === picks.length) paintNews(out);
+      if (++done === picks.length) finish();
     });
   });
-  setTimeout(function () { if (!out.length) paintNews(out); }, 9000);
+  setTimeout(finish, 20000);
 }
+
+function fetchEgyptNews() {
+  var wrap = $("#rmNews");
+  if (!wrap) return;
+  wrap.innerHTML = '<div class="empty">' + (isAr() ? "جارٍ تحميل الأخبار…" : "Looking for headlines…") + "</div>";
+  var out = [], done = 0, settled = false;
+  var finish = function () {
+    if (settled) return;
+    settled = true;
+    EGYPT_NEWS = out;
+    paintEgyptNews();
+  };
+  EGYPT_QUERIES.forEach(function (q) {
+    var rss = "https://news.google.com/rss/search?q=" + encodeURIComponent(q) +
+      "&hl=en-EG&gl=EG&ceid=EG:en";
+    fetchViaProxy(rss).then(function (txt) {
+      var x = new DOMParser().parseFromString(txt, "text/xml");
+      Array.prototype.slice.call(x.querySelectorAll("item")).slice(0, 3).forEach(function (it) {
+        out.push({
+          t: (it.querySelector("title") || {}).textContent || "",
+          l: (it.querySelector("link") || {}).textContent || "#",
+          s: (it.querySelector("source") || {}).textContent || "",
+          d: (it.querySelector("pubDate") || {}).textContent || "",
+          q: q
+        });
+      });
+    }).catch(function () {}).then(function () {
+      if (++done === EGYPT_QUERIES.length) finish();
+    });
+  });
+  setTimeout(finish, 20000);
+}
+
+function paintEgyptNews() {
+  var wrap = $("#rmNews");
+  if (!wrap) return;
+  var ar = isAr();
+  if (!EGYPT_NEWS.length) {
+    wrap.innerHTML = '<div class="newsoff">' +
+      (ar ? "تعذّر تحميل أخبار السوق المصري. شبكات الشركات عادةً تحجب الخدمات التي تجلبها."
+          : "Egyptian market headlines could not load. Company networks usually block the services that fetch them.") +
+      ' <button class="btn" id="rmNewsRetry" style="margin-left:10px">' +
+      (ar ? "حاول مرة أخرى" : "Try again") + "</button></div>";
+    var rb = $("#rmNewsRetry");
+    if (rb) rb.onclick = function () { NEWS_PROXY_OK = null; fetchEgyptNews(); };
+    return;
+  }
+  // newest first, and drop anything repeated across the four searches
+  var seen = {}, items = [];
+  EGYPT_NEWS.slice().sort(function (a, b) {
+    return (Date.parse(b.d) || 0) - (Date.parse(a.d) || 0);
+  }).forEach(function (n) {
+    var k = n.t.slice(0, 60);
+    if (!seen[k]) { seen[k] = 1; items.push(n); }
+  });
+  wrap.innerHTML = '<div class="news">' + items.slice(0, 8).map(function (n) {
+    var when = n.d ? new Date(n.d) : null;
+    return '<a class="nitem" href="' + esc(n.l) + '" target="_blank" rel="noopener noreferrer">' +
+      '<div class="t">' + esc(n.t) + "</div>" +
+      '<div class="s">' + esc(n.s) + (when && !isNaN(when) ? " · " +
+        when.getDate() + " " + MON[when.getMonth()] : "") + "</div></a>";
+  }).join("") + "</div>";
+}
+
 function paintNews(items) {
   NEWS = items || [];
   if (cast.on) buildNewsScene();
   var wrap = $("#newsWrap");
   if (!items.length) {
-    wrap.innerHTML = '<div class="empty">Couldn&rsquo;t reach the news feed — the network or a proxy block is in the way. Everything else on this page works offline.</div>';
+    var sig = shown().filter(function (m) { return m.f12 !== null; })
+      .sort(function (a, b) { return Math.abs(b.f12) - Math.abs(a.f12); }).slice(0, 6);
+    wrap.innerHTML =
+      '<div class="newsoff">Headlines could not load. Most company networks block the ' +
+      'services that fetch them, and nothing here needs the internet to work. ' +
+      'Below is what your own data says instead.' +
+      '<button class="btn" id="newsRetry" style="margin-left:10px">Try again</button></div>' +
+      '<div class="news">' + sig.map(function (m) {
+        var i = insightFor(m), c = cat(m);
+        return '<div class="nitem asig" style="--cc:' + c.hex + '">' +
+          '<div class="t">' + i.lines[0] + "</div>" +
+          '<div class="s"><span style="color:' + c.hex + '">' + m.name + "</span> · " + i.tag +
+          " · " + pct(m.f12) + " over 12 months</div></div>";
+      }).join("") + "</div>";
+    var rb = $("#newsRetry");
+    if (rb) rb.onclick = function () { NEWS_PROXY_OK = null; fetchNews(); };
     return;
   }
   wrap.innerHTML = '<div class="news">' + items.map(function (n) {
@@ -2397,14 +2699,18 @@ function ingest(wb) {
 /* ===================================================================
    RECOMMENDATIONS — a procurement action per material, from the data
    =================================================================== */
-var ACTIONS = {
-  cover:   { label: "Cover forward",      color: "var(--cool)" },
-  tranche: { label: "Buy in tranches",    color: "var(--gold)" },
-  hedge:   { label: "Lock what you must", color: "var(--heat)" },
-  wait:    { label: "Stay hand to mouth", color: "var(--cool)" },
-  hold:    { label: "Hold, review later", color: "var(--flat)" },
-  watch:   { label: "Watch closely",      color: "var(--gold)" }
+var ACTION_LABEL = {
+  en: { cover:"Cover forward", tranche:"Buy in tranches", hedge:"Lock what you must",
+        wait:"Stay hand to mouth", hold:"Hold, review later", watch:"Watch closely" },
+  ar: { cover:"غطِّ احتياجك مقدماً", tranche:"اشترِ على دفعات", hedge:"غطِّ ما لا يمكن تركه",
+        wait:"اشترِ بقدر الحاجة", hold:"اترك الأمر وراجعه لاحقاً", watch:"راقب عن قرب" }
 };
+var ACTION_COLOR = { cover:"var(--cool)", tranche:"var(--accent)", hedge:"var(--heat)",
+                     wait:"var(--cool)", hold:"var(--flat)", watch:"var(--accent)" };
+function actionOf(key) {
+  var pack = ACTION_LABEL[isAr() ? "ar" : "en"];
+  return { label: pack[key], color: ACTION_COLOR[key] };
+}
 
 function recFor(m) {
   var f = m.f12, pos = m.pos, vol = m.vol === null ? 0 : m.vol, key, why = [], f2 = factor(m);
@@ -2419,30 +2725,41 @@ function recFor(m) {
   else if (vol >= 25)        key = "watch";
   else                       key = "hold";
 
-  var reason = {
+  var ar = isAr();
+  var reason = (ar ? {
+    cover:   "المنحنى صاعد والسعر ما زال في أسفل مداه — أرخص تغطية ستراها في هذه الدورة.",
+    hedge:   "المنحنى صاعد والسعر قريب من أعلى مداه. لا توجد نقطة دخول رخيصة، فغطِّ الكمية التي لا يمكن تركها مكشوفة فقط.",
+    tranche: "المنحنى صاعد من منتصف المدى. قسّم احتياجك واشترِ عند الانخفاضات بدل الشراء دفعة واحدة.",
+    wait:    "المنحنى هابط من هنا. الشراء أكثر من الحاجة القريبة يثبّت سعراً يبتعد عنه السوق.",
+    hold:    "المنحنى ثابت. استمر بدورتك المعتادة ووجّه انتباهك لما هو أجدى.",
+    watch:   "المنحنى لا يقول الكثير لكن السعر يتحرك بعنف. المخاطرة في التوقيت لا في الاتجاه."
+  } : {
     cover:   "The curve climbs while spot is still low in its range — the cheapest cover you are likely to see in this cycle.",
     hedge:   "The curve climbs and spot is already near the top of its range. There is no cheap entry, so cover only the volume you cannot leave exposed.",
     tranche: "The curve climbs from the middle of the range. Split the requirement and buy on the dips rather than in one go.",
     wait:    "The curve falls from here. Buying beyond near-term need locks in a price the market is walking away from.",
     hold:    "The curve is flat. Roll your normal cycle and put the attention somewhere it earns more.",
     watch:   "The curve says little, but the price swings hard. The risk is timing, not direction."
-  }[key];
+  })[key];
   why.push(reason);
 
   if (m.f12 !== null && m.f12d) {
-    why.push("Twelve months out the curve reads " + num(m.f12v * f2) + " " + unitLabel(m) +
-      ", " + pct(m.f12) + " on today.");
+    why.push(ar
+      ? "بعد اثني عشر شهراً يقرأ المنحنى " + num(m.f12v * f2) + " " + unitLabel(m) + "، أي " + pct(m.f12) + " عن اليوم."
+      : "Twelve months out the curve reads " + num(m.f12v * f2) + " " + unitLabel(m) + ", " + pct(m.f12) + " on today.");
   }
   if (m.fcPeakD && m.fcPeak && m.f12v && m.fcPeak > m.f12v * 1.04) {
-    why.push("It tops out around " + fmtD(m.fcPeakD) + ", which is the window to be covered by.");
+    why.push(ar ? "ويبلغ ذروته حوالي " + fmtD(m.fcPeakD) + "، وهي المهلة التي يجب أن تكون مغطياً قبلها."
+                : "It tops out around " + fmtD(m.fcPeakD) + ", which is the window to be covered by.");
   }
   if (vol >= 30) {
-    why.push("At " + num(vol, 0) + "% annualised swing, size the position for being wrong.");
+    why.push(ar ? "بتذبذب سنوي " + num(vol, 0) + "%، احسب الكمية على أساس احتمال الخطأ."
+                : "At " + num(vol, 0) + "% annualised swing, size the position for being wrong.");
   }
 
   // ordering: how much this material can move the bill
   var score = Math.abs(f === null ? 0 : f) + (key === "cover" ? 14 : key === "hedge" ? 9 : 0) + vol / 8;
-  return { key: key, action: ACTIONS[key], text: why.join(" "), score: score };
+  return { key: key, action: actionOf(key), text: why.join(ar ? " " : " "), score: score };
 }
 
 function renderRecs() {
@@ -2465,7 +2782,7 @@ function renderRecs() {
 /* Half of these are fixed craft notes; the rest are written from whatever
    workbook is loaded, so they move when the data does. */
 function buildTips() {
-  var V = shown(), out = [];
+  var V = shown(), out = [], ar = isAr();
   var vols = V.filter(function (m) { return m.vol !== null; }).sort(function (a, b) { return b.vol - a.vol; });
   var cheap = V.filter(function (m) { return m.f12 !== null; })
     .sort(function (a, b) { return (a.pos - b.pos) + (b.f12 - a.f12) / 100; });
@@ -2474,46 +2791,52 @@ function buildTips() {
   var stale = V.filter(function (m) {
     return (D(state.asOf).getTime() - D(m.spotDate).getTime()) > 45 * 864e5;
   });
+  var rm = rawMilkPrice("spot");
+  var feedPct = rm.egp ? Math.round((rm.corn + rm.soya) / rm.egp * 100) : 0;
 
-  out.push(["Forward curves are a view, not a price you can buy",
-    "Mintec models them. Treat the direction as the signal and the level as an estimate."]);
+  if (ar) {
+    out.push(["المنحنى المستقبلي رأي وليس سعراً تشتري به",
+      "مينتك يحسبه بنموذج. اقرأ الاتجاه كإشارة، واعتبر الرقم تقديراً."]);
+    if (vols[0]) out.push(["احسب الكمية على قدر التذبذب",
+      vols[0].name + " يتذبذب " + num(vols[0].vol, 0) + "% سنوياً" +
+      (vols[vols.length - 1] ? "، بينما " + vols[vols.length - 1].name + " لا يتجاوز " + num(vols[vols.length - 1].vol, 0) + "%. " : ". ") +
+      "الأول اشترِه على دفعات، والثاني يكفيه قرار واحد."]);
+    if (cheap[0]) out.push(["موقع السعر في مداه أهم من نسبة التغير",
+      cheap[0].name + " عند " + Math.round(cheap[0].pos * 100) + "% من مداه السنوي" +
+      (cheap[0].f12 > 0 ? " والمنحنى ما زال صاعداً — وهذه إشارة الشراء." : "، وهنا تكون التغطية أرخص حتى لو كان المنحنى هادئاً.")]);
+    out.push(["السلة " + pct(basket) + " خلال اثني عشر شهراً",
+      "المتوسط يخفي الفروق: " + f12s.filter(function (m) { return m.f12 > 0; }).length +
+      " خامة ترفع التكلفة و" + f12s.filter(function (m) { return m.f12 < 0; }).length +
+      " تخفضها. اشتغل على الأطراف لا على المتوسط."]);
+    out.push(["اللبن الخام يتحرك أقل من الذرة",
+      feedPct + "% فقط من سعر اللبن يتبع السوق. الباقي برسيم وتكلفة ثابتة ونقل."]);
+    if (stale.length) out.push(["بعض السلاسل توقفت عن التحديث",
+      stale.map(function (m) { return m.name; }).slice(0, 3).join("، ") + " آخر تحديث لها أقدم من الباقي."]);
+    else out.push(["الفاصل بين الخط المتصل والمتقطع حقيقي",
+      "هو عند آخر سعر مستقر فعلياً، وليس عند تاريخ اليوم."]);
+    return out;
+  }
 
-  if (vols[0]) {
-    out.push(["Size the position to the swing",
-      vols[0].name + " swings " + num(vols[0].vol, 0) + "% a year, " +
-      (vols[vols.length - 1] ? vols[vols.length - 1].name + " only " + num(vols[vols.length - 1].vol, 0) + "%. " : "") +
-      "Cover the first in tranches; the second you can decide once."]);
-  }
-  if (cheap[0]) {
-    out.push(["Range position beats headline change",
-      cheap[0].name + " sits at " + Math.round(cheap[0].pos * 100) + "% of its 12-month range" +
-      (cheap[0].f12 > 0 ? " with the curve still rising — that combination is the buy signal." :
-                          ", which is where cover is cheapest even when the curve is soft.")]);
-  }
+  out.push(["A forward curve is a view, not a price you can buy",
+    "Mintec models it. Read the direction as the signal and the number as an estimate."]);
+  if (vols[0]) out.push(["Size the order to the swing",
+    vols[0].name + " swings " + num(vols[0].vol, 0) + "% a year" +
+    (vols[vols.length - 1] ? ", " + vols[vols.length - 1].name + " only " + num(vols[vols.length - 1].vol, 0) + "%. " : ". ") +
+    "Buy the first in tranches; the second you can decide once."]);
+  if (cheap[0]) out.push(["Where a price sits beats how much it moved",
+    cheap[0].name + " is at " + Math.round(cheap[0].pos * 100) + "% of its year" +
+    (cheap[0].f12 > 0 ? " with the curve still rising — that is the buy signal." :
+                        ", which is where cover is cheapest even on a soft curve.")]);
   out.push(["The basket is " + pct(basket) + " over twelve months",
-    "That average hides the spread: " + f12s.filter(function (m) { return m.f12 > 0; }).length +
-    " inputs adding cost, " + f12s.filter(function (m) { return m.f12 < 0; }).length +
-    " taking it out. Work the extremes, not the average."]);
-
-  if (V.some(function (m) { return BUSHEL[m.unit]; })) {
-    out.push(["Grains quote in cents per bushel",
-      "Corn and soya are not comparable to the rest until you switch to USD/tonne. " +
-      "Both readings show on the card, using real contract weights."]);
-  }
+    "The average hides the spread: " + f12s.filter(function (m) { return m.f12 > 0; }).length +
+    " adding cost, " + f12s.filter(function (m) { return m.f12 < 0; }).length +
+    " taking it out. Work the edges, not the middle."]);
   out.push(["Raw milk moves less than corn does",
-    "Only " + Math.round((function () {
-      var r = rawMilkPrice("spot");
-      return r.egp ? (r.corn + r.soya) / r.egp * 100 : 0;
-    })()) + "% of the gate price tracks the market. The rest is alfalfa, fixed farm cost and haulage."]);
-
-  if (stale.length) {
-    out.push(["Some series have stopped updating",
-      stale.map(function (m) { return m.name; }).slice(0, 3).join(", ") +
-      " last settled before the rest. The solid line stops where the data does."]);
-  } else {
-    out.push(["The split between solid and dashed is real",
-      "It sits at the last settled observation, not at today's date. If a series stops updating, the solid line stops with it."]);
-  }
+    "Only " + feedPct + "% of the milk price follows the market. The rest is alfalfa, fixed farm cost and haulage."]);
+  if (stale.length) out.push(["Some series have stopped updating",
+    stale.map(function (m) { return m.name; }).slice(0, 3).join(", ") + " last settled before the rest."]);
+  else out.push(["The split between solid and dashed is real",
+    "It sits at the last settled price, not at today's date."]);
   return out;
 }
 
@@ -3964,7 +4287,10 @@ function renderProducts() {
 var STR = {
   en: {
     settings:"Settings", settingsLead:"Saved on this device.",
-    accLook:"Look and feel", accLookSub:"theme, language, size",
+    accentColour:"Accent colour", openPlanner:"Open the raw milk planner",
+    egyptNews:"Egyptian dairy and feed news",
+    egyptNewsSub:"Farms, milk supply, fodder. Refreshed while the page is open.",
+    refreshNews:"Refresh", newsIdle:"Press refresh to pull the latest.", accLook:"Look and feel", accLookSub:"theme, language, size",
     accShow:"What to show", accMaterials:"Materials",
     accModel:"Milk cost model", accModelSub:"ration, farm cost, crush",
     accExport:"Save and share", accExportSub:"images for email",
@@ -4022,7 +4348,10 @@ var STR = {
   },
   ar: {
     settings:"الإعدادات", settingsLead:"محفوظة على هذا الجهاز.",
-    accLook:"الشكل والمظهر", accLookSub:"السمة واللغة والحجم",
+    accentColour:"لون التمييز", openPlanner:"افتح مخطط اللبن الخام",
+    egyptNews:"أخبار الألبان والأعلاف في مصر",
+    egyptNewsSub:"المزارع، توافر اللبن، الأعلاف. يتم التحديث أثناء فتح الصفحة.",
+    refreshNews:"تحديث", newsIdle:"اضغط تحديث لجلب آخر الأخبار.", accLook:"الشكل والمظهر", accLookSub:"السمة واللغة والحجم",
     accShow:"ما الذي يظهر", accMaterials:"الخامات",
     accModel:"نموذج تكلفة اللبن", accModelSub:"العليقة، التكلفة الثابتة، العصر",
     accExport:"حفظ ومشاركة", accExportSub:"صور للإرسال بالبريد",
@@ -4092,6 +4421,9 @@ function applyLang() {
   document.documentElement.setAttribute("dir", ar ? "rtl" : "ltr");
   document.body.classList.toggle("ar", ar);
   $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+  $$("#accentPick .acsw").forEach(function (b) {
+    b.onclick = function () { prefs.accent = b.dataset.a; applyTheme(); savePrefs(); renderAll(); };
+  });
   $$("#langSeg button").forEach(function (b) {
     b.setAttribute("aria-pressed", b.dataset.l === prefs.lang);
   });
@@ -4101,7 +4433,7 @@ function applyLang() {
    SETTINGS
    =================================================================== */
 var prefs = {
-  theme: "dark", lang: "en", tspeed: 110, chart: 1, scroll: 0,
+  theme: "dark", accent: "amber", lang: "en", tspeed: 110, chart: 1, scroll: 0,
   model: {
     fixed: 7.55,         // EGP/kg of farm cost that does not move with feed
     transport: 1.0,      // EGP/kg collection and bonus
@@ -4148,6 +4480,13 @@ function savePrefs() {
 }
 function applyTheme() {
   document.documentElement.setAttribute("data-theme", prefs.theme);
+  document.documentElement.setAttribute("data-accent", prefs.accent || "amber");
+  $$("#accentPick .acsw").forEach(function (b) {
+    b.setAttribute("aria-pressed", b.dataset.a === (prefs.accent || "amber"));
+  });
+  $$("#accentPick .acsw").forEach(function (b) {
+    b.onclick = function () { prefs.accent = b.dataset.a; applyTheme(); savePrefs(); renderAll(); };
+  });
   $$("#langSeg button").forEach(function (b) {
     b.onclick = function () { prefs.lang = b.dataset.l; applyLang(); savePrefs(); renderAll(); };
   });
@@ -4423,7 +4762,7 @@ function renderAll() {
   applyLang();
   paintSectionIcons();
   renderFan(); renderStrip(); renderMovers(); renderCards(); renderInsights();
-  renderRecs(); renderTips(); renderProducts(); renderRawMilkTrend(); paintRationNote(); renderMTicker(); buildSettings(); applySections();
+  renderRecs(); renderTips(); renderProducts(); renderRawMilkTrend(); paintEgyptNews(); paintRationNote(); renderMTicker(); buildSettings(); applySections();
   if (cast.on) buildScenes();
 }
 
@@ -4543,6 +4882,13 @@ function boot() {
     };
   });
   $("#btnNews").onclick = fetchNews;
+  if ($("#rmNewsGo")) $("#rmNewsGo").onclick = fetchEgyptNews;
+  // both feeds keep themselves current while the page is open
+  setInterval(function () {
+    if (document.hidden) return;
+    if (NEWS.length) fetchNews();
+    if (EGYPT_NEWS.length) fetchEgyptNews();
+  }, 30 * 60000);
   $("#btnPlan").onclick = openPlan;
   $("#planX").onclick = closePlan;
   $("#planApply").onclick = function () { savePrefs(); renderAll(); closePlan(); };
@@ -4576,6 +4922,9 @@ function boot() {
   $("#setX").onclick = function () { setOpen(false); };
   $("#btnExport").onclick = function () { setOpen(true); $("#expAll").focus(); };
 
+  $$("#accentPick .acsw").forEach(function (b) {
+    b.onclick = function () { prefs.accent = b.dataset.a; applyTheme(); savePrefs(); renderAll(); };
+  });
   $$("#langSeg button").forEach(function (b) {
     b.onclick = function () { prefs.lang = b.dataset.l; applyLang(); savePrefs(); renderAll(); };
   });
