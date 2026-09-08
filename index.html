@@ -1495,6 +1495,9 @@ html[data-theme="light"] .cast-kpi .val{text-shadow:none}
 .nitem.note .delnote{background:none;border:none;color:var(--muted);font-size:15px;
   margin-left:6px;cursor:pointer;line-height:1}
 .nitem.note .delnote:hover{color:var(--heat)}
+.mini button.pdf{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
+.mini button.pdf:hover{background:var(--accent-2);border-color:var(--accent-2)}
+#expToggles .chk{font-size:12.5px;padding:7px 10px}
 
 </style>
 </head>
@@ -1834,8 +1837,19 @@ html[data-theme="light"] .cast-kpi .val{text-shadow:none}
   <details class="acc">
     <summary><span class="ai">&#8681;</span><b data-i18n="accExport">Save and share</b><em data-i18n="accExportSub">images for email</em></summary>
     <div class="accbody">
-      <p class="hint" data-i18n="exportHint">One picture per section, sized for email. Colours match whatever theme you are using.</p>
-      <div class="mini"><button id="expAll" data-i18n="downloadAll">Download all sections</button><button id="expOne" data-i18n="oneImage">One tall image</button></div>
+      <p class="hint" data-i18n="exportHint">Pick what to include, then take it as a PDF to send, or as images.</p>
+      <div class="subh" data-i18n="whatToInclude">What to include</div>
+      <div class="swrap" id="expToggles"></div>
+      <div class="mini" style="margin:10px 0 12px">
+        <button id="expAllOn" data-i18n="selectAll">Select all</button>
+        <button id="expNone" data-i18n="clearAll">Clear all</button>
+      </div>
+      <div class="subh" data-i18n="howToSave">How to save it</div>
+      <div class="mini">
+        <button class="pdf" id="expPdf" data-i18n="savePdf">Save as PDF</button>
+        <button id="expAll" data-i18n="downloadAll">Images, one per section</button>
+        <button id="expOne" data-i18n="oneImage">One tall image</button>
+      </div>
       <div class="expbar" id="expBar" style="display:none"><span id="expMsg"></span><div class="b"><i id="expProg"></i></div></div>
     </div>
   </details>
@@ -4526,7 +4540,9 @@ function renderProducts() {
 var STR = {
   en: {
     settings:"Settings", settingsLead:"Saved on this device.",
-    accentColour:"Accent colour", accNotes:"Your own market notes",
+    accentColour:"Accent colour", savePdf:"Save as PDF",
+    whatToInclude:"What to include", howToSave:"How to save it",
+    exportHint:"Pick what to include, then take it as a PDF to send, or as images.", accNotes:"Your own market notes",
     accNotesSub:"shown with the raw milk news", addNote:"Add note",
     notesHint:"Anything you hear from suppliers or the farms. It shows in the raw milk section alongside the headlines, and stays on this device.",
     noNotes:"No notes yet.", openPlanner:"Open the raw milk planner",
@@ -4590,7 +4606,9 @@ var STR = {
   },
   ar: {
     settings:"الإعدادات", settingsLead:"محفوظة على هذا الجهاز.",
-    accentColour:"لون التمييز", accNotes:"ملاحظاتك عن السوق",
+    accentColour:"لون التمييز", savePdf:"حفظ كملف PDF",
+    whatToInclude:"ما الذي يُدرج", howToSave:"طريقة الحفظ",
+    exportHint:"اختر ما تريد إدراجه، ثم احفظه كملف PDF للإرسال أو كصور.", accNotes:"ملاحظاتك عن السوق",
     accNotesSub:"تظهر مع أخبار اللبن الخام", addNote:"أضف ملاحظة",
     notesHint:"أي شيء تسمعه من الموردين أو المزارع. يظهر في قسم اللبن الخام بجوار الأخبار، ويبقى على هذا الجهاز.",
     noNotes:"لا توجد ملاحظات بعد.", openPlanner:"افتح مخطط اللبن الخام",
@@ -4885,6 +4903,110 @@ function stamp(canvas, label) {
   x.fillText("Direct Materials Market Desk · designed and developed by Hossam Hegazi", 26, canvas.height + 70);
   return c;
 }
+
+/* ===================================================================
+   PDF — render the chosen sections to canvases, lay them out on A4
+   landscape pages with a header and page numbers, and save.
+   =================================================================== */
+var pdfPick = {};        // export label -> false when left out
+
+function buildExportToggles() {
+  var el = $("#expToggles");
+  if (!el) return;
+  el.innerHTML = $$("[data-export]").map(function (sec) {
+    var n = sec.dataset.export, on = pdfPick[n] !== false;
+    return '<label class="chk' + (on ? "" : " off") + '" data-x="' + esc(n) + '">' +
+      '<input type="checkbox"' + (on ? " checked" : "") + '><span>' + esc(n) + "</span></label>";
+  }).join("");
+  $$("#expToggles .chk").forEach(function (l) {
+    l.querySelector("input").onchange = function () {
+      pdfPick[l.dataset.x] = this.checked;
+      l.classList.toggle("off", !this.checked);
+    };
+  });
+}
+
+function chosenSections() {
+  return $$("[data-export]").filter(function (sec) {
+    return sec.style.display !== "none" && pdfPick[sec.dataset.export] !== false;
+  });
+}
+
+function loadJsPDF() {
+  return new Promise(function (res, rej) {
+    if (window.jspdf && window.jspdf.jsPDF) return res(window.jspdf.jsPDF);
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+    s.onload = function () { res(window.jspdf && window.jspdf.jsPDF); };
+    s.onerror = function () { rej(new Error("no network")); };
+    document.head.appendChild(s);
+  });
+}
+
+async function exportPdf() {
+  var picks = chosenSections();
+  if (!picks.length) { expSay(isAr() ? "لم تختر أي قسم." : "Nothing selected."); return; }
+  var h2c, JsPDF;
+  try {
+    expSay(isAr() ? "جارٍ تحضير الأدوات…" : "Getting the tools ready…", 4);
+    h2c = await loadH2C();
+    JsPDF = await loadJsPDF();
+    if (!JsPDF) throw new Error("no jspdf");
+  } catch (e) {
+    expSay(isAr()
+      ? "تعذّر تحميل مكتبة PDF. اتصل بالإنترنت مرة واحدة ثم أعد المحاولة، أو استخدم طباعة المتصفح إلى PDF."
+      : "Couldn't load the PDF library. Connect once and retry, or use your browser's Print to PDF.");
+    return;
+  }
+
+  var doc = new JsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+  var W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+  var M = 30, headH = 46, footH = 24;
+  var bg = getComputedStyle(document.body).backgroundColor;
+  var fg = getComputedStyle(document.body).color;
+
+  var rgb = function (css) {
+    var m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(css);
+    return m ? [+m[1], +m[2], +m[3]] : [255, 255, 255];
+  };
+  var bgc = rgb(bg), fgc = rgb(fg);
+
+  for (var i = 0; i < picks.length; i++) {
+    var label = picks[i].dataset.export;
+    expSay((isAr() ? "جارٍ رسم " : "Rendering ") + label + " (" + (i + 1) + "/" + picks.length + ")",
+      Math.round((i / picks.length) * 92));
+    var canvas = await h2c(picks[i], shotOpts());
+
+    if (i) doc.addPage();
+    doc.setFillColor(bgc[0], bgc[1], bgc[2]);
+    doc.rect(0, 0, W, H, "F");
+
+    doc.setTextColor(fgc[0], fgc[1], fgc[2]);
+    doc.setFontSize(14);
+    doc.text(label, M, 30);
+    doc.setFontSize(9);
+    doc.setTextColor(140, 150, 165);
+    doc.text("Direct Materials Market Desk · prices to " + fmtDFull(state.asOf), W - M, 30, { align: "right" });
+    doc.setDrawColor(120, 130, 145);
+    doc.line(M, 38, W - M, 38);
+
+    // fit the shot inside the page without distorting it
+    var availW = W - M * 2, availH = H - headH - footH - M;
+    var scale = Math.min(availW / canvas.width, availH / canvas.height);
+    var dw = canvas.width * scale, dh = canvas.height * scale;
+    doc.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG",
+      M + (availW - dw) / 2, headH + 6, dw, dh);
+
+    doc.setFontSize(8);
+    doc.setTextColor(140, 150, 165);
+    doc.text("Designed and developed by Hossam Hegazi", M, H - 14);
+    doc.text((i + 1) + " / " + picks.length, W - M, H - 14, { align: "right" });
+  }
+
+  doc.save("Market_Desk_" + state.asOf + ".pdf");
+  expSay((isAr() ? "تم حفظ " : "Saved ") + picks.length + (isAr() ? " صفحة." : " pages."), 100);
+}
+
 async function exportSections(single) {
   var h2c;
   try { expSay("Loading the image engine…", 4); h2c = await loadH2C(); }
@@ -4892,7 +5014,7 @@ async function exportSections(single) {
     expSay("Couldn't reach the image library — connect to the internet once and try again.");
     return;
   }
-  var open = $$("[data-export]").filter(function (s) { return s.style.display !== "none"; });
+  var open = chosenSections();
   var date = state.asOf;
   if (single) {
     expSay("Rendering the full page…", 30);
@@ -5245,6 +5367,13 @@ function boot() {
   $("#matNone").onclick = function () {
     MAT.forEach(function (m, i) { if (i) prefs.hidden[m.key] = true; });   // keep one, or there is nothing to draw
     savePrefs(); renderAll();
+  };
+  buildExportToggles();
+  $("#expPdf").onclick = exportPdf;
+  $("#expAllOn").onclick = function () { pdfPick = {}; buildExportToggles(); };
+  $("#expNone").onclick = function () {
+    $$("[data-export]").forEach(function (s) { pdfPick[s.dataset.export] = false; });
+    buildExportToggles();
   };
   $("#expAll").onclick = function () { exportSections(false); };
   $("#expOne").onclick = function () { exportSections(true); };
