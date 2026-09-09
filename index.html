@@ -2151,6 +2151,11 @@ html[data-theme="dark"] .scene h2{color:#F4F8FC}
     <summary><span class="ai">&#8681;</span><b data-i18n="accExport">Save and share</b><em data-i18n="accExportSub">images for email</em></summary>
     <div class="accbody">
       <p class="hint" data-i18n="exportHint">Pick what to include, then take it as a PDF to send, or as images.</p>
+      <div class="setrow"><span data-i18n="pdfFrom">Take the pages from</span>
+        <div class="seg" id="pdfMode" role="group">
+          <button data-m="screen" aria-pressed="true" data-i18n="pdfScreen">Big screen</button>
+          <button data-m="page" aria-pressed="false" data-i18n="pdfPage">This page</button>
+        </div></div>
       <div class="subh" data-i18n="whatToInclude">What to include</div>
       <div class="swrap" id="expToggles"></div>
       <div class="mini" style="margin:10px 0 12px">
@@ -5747,7 +5752,8 @@ function renderProducts() {
 var STR = {
   en: {
     settings:"Settings", settingsLead:"Saved on this device.",
-    accentColour:"Accent colour",
+    accentColour:"Accent colour", pdfFrom:"Take the pages from",
+    pdfScreen:"Big screen", pdfPage:"This page",
     ledBy2:"biggest mover", matsIn:"Materials in this product", alsoWatch:"Also watch:",
     fetchNews:"Fetch headlines", matShare:"materials are", ofExw:"of ex-works cost",
     last12s:"last 12 months", fixedTxt:"fixed", rmHow1:"Every point is the whole ration priced on that date: corn and soybean meal from the market, alfalfa at the rate you set, then farm cost, haulage and the summer bonus. Solid is settled, dashed is where the feed curves take it.",
@@ -5840,7 +5846,8 @@ var STR = {
   },
   ar: {
     settings:"الإعدادات", settingsLead:"محفوظة على هذا الجهاز.",
-    accentColour:"لون التمييز",
+    accentColour:"لون التمييز", pdfFrom:"خذ الصفحات من",
+    pdfScreen:"شاشة العرض", pdfPage:"هذه الصفحة",
     ledBy2:"أكبر محرّك", matsIn:"خامات هذا المنتج", alsoWatch:"راقب أيضاً:",
     fetchNews:"اجلب الأخبار", matShare:"الخامات تمثل", ofExw:"من تكلفة المصنع",
     last12s:"الاثنا عشر شهراً الماضية", fixedTxt:"ثابت",
@@ -5970,7 +5977,7 @@ function applyLang() {
    SETTINGS
    =================================================================== */
 var prefs = {
-  theme: "dark", accent: "amber", lang: "en", sound: true, tspeed: 110, chart: 1, scroll: 0,
+  theme: "dark", accent: "amber", lang: "en", sound: true, pdfMode: "screen", tspeed: 110, chart: 1, scroll: 0,
   model: {
     fixed: 7.55,         // EGP/kg of farm cost that does not move with feed
     transport: 1.0,      // EGP/kg collection and bonus
@@ -6125,6 +6132,7 @@ function buildSettings() {
         savePrefs();
         if (cast.on) { buildScenes(); showScene(0); }
         buildSettings();
+        buildExportToggles();
       };
     });
   }
@@ -6209,13 +6217,36 @@ function stamp(canvas, label) {
    =================================================================== */
 var pdfPick = {};        // export label -> false when left out
 
+function exportUnits() {
+  // "screen" gives the big-screen panels, which are already laid out for a
+  // landscape page. "page" gives the scrolling sections instead.
+  if (prefs.pdfMode === "page") {
+    return $$("[data-export]").map(function (sec) {
+      return { id: sec.dataset.export, label: sec.dataset.export, el: sec };
+    });
+  }
+  var pages = matPages();
+  return castSteps().map(function (st, i) {
+    var lbl;
+    if (st.p.id === "materials" && pages[st.page]) {
+      var pg = pages[st.page];
+      lbl = groupLabel(pg.g) + (pg.parts > 1 ? " " + pg.part + "/" + pg.parts : "") +
+        " · " + pg.items.map(function (m) { return matName(m); }).join(", ");
+    } else {
+      lbl = st.p.label + (st.pages > 1 ? " " + (st.page + 1) + "/" + st.pages : "");
+    }
+    return { id: "cast:" + st.p.id + ":" + st.page, label: lbl, idx: i };
+  });
+}
+
 function buildExportToggles() {
   var el = $("#expToggles");
   if (!el) return;
-  el.innerHTML = $$("[data-export]").map(function (sec) {
-    var n = sec.dataset.export, on = pdfPick[n] !== false;
-    return '<label class="chk' + (on ? "" : " off") + '" data-x="' + esc(n) + '">' +
-      '<input type="checkbox"' + (on ? " checked" : "") + '><span>' + esc(n) + "</span></label>";
+  prefs.castPanels = prefs.castPanels || {};
+  el.innerHTML = exportUnits().map(function (u) {
+    var on = pdfPick[u.id] !== false;
+    return '<label class="chk' + (on ? "" : " off") + '" data-x="' + esc(u.id) + '">' +
+      '<input type="checkbox"' + (on ? " checked" : "") + '><span>' + esc(u.label) + "</span></label>";
   }).join("");
   $$("#expToggles .chk").forEach(function (l) {
     l.querySelector("input").onchange = function () {
@@ -6223,8 +6254,14 @@ function buildExportToggles() {
       l.classList.toggle("off", !this.checked);
     };
   });
+  $$("#pdfMode button").forEach(function (b) {
+    b.setAttribute("aria-pressed", (prefs.pdfMode || "screen") === b.dataset.m);
+  });
 }
 
+function chosenUnits() {
+  return exportUnits().filter(function (u) { return pdfPick[u.id] !== false; });
+}
 function chosenSections() {
   return $$("[data-export]").filter(function (sec) {
     return sec.style.display !== "none" && pdfPick[sec.dataset.export] !== false;
@@ -6242,12 +6279,15 @@ function loadJsPDF() {
   });
 }
 
+/* The big-screen panels are already composed for a landscape page, so the
+   PDF captures those at a fixed 1400x990 box — the A4 landscape ratio.
+   Nothing is squeezed to fit afterwards. */
 async function exportPdf() {
-  var picks = chosenSections();
-  if (!picks.length) { expSay(isAr() ? "لم تختر أي قسم." : "Nothing selected."); return; }
+  var picks = chosenUnits();
+  if (!picks.length) { expSay(isAr() ? "لم تختر أي صفحة." : "Nothing selected."); return; }
   var h2c, JsPDF;
   try {
-    expSay(isAr() ? "جارٍ تحضير الأدوات…" : "Getting the tools ready…", 4);
+    expSay(isAr() ? "جارٍ تحضير الأدوات…" : "Getting the tools ready…", 3);
     h2c = await loadH2C();
     JsPDF = await loadJsPDF();
     if (!JsPDF) throw new Error("no jspdf");
@@ -6260,50 +6300,91 @@ async function exportPdf() {
 
   var doc = new JsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
   var W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
-  var M = 30, headH = 46, footH = 24;
-  var bg = getComputedStyle(document.body).backgroundColor;
-  var fg = getComputedStyle(document.body).color;
-
   var rgb = function (css) {
     var m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(css);
     return m ? [+m[1], +m[2], +m[3]] : [255, 255, 255];
   };
-  var bgc = rgb(bg), fgc = rgb(fg);
+  var bgc = rgb(getComputedStyle(document.body).backgroundColor);
+  var stampD = new Date();
+  var stampTxt = fmtDFull(state.asOf) + "  ·  " +
+    (isAr() ? "استُخرج " : "extracted ") + stampD.getDate() + " " + MON[stampD.getMonth()] + " " +
+    stampD.getFullYear() + " " + String(stampD.getHours()).padStart(2, "0") + ":" +
+    String(stampD.getMinutes()).padStart(2, "0");
 
-  for (var i = 0; i < picks.length; i++) {
-    var label = picks[i].dataset.export;
-    expSay((isAr() ? "جارٍ رسم " : "Rendering ") + label + " (" + (i + 1) + "/" + picks.length + ")",
-      Math.round((i / picks.length) * 92));
-    var canvas = await h2c(picks[i], shotOpts());
+  var usingCast = (prefs.pdfMode || "screen") !== "page";
+  var wasOpen = cast.on, wasScene = cast.scene, wasPaused = cast.paused;
+  var castEl = $("#cast"), prevStyle = castEl.getAttribute("style") || "";
 
-    if (i) doc.addPage();
-    doc.setFillColor(bgc[0], bgc[1], bgc[2]);
-    doc.rect(0, 0, W, H, "F");
+  if (usingCast) {
+    cast.paused = true;
+    if (!cast.on) openCast();
+    // a fixed box in the A4 landscape ratio, so every panel is composed for the page
+    castEl.style.width = "1400px";
+    castEl.style.height = "990px";
+    castEl.style.inset = "0 auto auto 0";
+    await new Promise(function (r) { setTimeout(r, 260); });
+  }
 
-    doc.setTextColor(fgc[0], fgc[1], fgc[2]);
-    doc.setFontSize(14);
-    doc.text(label, M, 30);
-    doc.setFontSize(9);
-    doc.setTextColor(140, 150, 165);
-    var stampD = new Date();
-    doc.text("Direct Materials Market Desk · prices to " + fmtDFull(state.asOf) +
-      "  ·  extracted " + stampD.getDate() + " " + MON[stampD.getMonth()] + " " +
-      stampD.getFullYear() + " " + String(stampD.getHours()).padStart(2, "0") + ":" +
-      String(stampD.getMinutes()).padStart(2, "0"), W - M, 30, { align: "right" });
-    doc.setDrawColor(120, 130, 145);
-    doc.line(M, 38, W - M, 38);
+  try {
+    for (var i = 0; i < picks.length; i++) {
+      var u = picks[i];
+      expSay((isAr() ? "جارٍ رسم " : "Rendering ") + u.label + " (" + (i + 1) + "/" + picks.length + ")",
+        Math.round((i / picks.length) * 92));
 
-    // fit the shot inside the page without distorting it
-    var availW = W - M * 2, availH = H - headH - footH - M;
-    var scale = Math.min(availW / canvas.width, availH / canvas.height);
-    var dw = canvas.width * scale, dh = canvas.height * scale;
-    doc.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG",
-      M + (availW - dw) / 2, headH + 6, dw, dh);
+      var target;
+      if (usingCast) {
+        showScene(u.idx, 1);
+        await new Promise(function (r) { setTimeout(r, 420); });   // let charts settle
+        refitTileCharts();
+        await new Promise(function (r) { setTimeout(r, 160); });
+        target = castEl;
+      } else {
+        target = u.el;
+      }
 
-    doc.setFontSize(8);
-    doc.setTextColor(140, 150, 165);
-    doc.text("Designed and developed by Hossam Hegazi", M, H - 14);
-    doc.text((i + 1) + " / " + picks.length, W - M, H - 14, { align: "right" });
+      var canvas = await h2c(target, {
+        backgroundColor: getComputedStyle(document.body).backgroundColor,
+        scale: 2, useCORS: true, logging: false,
+        width: usingCast ? 1400 : undefined,
+        height: usingCast ? 990 : undefined,
+        windowWidth: usingCast ? 1400 : Math.max(document.documentElement.clientWidth, 1280)
+      });
+
+      if (i) doc.addPage();
+      doc.setFillColor(bgc[0], bgc[1], bgc[2]);
+      doc.rect(0, 0, W, H, "F");
+
+      if (usingCast) {
+        // the panel already fills a landscape page, so print it edge to edge
+        doc.addImage(canvas.toDataURL("image/jpeg", 0.93), "JPEG", 0, 0, W, H);
+        doc.setFontSize(7.5);
+        doc.setTextColor(150, 158, 172);
+        doc.text(stampTxt, 18, H - 8);
+        doc.text((i + 1) + " / " + picks.length, W - 18, H - 8, { align: "right" });
+      } else {
+        var M = 30, headH = 46;
+        doc.setTextColor(20, 24, 32);
+        doc.setFontSize(14);
+        doc.text(u.label, M, 30);
+        doc.setFontSize(9);
+        doc.setTextColor(140, 150, 165);
+        doc.text(stampTxt, W - M, 30, { align: "right" });
+        doc.setDrawColor(120, 130, 145);
+        doc.line(M, 38, W - M, 38);
+        var availW = W - M * 2, availH = H - headH - 34;
+        var sc = Math.min(availW / canvas.width, availH / canvas.height);
+        doc.addImage(canvas.toDataURL("image/jpeg", 0.93), "JPEG",
+          M + (availW - canvas.width * sc) / 2, headH + 4, canvas.width * sc, canvas.height * sc);
+        doc.setFontSize(8);
+        doc.text((i + 1) + " / " + picks.length, W - M, H - 14, { align: "right" });
+      }
+    }
+  } finally {
+    if (usingCast) {
+      castEl.setAttribute("style", prevStyle);
+      cast.paused = wasPaused;
+      if (wasOpen) showScene(wasScene, 1); else closeCast();
+    }
   }
 
   doc.save("Market_Desk_" + state.asOf + ".pdf");
@@ -6439,7 +6520,8 @@ function renderAll() {
   paintSectionIcons();
   renderFan(); renderStrip(); renderMovers(); renderCards(); renderInsights();
   renderRecs(); renderProducts(); renderRawMilkTrend();
-  paintEgyptNews(); paintRisk(); buildNoteList(); paintRationNote(); renderMTicker(); buildSettings(); applySections();
+  paintEgyptNews(); paintRisk(); buildNoteList(); paintRationNote();
+  if (typeof buildExportToggles === "function") buildExportToggles(); renderMTicker(); buildSettings(); applySections();
   if (cast.on) buildScenes();
 }
 
@@ -6770,6 +6852,14 @@ function boot() {
   };
   buildExportToggles();
   $("#expPdf").onclick = exportPdf;
+  $$("#pdfMode button").forEach(function (b) {
+    b.onclick = function () {
+      prefs.pdfMode = b.dataset.m;
+      pdfPick = {};
+      savePrefs();
+      buildExportToggles();
+    };
+  });
   $("#expAllOn").onclick = function () { pdfPick = {}; buildExportToggles(); };
   $("#expNone").onclick = function () {
     $$("[data-export]").forEach(function (s) { pdfPick[s.dataset.export] = false; });
