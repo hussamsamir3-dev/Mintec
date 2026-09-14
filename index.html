@@ -1876,6 +1876,25 @@ html.exporting[data-theme="dark"] #cast{background-color:var(--ink)!important}
 html.exporting[data-theme="light"] body,
 html.exporting[data-theme="light"] #cast{background-color:var(--ink)!important}
 html.exporting #cast{background-image:none!important}
+.shipfall{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.sfnote{background:var(--ink2);border:1px solid var(--rule);border-left:3px solid var(--accent);
+  border-radius:12px;padding:1.4vh 1.2vw;color:var(--text2);font-size:1vw;line-height:1.55;
+  margin-bottom:1.4vh;flex:0 0 auto}
+[dir=rtl] .sfnote{border-left:1px solid var(--rule);border-right:3px solid var(--accent)}
+.sfgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1vw;flex:1 1 auto;min-height:0;
+  align-content:start}
+.sfcard{background:var(--ink2);border:1px solid var(--rule);border-radius:14px;
+  padding:1.4vh 1.2vw;border-top:3px solid var(--accent)}
+.sfh{display:flex;align-items:baseline;gap:.8vw;margin-bottom:.9vh}
+.sfh b{font-size:1.2vw;font-weight:700}
+.sfh span{margin-left:auto;font-weight:700;font-size:1.1vw;direction:ltr}
+[dir=rtl] .sfh span{margin-left:0;margin-right:auto}
+.sfm{display:flex;flex-wrap:wrap;gap:.4vh 1vw}
+.sfm span{display:inline-flex;align-items:center;gap:.4vw;font-size:.92vw;color:var(--text2)}
+.sfm i{width:.5vw;height:.5vw;min-width:6px;min-height:6px;border-radius:2px}
+.sfm b{font-weight:700;direction:ltr}
+.sfw{margin-top:.9vh;padding-top:.8vh;border-top:1px solid var(--rule);
+  color:var(--muted);font-size:.86vw}
 
 </style>
 </head>
@@ -4147,19 +4166,42 @@ function panelShipNews() {
     var k = n.t.slice(0, 60);
     if (!seen[k]) { seen[k] = 1; uniq.push(n); }
   });
-  return panelHead("shipnews", ar ? "عناوين الملاحة" : "Shipping headlines",
-    ar ? "من الطرق التي تمر بها شحناتنا" : "from the lanes our cargo travels") +
-    '<div class="cast-news">' + (uniq.length
-      ? uniq.slice(0, 6).map(function (n) {
-          var when = n.d ? new Date(n.d) : null;
-          return '<div class="cnews" style="--cc:var(--accent)">' +
-            '<div class="h">' + esc(n.t) + "</div>" +
-            '<div class="m">' + esc(n.s) + (when && !isNaN(when) ? " · " +
-              when.getDate() + " " + MON[when.getMonth()] : "") + "</div></div>";
-        }).join("")
-      : '<div class="empty">' + (RISK_TRIED
-          ? (ar ? "لا توجد أخبار متاحة الآن." : "No headlines available right now.")
-          : LOADING_MSG()) + "</div>") + "</div>";
+
+  var head = panelHead("shipnews", ar ? "عناوين الملاحة" : "Shipping headlines",
+    ar ? "من الطرق التي تمر بها شحناتنا" : "from the lanes our cargo travels");
+
+  if (uniq.length) {
+    return head + '<div class="cast-news">' + uniq.slice(0, 6).map(function (n) {
+      var when = n.d ? new Date(n.d) : null;
+      return '<div class="cnews" style="--cc:var(--accent)">' +
+        '<div class="h">' + esc(n.t) + "</div>" +
+        '<div class="m">' + esc(n.s) + (when && !isNaN(when) ? " · " +
+          when.getDate() + " " + MON[when.getMonth()] : "") + "</div></div>";
+    }).join("") + "</div>";
+  }
+
+  /* No feed is no reason for a blank page. Show what our own prices say about
+     the lanes instead, and be plain about why the headlines are missing. */
+  var routes = routeRows();
+  return head +
+    '<div class="shipfall">' +
+      '<div class="sfnote">' + (RISK_TRIED
+        ? (ar ? "تعذّر تحميل العناوين — الشبكة تحجب الخدمات التي تجلبها. هذا ما تقوله أسعارنا عن كل ممر."
+              : "Headlines could not load — the network blocks the services that fetch them. Here is what our own prices say about each lane.")
+        : LOADING_MSG()) + "</div>" +
+      '<div class="sfgrid">' + routes.map(function (r) {
+        var worst = r.mats.slice().sort(function (a, b) { return (b.mom || 0) - (a.mom || 0); })[0];
+        return '<div class="sfcard">' +
+          '<div class="sfh"><b>' + r.name + "</b>" +
+            '<span class="' + dirCls(r.avg) + '">' + pct(r.avg) + "</span></div>" +
+          '<div class="sfm">' + r.mats.map(function (m) {
+            return '<span><i style="background:' + cat(m).hex + '"></i>' + matName(m) +
+              ' <b class="' + dirCls(m.mom) + '">' + pct(m.mom) + "</b></span>";
+          }).join("") + "</div>" +
+          (worst ? '<div class="sfw">' + (ar ? "الأكثر حركة: " : "moving most: ") +
+            matName(worst) + " " + pct(worst.mom) + "</div>" : "") +
+        "</div>";
+      }).join("") + "</div></div>";
 }
 
 function panelNews() {
