@@ -1,1 +1,1 @@
-# Mintec
+# Server Down
